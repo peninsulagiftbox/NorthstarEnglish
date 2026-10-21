@@ -1,0 +1,395 @@
+{
+  "id": "demo-01",
+  "slug": "the-neighborhood-garden",
+  "title": "The Neighborhood Garden",
+  "versionId": "demo-01-v1",
+  "version": 1,
+  "kind": "original_demo",
+  "bookId": null,
+  "availability": "available",
+  "usageScope": "local_test_only",
+  "releaseReady": false,
+  "licenseId": "demo-text-v1",
+  "explanationLabel": "本地预置讲解",
+  "sentences": [
+    {
+      "speaker": "Mia",
+      "text": "Good morning. Is this the community garden?",
+      "translation": "早上好。这里是社区花园吗？",
+      "focus": "Is this ...?",
+      "id": "demo-01-v1-s01",
+      "stableKey": "s01",
+      "sequence": 1,
+      "audioAssetId": "demo-01-v1-a01",
+      "startMs": 0,
+      "endMs": 3579,
+      "explanation": "Good morning 是日常早间问候。Is this ...? 用来确认某个地点或事物。"
+    },
+    {
+      "speaker": "Leo",
+      "text": "Yes, it is. Are you here to help?",
+      "translation": "是的。你是来帮忙的吗？",
+      "focus": "Are you here to ...?",
+      "id": "demo-01-v1-s02",
+      "stableKey": "s02",
+      "sequence": 2,
+      "audioAssetId": "demo-01-v1-a02",
+      "startMs": 0,
+      "endMs": 3631,
+      "explanation": "Yes, it is 是对 Is this ...? 的肯定回答。Are you here to ...? 用来询问来意。"
+    },
+    {
+      "speaker": "Mia",
+      "text": "I am. My name is Mia.",
+      "translation": "是的。我叫米娅。",
+      "focus": "My name is ...",
+      "id": "demo-01-v1-s03",
+      "stableKey": "s03",
+      "sequence": 3,
+      "audioAssetId": "demo-01-v1-a03",
+      "startMs": 0,
+      "endMs": 2717,
+      "explanation": "I am 可简短回答 Are you ...? My name is ... 用于自我介绍。"
+    },
+    {
+      "speaker": "Leo",
+      "text": "Nice to meet you, Mia. I am Leo.",
+      "translation": "很高兴认识你，米娅。我是利奥。",
+      "focus": "Nice to meet you",
+      "id": "demo-01-v1-s04",
+      "stableKey": "s04",
+      "sequence": 4,
+      "audioAssetId": "demo-01-v1-a04",
+      "startMs": 0,
+      "endMs": 3553,
+      "explanation": "Nice to meet you 是第一次见面时常用的礼貌表达。"
+    },
+    {
+      "speaker": "Mia",
+      "text": "Where should I put these small plants?",
+      "translation": "我应该把这些小植物放在哪里？",
+      "focus": "Where should I ...?",
+      "id": "demo-01-v1-s05",
+      "stableKey": "s05",
+      "sequence": 5,
+      "audioAssetId": "demo-01-v1-a05",
+      "startMs": 0,
+      "endMs": 2900,
+      "explanation": "Where should I ...? 用于询问应该在哪里做某事。should 后接动词原形。"
+    },
+    {
+      "speaker": "Leo",
+      "text": "Please put them beside the blue bench.",
+      "translation": "请把它们放在蓝色长椅旁边。",
+      "focus": "Please + verb / beside",
+      "id": "demo-01-v1-s06",
+      "stableKey": "s06",
+      "sequence": 6,
+      "audioAssetId": "demo-01-v1-a06",
+      "startMs": 0,
+      "endMs": 3135,
+      "explanation": "Please + 动词原形构成礼貌请求。beside 表示在……旁边。"
+    },
+    {
+      "speaker": "Mia",
+      "text": "Do they need water now?",
+      "translation": "它们现在需要浇水吗？",
+      "focus": "Do they need ...?",
+      "id": "demo-01-v1-s07",
+      "stableKey": "s07",
+      "sequence": 7,
+      "audioAssetId": "demo-01-v1-a07",
+      "startMs": 0,
+      "endMs": 2168,
+      "explanation": "Do they need ...? 是一般现在时的疑问句；they 指代前面提到的植物。"
+    },
+    {
+      "speaker": "Leo",
+      "text": "Just a little. The soil is still wet.",
+      "translation": "只需要一点点。土壤还是湿的。",
+      "focus": "a little / still",
+      "id": "demo-01-v1-s08",
+      "stableKey": "s08",
+      "sequence": 8,
+      "audioAssetId": "demo-01-v1-a08",
+      "startMs": 0,
+      "endMs": 3500,
+      "explanation": "Just a little 指只有少量。still 表示仍然；wet 表示湿的。"
+    },
+    {
+      "speaker": "Mia",
+      "text": "I can bring a watering can.",
+      "translation": "我可以拿一个浇水壶来。",
+      "focus": "I can + verb",
+      "id": "demo-01-v1-s09",
+      "stableKey": "s09",
+      "sequence": 9,
+      "audioAssetId": "demo-01-v1-a09",
+      "startMs": 0,
+      "endMs": 2482,
+      "explanation": "I can + 动词原形表达能够做某事；watering can 指浇水壶。"
+    },
+    {
+      "speaker": "Leo",
+      "text": "That would be great. Thank you!",
+      "translation": "那太好了。谢谢你！",
+      "focus": "That would be great",
+      "id": "demo-01-v1-s10",
+      "stableKey": "s10",
+      "sequence": 10,
+      "audioAssetId": "demo-01-v1-a10",
+      "startMs": 0,
+      "endMs": 2952,
+      "explanation": "That would be great 是礼貌、自然地表达赞同与感谢的方式。"
+    }
+  ],
+  "vocabulary": [
+    {
+      "id": "demo-01-v1-kp-community-garden",
+      "term": "community garden",
+      "meaning": "社区花园",
+      "example": "Is this the community garden?",
+      "sentenceIds": [
+        "demo-01-v1-s01"
+      ]
+    },
+    {
+      "id": "demo-01-v1-kp-beside",
+      "term": "beside",
+      "meaning": "在……旁边",
+      "example": "Please put them beside the blue bench.",
+      "sentenceIds": [
+        "demo-01-v1-s06"
+      ]
+    },
+    {
+      "id": "demo-01-v1-kp-bench",
+      "term": "bench",
+      "meaning": "长椅",
+      "example": "the blue bench",
+      "sentenceIds": [
+        "demo-01-v1-s06"
+      ]
+    },
+    {
+      "id": "demo-01-v1-kp-soil",
+      "term": "soil",
+      "meaning": "土壤",
+      "example": "The soil is still wet.",
+      "sentenceIds": [
+        "demo-01-v1-s08"
+      ]
+    },
+    {
+      "id": "demo-01-v1-kp-watering-can",
+      "term": "watering can",
+      "meaning": "浇水壶",
+      "example": "I can bring a watering can.",
+      "sentenceIds": [
+        "demo-01-v1-s09"
+      ]
+    }
+  ],
+  "exercises": [
+    {
+      "id": "demo-01-v1-quiz-01",
+      "kind": "quiz_choice",
+      "prompt": "Mia is at a ...",
+      "options": [
+        {
+          "id": "demo-01-v1-quiz-01-a",
+          "text": "community garden"
+        },
+        {
+          "id": "demo-01-v1-quiz-01-b",
+          "text": "railway station"
+        },
+        {
+          "id": "demo-01-v1-quiz-01-c",
+          "text": "post office"
+        }
+      ],
+      "answerKey": "demo-01-v1-quiz-01-a",
+      "explanation": "对话第一句给出了地点。",
+      "sentenceIds": [
+        "demo-01-v1-s01"
+      ]
+    },
+    {
+      "id": "demo-01-v1-quiz-02",
+      "kind": "quiz_choice",
+      "prompt": "Where should the plants go?",
+      "options": [
+        {
+          "id": "demo-01-v1-quiz-02-a",
+          "text": "Beside the blue bench"
+        },
+        {
+          "id": "demo-01-v1-quiz-02-b",
+          "text": "On the roof"
+        },
+        {
+          "id": "demo-01-v1-quiz-02-c",
+          "text": "In the car"
+        }
+      ],
+      "answerKey": "demo-01-v1-quiz-02-a",
+      "explanation": "第六句出现 beside the blue bench。",
+      "sentenceIds": [
+        "demo-01-v1-s06"
+      ]
+    },
+    {
+      "id": "demo-01-v1-quiz-03",
+      "kind": "quiz_choice",
+      "prompt": "Which is a polite request?",
+      "options": [
+        {
+          "id": "demo-01-v1-quiz-03-a",
+          "text": "Please put them here."
+        },
+        {
+          "id": "demo-01-v1-quiz-03-b",
+          "text": "Put is them."
+        },
+        {
+          "id": "demo-01-v1-quiz-03-c",
+          "text": "Them please here."
+        }
+      ],
+      "answerKey": "demo-01-v1-quiz-03-a",
+      "explanation": "Please + 动词原形构成礼貌请求。",
+      "sentenceIds": [
+        "demo-01-v1-s06"
+      ]
+    },
+    {
+      "id": "demo-01-v1-reading-01",
+      "kind": "reading_choice",
+      "prompt": "Where should Mia put the small plants?",
+      "options": [
+        {
+          "id": "demo-01-v1-reading-01-a",
+          "text": "Next to the blue bench."
+        },
+        {
+          "id": "demo-01-v1-reading-01-b",
+          "text": "Inside the classroom."
+        },
+        {
+          "id": "demo-01-v1-reading-01-c",
+          "text": "Under a red table."
+        }
+      ],
+      "answerKey": "demo-01-v1-reading-01-a",
+      "sentenceIds": [
+        "demo-01-v1-s06"
+      ]
+    },
+    {
+      "id": "demo-01-v1-writing-01",
+      "kind": "writing_prompt",
+      "prompt": "写 2–3 句关于你在花园里帮忙的英文。",
+      "targetExpressions": [
+        "please",
+        "beside",
+        "I can"
+      ],
+      "sentenceIds": [
+        "demo-01-v1-s05",
+        "demo-01-v1-s06",
+        "demo-01-v1-s09"
+      ]
+    },
+    {
+      "id": "demo-01-v1-dictation-s01",
+      "kind": "dictation",
+      "prompt": "听音写句子",
+      "sentenceIds": [
+        "demo-01-v1-s01"
+      ],
+      "answerKey": "Good morning. Is this the community garden?"
+    },
+    {
+      "id": "demo-01-v1-dictation-s02",
+      "kind": "dictation",
+      "prompt": "听音写句子",
+      "sentenceIds": [
+        "demo-01-v1-s02"
+      ],
+      "answerKey": "Yes, it is. Are you here to help?"
+    },
+    {
+      "id": "demo-01-v1-dictation-s03",
+      "kind": "dictation",
+      "prompt": "听音写句子",
+      "sentenceIds": [
+        "demo-01-v1-s03"
+      ],
+      "answerKey": "I am. My name is Mia."
+    },
+    {
+      "id": "demo-01-v1-dictation-s04",
+      "kind": "dictation",
+      "prompt": "听音写句子",
+      "sentenceIds": [
+        "demo-01-v1-s04"
+      ],
+      "answerKey": "Nice to meet you, Mia. I am Leo."
+    },
+    {
+      "id": "demo-01-v1-dictation-s05",
+      "kind": "dictation",
+      "prompt": "听音写句子",
+      "sentenceIds": [
+        "demo-01-v1-s05"
+      ],
+      "answerKey": "Where should I put these small plants?"
+    },
+    {
+      "id": "demo-01-v1-dictation-s06",
+      "kind": "dictation",
+      "prompt": "听音写句子",
+      "sentenceIds": [
+        "demo-01-v1-s06"
+      ],
+      "answerKey": "Please put them beside the blue bench."
+    },
+    {
+      "id": "demo-01-v1-dictation-s07",
+      "kind": "dictation",
+      "prompt": "听音写句子",
+      "sentenceIds": [
+        "demo-01-v1-s07"
+      ],
+      "answerKey": "Do they need water now?"
+    },
+    {
+      "id": "demo-01-v1-dictation-s08",
+      "kind": "dictation",
+      "prompt": "听音写句子",
+      "sentenceIds": [
+        "demo-01-v1-s08"
+      ],
+      "answerKey": "Just a little. The soil is still wet."
+    },
+    {
+      "id": "demo-01-v1-dictation-s09",
+      "kind": "dictation",
+      "prompt": "听音写句子",
+      "sentenceIds": [
+        "demo-01-v1-s09"
+      ],
+      "answerKey": "I can bring a watering can."
+    },
+    {
+      "id": "demo-01-v1-dictation-s10",
+      "kind": "dictation",
+      "prompt": "听音写句子",
+      "sentenceIds": [
+        "demo-01-v1-s10"
+      ],
+      "answerKey": "That would be great. Thank you!"
+    }
+  ]
+}

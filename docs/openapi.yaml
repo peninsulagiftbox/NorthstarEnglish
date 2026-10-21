@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
   title: Northstar English Local API
-  version: 0.1.0
-  description: Phase 01 read-only local API. No learning content or training writes yet.
+  version: 0.2.0
+  description: Phase 02 read-only catalog and local test content API. Source/voice rights pending review; formal publication blocked. Training writes are unavailable.
 servers:
   - url: /api/v1
 paths:
@@ -40,9 +40,10 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [phase, learningContentAvailable, aiEnabled, asrEnabled, pronunciationScoringEnabled]
+                required: [phase, contentApiAvailable, learningContentAvailable, aiEnabled, asrEnabled, pronunciationScoringEnabled]
                 properties:
-                  phase: {type: string, const: '01'}
+                  phase: {type: string, const: '02'}
+                  contentApiAvailable: {type: boolean, const: true}
                   learningContentAvailable: {type: boolean, const: false}
                   aiEnabled: {type: boolean, const: false}
                   asrEnabled: {type: boolean, const: false}
@@ -74,14 +75,225 @@ paths:
           content:
             application/problem+json:
               schema: {$ref: '#/components/schemas/Problem'}
+  /books:
+    get:
+      operationId: getBooks
+      description: Four catalog-only book metadata records, with a separate original demo. No textbook lesson bodies or recordings.
+      responses:
+        '200':
+          description: Catalog metadata; no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [books, standaloneLessons]
+                properties:
+                  books:
+                    type: array
+                    items: {$ref: '#/components/schemas/Book'}
+                  standaloneLessons:
+                    type: array
+                    items: {$ref: '#/components/schemas/LessonSummary'}
+        '503': {$ref: '#/components/responses/Unavailable'}
+  /lessons:
+    get:
+      operationId: listAvailableLessons
+      responses:
+        '200':
+          description: Original demo only; catalog-only books do not have fake lessons
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: '#/components/schemas/LessonSummary'}
+        '503': {$ref: '#/components/responses/Unavailable'}
+  /lessons/{id}:
+    get:
+      operationId: getLesson
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}, example: demo-01}
+      description: One request returns ten original sentences, translations, preset explanations, vocabulary, exercise definitions and audio URIs. Answer keys and quiz explanations remain server-side. Audio integrity is checked before returning success.
+      responses:
+        '200':
+          description: Frozen versioned local-test content; releaseReady=false
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [id, versionId, version, title, bookId, kind, availability, sentences, vocabulary, exercises, licenses, releaseReady, usageScope, explanationLabel]
+                properties:
+                  id: {type: string, const: demo-01}
+                  versionId: {type: string, const: demo-01-v1}
+                  version: {type: integer, const: 1}
+                  title: {type: string}
+                  bookId: {type: 'null'}
+                  kind: {type: string, const: original_demo}
+                  availability: {type: string, const: available}
+                  usageScope: {type: string, const: local_test_only}
+                  releaseReady: {type: boolean, const: false}
+                  explanationLabel: {type: string, const: 本地预置讲解}
+                  sentences:
+                    type: array
+                    minItems: 10
+                    maxItems: 10
+                    items: {$ref: '#/components/schemas/Sentence'}
+                  vocabulary:
+                    type: array
+                    items:
+                      type: object
+                      required: [id, term, meaning, example, sentenceIds]
+                      properties:
+                        id: {type: string}
+                        term: {type: string}
+                        meaning: {type: string}
+                        example: {type: string}
+                        sentenceIds: {type: array, items: {type: string}}
+                  exercises:
+                    type: array
+                    items:
+                      type: object
+                      required: [id, kind, prompt, sentenceIds]
+                      properties:
+                        id: {type: string}
+                        kind: {type: string, enum: [dictation, reading_choice, writing_prompt, quiz_choice]}
+                        prompt: {type: string}
+                        sentenceIds: {type: array, items: {type: string}}
+                        options:
+                          type: array
+                          items:
+                            type: object
+                            required: [id, text]
+                            properties:
+                              id: {type: string}
+                              text: {type: string}
+                        targetExpressions: {type: array, items: {type: string}}
+                  licenses:
+                    type: array
+                    items: {$ref: '#/components/schemas/ContentLicense'}
+        '404': {$ref: '#/components/responses/ContentNotFound'}
+        '503': {$ref: '#/components/responses/Unavailable'}
+  /licenses/{id}:
+    get:
+      operationId: getContentLicense
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}, example: demo-audio-v1}
+      responses:
+        '200':
+          description: Declared provenance and review status; unknown fields never imply confirmed rights
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ContentLicense'}
+        '404': {$ref: '#/components/responses/ContentNotFound'}
+        '503': {$ref: '#/components/responses/Unavailable'}
+  /audio/{id}:
+    get:
+      operationId: getSentenceAudio
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}, example: demo-01-v1-a01}
+        - {name: Range, in: header, required: false, schema: {type: string}, example: 'bytes=0-31'}
+      description: Reads only a database-resolved, root-contained file with matching size and SHA-256. Never accepts filesystem paths. Sentence-local MP3; no whole-lesson time alignment.
+      responses:
+        '200':
+          description: Full MP3; Accept-Ranges bytes and Cache-Control no-store
+          content:
+            audio/mpeg:
+              schema: {type: string, format: binary}
+        '206':
+          description: Requested MP3 byte range; Content-Range bytes start-end/size
+          content:
+            audio/mpeg:
+              schema: {type: string, format: binary}
+        '404': {$ref: '#/components/responses/ContentNotFound'}
+        '416':
+          description: Malformed or unsatisfiable byte range; Content-Range bytes */size. Spring Resource response may have an empty body.
+        '503': {$ref: '#/components/responses/Unavailable'}
 components:
   responses:
+    ContentNotFound:
+      description: LESSON_NOT_FOUND, AUDIO_NOT_FOUND or LICENSE_NOT_FOUND with normalized Problem JSON
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/Problem'}
+    Unavailable:
+      description: DATABASE_UNAVAILABLE or AUDIO_UNAVAILABLE; no filesystem paths or credentials in detail
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/Problem'}
     LocalOnly:
       description: Host or Origin is outside configured localhost/127.0.0.1 ports; no wildcard CORS
       content:
         application/problem+json:
           schema: {$ref: '#/components/schemas/Problem'}
   schemas:
+    Book:
+      type: object
+      required: [id, catalogKey, sequence, title, editionLabel, availability, declaredLessonCount, metadataSource]
+      properties:
+        id: {type: string}
+        catalogKey: {type: string}
+        sequence: {type: integer}
+        title: {type: string}
+        editionLabel: {type: string}
+        availability: {type: string, const: catalog_only}
+        declaredLessonCount: {type: integer}
+        metadataSource: {type: string}
+    LessonSummary:
+      type: object
+      required: [id, slug, kind, availability, bookId, versionId, title, releaseReady, usageScope]
+      properties:
+        id: {type: string}
+        slug: {type: string}
+        kind: {type: string, const: original_demo}
+        availability: {type: string, const: available}
+        bookId: {type: 'null'}
+        versionId: {type: string}
+        title: {type: string}
+        releaseReady: {type: boolean, const: false}
+        usageScope: {type: string, const: local_test_only}
+    ContentLicense:
+      type: object
+      required: [id, sourceType, medium, owner, sourceRef, rightsScope, territory, reviewStatus, proofRef, generator, voice, declaration]
+      properties:
+        id: {type: string}
+        sourceType: {type: string, const: original}
+        medium: {type: string, enum: [text, audio]}
+        owner: {type: string}
+        sourceRef: {type: string}
+        rightsScope: {type: string}
+        territory: {type: string}
+        reviewStatus: {type: string, const: pending_review}
+        proofRef: {type: ['string', 'null']}
+        generator: {type: string}
+        voice: {type: string}
+        declaration: {type: string}
+    Sentence:
+      type: object
+      required: [id, stableKey, sequence, speaker, text, translation, explanation, focus, audioAssetId, startMs, endMs, audio]
+      properties:
+        id: {type: string}
+        stableKey: {type: string}
+        sequence: {type: integer, minimum: 1, maximum: 10}
+        speaker: {type: string}
+        text: {type: string}
+        translation: {type: string}
+        explanation: {type: string}
+        focus: {type: string}
+        audioAssetId: {type: string}
+        startMs: {type: integer, const: 0}
+        endMs: {type: integer, minimum: 1}
+        audio:
+          type: object
+          required: [id, licenseId, sourceKind, mimeType, byteSize, durationMs, sha256, status, uri]
+          properties:
+            id: {type: string}
+            licenseId: {type: string}
+            sourceKind: {type: string, const: original_tts}
+            mimeType: {type: string, const: audio/mpeg}
+            byteSize: {type: integer, minimum: 1}
+            durationMs: {type: integer, minimum: 1}
+            sha256: {type: string, pattern: '^[a-f0-9]{64}$'}
+            status: {type: string, const: ready}
+            uri: {type: string}
     Problem:
       type: object
       required: [type, title, status, code, detail, instance, traceId, retryable, fieldErrors]

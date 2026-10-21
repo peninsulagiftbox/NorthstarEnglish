@@ -20,6 +20,10 @@ docs/evidence/
 /preview_*.png
 /Northstar_English_Codex/references/phase1/*.html
 /Northstar_English_Codex/references/phase1/*.png
+/references/phase1/*.html
+/references/phase1/*.png
+# Extracted prototype audio remains local until source/voice rights are confirmed.
+/content/demo-01/v1/audio/*.mp3
 
 # Personal tooling, recordings, backups, credentials and database exports.
 .codex/

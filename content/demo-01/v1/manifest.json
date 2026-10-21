@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "demo-01",
+  "versionId": "demo-01-v1",
+  "source": {
+    "path": "references/phase1/english_lab_desktop_prototype.html",
+    "sha256": "0debbd92494b34f9905e38386fe57fc833170c8dfd2ed50e1fa1cc5a4623306f"
+  },
+  "durationMethod": "macOS afinfo MP3 decoder estimated duration, rounded to milliseconds; sentence-local timeline",
+  "lessonSha256": "8b9f28f5efbce6276b234fa7c794fd1e1b186fece0fe00961bb91525ab6abbd8",
+  "licenses": [
+    {
+      "id": "demo-text-v1",
+      "sourceType": "original",
+      "medium": "text",
+      "owner": "unknown",
+      "sourceRef": "prototype:0debbd92494b34f9905e38386fe57fc833170c8dfd2ed50e1fa1cc5a4623306f:text",
+      "rightsScope": "local_test_only; formal publication blocked pending review",
+      "territory": "unknown",
+      "reviewStatus": "pending_review",
+      "proofRef": null,
+      "generator": "unknown",
+      "voice": "unknown",
+      "declaration": "参考设计声明文本及讲解原创、音频本地合成用于功能测试；未取得独立授权凭据。"
+    },
+    {
+      "id": "demo-audio-v1",
+      "sourceType": "original",
+      "medium": "audio",
+      "owner": "unknown",
+      "sourceRef": "prototype:0debbd92494b34f9905e38386fe57fc833170c8dfd2ed50e1fa1cc5a4623306f:audio",
+      "rightsScope": "local_test_only; formal publication blocked pending review",
+      "territory": "unknown",
+      "reviewStatus": "pending_review",
+      "proofRef": null,
+      "generator": "unknown",
+      "voice": "unknown",
+      "declaration": "参考设计声明文本及讲解原创、音频本地合成用于功能测试；未取得独立授权凭据。"
+    }
+  ],
+  "books": [
+    {
+      "id": "nce-book-1",
+      "catalogKey": "nce-1",
+      "sequence": 1,
+      "title": "新概念英语第1册",
+      "editionLabel": "1997 revised (catalog metadata only)",
+      "availability": "catalog_only",
+      "declaredLessonCount": 144,
+      "metadataSource": "references/phase1/Northstar_English_Phase1_桌面Web详细设计与验收.md#P02"
+    },
+    {
+      "id": "nce-book-2",
+      "catalogKey": "nce-2",
+      "sequence": 2,
+      "title": "新概念英语第2册",
+      "editionLabel": "1997 revised (catalog metadata only)",
+      "availability": "catalog_only",
+      "declaredLessonCount": 96,
+      "metadataSource": "references/phase1/Northstar_English_Phase1_桌面Web详细设计与验收.md#P02"
+    },
+    {
+      "id": "nce-book-3",
+      "catalogKey": "nce-3",
+      "sequence": 3,
+      "title": "新概念英语第3册",
+      "editionLabel": "1997 revised (catalog metadata only)",
+      "availability": "catalog_only",
+      "declaredLessonCount": 60,
+      "metadataSource": "references/phase1/Northstar_English_Phase1_桌面Web详细设计与验收.md#P02"
+    },
+    {
+      "id": "nce-book-4",
+      "catalogKey": "nce-4",
+      "sequence": 4,
+      "title": "新概念英语第4册",
+      "editionLabel": "1997 revised (catalog metadata only)",
+      "availability": "catalog_only",
+      "declaredLessonCount": 48,
+      "metadataSource": "references/phase1/Northstar_English_Phase1_桌面Web详细设计与验收.md#P02"
+    }
+  ],
+  "audioAssets": [
+    {
+      "id": "demo-01-v1-a01",
+      "storageKey": "audio/01.mp3",
+      "licenseId": "demo-audio-v1",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 25277,
+      "durationMs": 3579,
+      "sha256": "90c66e629d9f24c496592dc2e70fd7ff7c813225deef0022460df5396ffdc6c6"
+    },
+    {
+      "id": "demo-01-v1-a02",
+      "storageKey": "audio/02.mp3",
+      "licenseId": "demo-audio-v1",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 25643,
+      "durationMs": 3631,
+      "sha256": "ca0f40378faf10aa19de23d542e4094665e01ad27f5b7720ad1e28467ee37754"
+    },
+    {
+      "id": "demo-01-v1-a03",
+      "storageKey": "audio/03.mp3",
+      "licenseId": "demo-audio-v1",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 19243,
+      "durationMs": 2717,
+      "sha256": "9c660eb468564c84146ad531b5b6f5878fbcf85009ea3c40a92bc002c8c376d2"
+    },
+    {
+      "id": "demo-01-v1-a04",
+      "storageKey": "audio/04.mp3",
+      "licenseId": "demo-audio-v1",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 25094,
+      "durationMs": 3553,
+      "sha256": "0ba1ba677d405267d607e79f2f5b39f5747fe11514510e075617e22e5bdf8939"
+    },
+    {
+      "id": "demo-01-v1-a05",
+      "storageKey": "audio/05.mp3",
+      "licenseId": "demo-audio-v1",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 20523,
+      "durationMs": 2900,
+      "sha256": "6745ddc16f9c0f42aed3c8f7d82311f2797665627be6e7a62fa77e3b69cd9b52"
+    },
+    {
+      "id": "demo-01-v1-a06",
+      "storageKey": "audio/06.mp3",
+      "licenseId": "demo-audio-v1",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 22168,
+      "durationMs": 3135,
+      "sha256": "2041131c2fb14f8c6effe0aadcf2caede3dd38de35a181e1e657c9a0f73476f2"
+    },
+    {
+      "id": "demo-01-v1-a07",
+      "storageKey": "audio/07.mp3",
+      "licenseId": "demo-audio-v1",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 15403,
+      "durationMs": 2168,
+      "sha256": "060aa44b3a3161daaa729dc1bc63b39e38295c7e9e065026f1cb31b0bf9eb679"
+    },
+    {
+      "id": "demo-01-v1-a08",
+      "storageKey": "audio/08.mp3",
+      "licenseId": "demo-audio-v1",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 24728,
+      "durationMs": 3500,
+      "sha256": "dd6265caabca5ebbb99029d2965282847552a1f3d00798746e0a13239f3de28b"
+    },
+    {
+      "id": "demo-01-v1-a09",
+      "storageKey": "audio/09.mp3",
+      "licenseId": "demo-audio-v1",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 17597,
+      "durationMs": 2482,
+      "sha256": "d84adf3ce9775ee2da626f1c89fdc558d54c1a4dda4c81c3e6edd029035f4fd6"
+    },
+    {
+      "id": "demo-01-v1-a10",
+      "storageKey": "audio/10.mp3",
+      "licenseId": "demo-audio-v1",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 20888,
+      "durationMs": 2952,
+      "sha256": "5c4237c470fe273ae3b8a854c01c4e15eb929fb2589cafe52a888174c43620a5"
+    }
+  ],
+  "releaseReady": false
+}

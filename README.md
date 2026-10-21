@@ -2,7 +2,7 @@
 
 一个面向个人自学、在本地运行的英语学习工作台。目标是把逐句听读、听写、精读、录音回放、写作和复习串成一条可追溯的学习路径，让进度来自真实练习记录。
 
-**当前状态：Phase 01 工程骨架已完成本机验收，等待阶段审核。** 现在可以启动前端、Java API 和独立 MySQL，查看真实服务状态；课程内容与训练功能尚未开放。
+**当前状态：Phase 02 原创内容与课程 / 音频 API 已实施，等待阶段审核。** 本地提供原创 10 句及音频接口；页面仍为环境准备页，学习工作台与训练功能待后续阶段。素材来源审查为 `pending_review`，正式发布受阻。
 
 [快速开始](#快速开始) · [当前功能](#当前功能) · [开发与验证](#开发与验证) · [开发路线](#开发路线) · [隐私与内容来源](#隐私与内容来源)
 
@@ -23,7 +23,7 @@
 | 专属 MySQL 容器、持久卷、迁移与运行账号分离 | 已实现 |
 | Flyway 首版设置表、项目身份校验、重复迁移保护 | 已实现 |
 | 项目级运行时选择、端口检查、安全启停脚本 | 已实现 |
-| 原创课程入库、文本与音频接口 | 计划于 Phase 02 实现 |
+| 原创课程入库、文本与音频接口 | 已实现本地测试版本，来源授权待审查 |
 | 学习工作台、播放、听写、阅读、录音、写作、测验与复习 | 计划于后续阶段实现 |
 | AI 大模型、ASR、专业发音评分 | 未接入 |
 
@@ -87,6 +87,15 @@ JAVA_HOME=/absolute/path/to/jdk21/Contents/Home
 仅添加自己需要覆盖的项。配置字段见 [.env.example](.env.example)；首次初始化直接运行脚本即可，无需先复制示例文件。
 
 ### 2. 检查、构建并启动
+
+Phase 02 启动前需要本地内容包。**公开仓库尚不分发原型 HTML 和合成音频**，仅 clone 不能完整运行本阶段；已持有冻结原型的本地工作区可先执行：
+
+```bash
+python3 scripts/extract-demo.py
+python3 scripts/validate-content.py
+```
+
+提取依赖 macOS `afinfo`，不执行原型 JavaScript。文件哈希及来源说明见 [CONTENT_MANIFEST](docs/CONTENT_MANIFEST.md)。缺少材料时停止，不抓取教材或生成伪音频补位。
 
 ```bash
 sh scripts/doctor.sh
@@ -166,23 +175,31 @@ sh scripts/dev-up.sh
 ```bash
 python3 scripts/api-smoke.py
 python3 scripts/local.py exec sh scripts/browser-smoke.sh
+python3 scripts/local.py exec sh scripts/content-browser-smoke.sh
 ```
 
 浏览器脚本固定 Playwright CLI 版本，结果须包含 `passed: true`，截图写入本地 `output/playwright/`。首次若提示缺少浏览器，请按 CLI 提示安装 Chromium 后重跑。
 
 Phase 01 已完成前端类型检查、lint、生产构建、7 项后端测试、4 项前端测试、6 项脚本测试，以及 API / 浏览器冒烟、真实数据库停机恢复和重启持久化核对。详细结果与失败修正记录见 [阶段报告](docs/progress/PHASE_01.md)。这些是本机验收记录，尚未在另一台全新 Mac 上独立复现。
 
+Phase 02 的内容提取、重复播种、真实 MySQL 约束、媒体 HTTP 与浏览器实播结果见 [第二阶段报告](docs/progress/PHASE_02.md)。音频浏览器脚本使用临时测试面板，不代表工作台 UI 已实现。
+
 ## API
 
-默认可通过 Web 的同源地址访问以下只读接口：
+默认可通过 Web 的同源地址访问以下接口：
 
 | 方法 | 路径 | 用途 |
 | --- | --- | --- |
 | GET | `/api/v1/health` | 查询真实数据库连接、项目标记和迁移版本 |
 | GET | `/api/v1/capabilities` | 返回当前阶段及实际功能开关 |
 | GET | `/api/v1/settings` | 读取已持久化的本地偏好 |
+| GET | `/api/v1/books` | 四册目录占位及独立原创课 |
+| GET | `/api/v1/lessons` | 当前可用原创课列表 |
+| GET | `/api/v1/lessons/demo-01` | 带版本的 10 句、预置讲解、词汇、练习定义与音频 URI |
+| GET | `/api/v1/audio/{id}` | 校验后的 MP3，支持 Range / 206 / 416 |
+| GET | `/api/v1/licenses/{id}` | 原创声明、来源及待审查状态 |
 
-成功直接返回资源，失败返回 Problem JSON。健康检查不使用 `/api/health` 别名；接口契约见 [openapi.yaml](docs/openapi.yaml)。
+成功直接返回资源，失败返回 Problem JSON（媒体 Range 的 416 可为空响应）。接口统一使用 `/api/v1`，不添加 `/api/health` 等旧路径别名；接口契约见 [openapi.yaml](docs/openapi.yaml)。
 
 ## 项目结构
 
@@ -192,6 +209,8 @@ NorthstarEnglish/
 │   ├── web/                    # Next.js 前端
 │   └── api/                    # Spring Boot 后端、Flyway 迁移与测试
 ├── infra/                      # 专属 MySQL Compose 与初始化
+├── content/demo-01/v1/          # 冻结原创内容、来源清单和本地音频
+├── references/phase1/           # 按原文件哈希归档的参考输入
 ├── scripts/                    # 运行时、环境检查、启停与验证
 ├── docs/                       # 实施计划、版本依据、API、阶段报告
 ├── Northstar_English_Codex/     # 阶段提示词与可公开的设计资料
@@ -208,8 +227,8 @@ NorthstarEnglish/
 
 | 阶段 | 范围 | 进度 |
 | --- | --- | --- |
-| 01 | 工程骨架、独立数据库、真实健康页 | 本机验收通过，待审核 |
-| 02 | 原创内容入库、课程与媒体 API | 未开始 |
+| 01 | 工程骨架、独立数据库、真实健康页 | 本机验收通过，已获准进入下一阶段 |
+| 02 | 原创内容入库、课程与媒体 API | 本地实施完成，待审核；素材正式发布受阻 |
 | 03 | 桌面组件、路由、可恢复工作台 | 未开始 |
 | 04 | 音频引擎、句内 A–B、听写与错误来源 | 未开始 |
 | 05 | 精读词汇、证据题与知识点关联 | 未开始 |
@@ -226,7 +245,7 @@ NorthstarEnglish/
 - **数据库隔离**：使用专属 Compose 项目、容器、持久卷和主 / 测试 schema；迁移前校验项目身份，运行账号当前仅有只读权限。数据默认以 UTC 存储。
 - **已有数据保护**：启停不删除卷，不执行 Flyway clean / repair；修改 `.env` 密码不会自动轮换持久卷中的数据库账号，不应通过清卷解决配置问题。
 - **本地访问边界**：服务绑定回环地址，API 校验 Host / Origin。当前没有登录系统，适用于个人本地使用；后续写接口需要配套 CSRF 与业务校验。
-- **内容来源**：计划以原创 10 句课程验证一期，不收录未经许可的《新概念英语》课文或录音。原型 HTML 内嵌测试音频及原型图片暂不公开，待来源 / 授权审查后决定分发；它们不是 Phase 01 的运行依赖。
+- **内容来源**：本地已提取并导入原创 10 句，没有四册教材正文或录音。原型 HTML、图片和提取音频暂不公开；来源及声音授权待审查，不能将 `original` 声明当作已确认授权。Phase 02 使用本地内容包，公开 clone 的独立复现仍受素材分发限制。
 - **备份边界**：完整备份与恢复工具尚未实现，当前持久卷不能替代备份。
 
 公开范围与检查流程见 [PUBLICATION](docs/PUBLICATION.md)。仓库尚未指定开源许可证；公开可见与素材授权应分别核查。
