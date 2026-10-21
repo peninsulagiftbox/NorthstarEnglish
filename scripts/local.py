@@ -204,6 +204,7 @@ def up(env):
         run(["npm", "run", "build"], env)
     start_process("api", [shutil.which("java", path=env["PATH"]), "-jar", str(jar)], ROOT / "apps/api", env, str(jar))
     wait_health("http://127.0.0.1:" + env["API_PORT"] + "/api/v1/health")
+    run([sys.executable, str(ROOT / "scripts/grant-study.py")], env)
     next_cli = str(ROOT / "node_modules/next/dist/bin/next")
     start_process("web", [shutil.which("node", path=env["PATH"]), next_cli, "start", "--hostname", "127.0.0.1", "--port", env["WEB_PORT"]], ROOT / "apps/web", env, next_cli)
     wait_health("http://127.0.0.1:" + env["WEB_PORT"] + "/api/v1/health")
@@ -254,6 +255,11 @@ def main():
         if record_path.exists() and owns_process(json.loads(record_path.read_text())):
             raise RuntimeError("先停止本项目 API，再单独启动 MySQL 执行 db-test，避免覆盖运行中的 JAR")
         env.update(NORTHSTAR_DB_TEST="1", DB_NAME="northstar_phase01_test")
+        # Migrate the verified test schema before granting only the new table writes.
+        run([str(ROOT / "apps/api/mvnw"), "-f", str(ROOT / "apps/api/pom.xml"), "package", "-DskipTests"], env)
+        run([shutil.which("java", path=env["PATH"]), "-jar", str(ROOT / "apps/api/target/northstar-api-0.1.0-SNAPSHOT.jar"),
+             "--spring.main.web-application-type=none", "--northstar.content-root=" + str(ROOT / "content")], env)
+        run([sys.executable, str(ROOT / "scripts/grant-study.py")], env)
         run([str(ROOT / "apps/api/mvnw"), "-f", str(ROOT / "apps/api/pom.xml"), "verify"], env)
     elif action == "exec":
         run(sys.argv[2:], env)

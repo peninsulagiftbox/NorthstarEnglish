@@ -27,7 +27,11 @@ public class LocalAccessFilter extends OncePerRequestFilter {
         String host = request.getHeader("Host");
         boolean loopbackHost = hosts.contains(host) || ("127.0.0.1:" + request.getLocalPort()).equals(host)
                 || ("localhost:" + request.getLocalPort()).equals(host);
-        if (!loopbackHost || (origin != null && !origins.contains(origin))) {
+        boolean write = !Set.of("GET", "HEAD", "OPTIONS").contains(request.getMethod());
+        boolean unsafeWrite = write && (origin == null || !origins.contains(origin)
+                || !"local-workspace".equals(request.getHeader("X-Northstar-Request"))
+                || request.getContentType() == null || !request.getContentType().toLowerCase(java.util.Locale.ROOT).startsWith("application/json"));
+        if (!loopbackHost || (origin != null && !origins.contains(origin)) || unsafeWrite) {
             response.setStatus(403);
             response.setContentType("application/problem+json");
             response.setCharacterEncoding("UTF-8");

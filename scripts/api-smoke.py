@@ -29,12 +29,12 @@ health, headers = request("/health")
 assert health["status"] == health["database"] == "UP"
 assert health["project"] == local.IDENTITY and "no-store" in headers["Cache-Control"]
 capabilities, _ = request("/capabilities")
-assert capabilities == dict(phase="02", contentApiAvailable=True, learningContentAvailable=False, aiEnabled=False, asrEnabled=False, pronunciationScoringEnabled=False)
+assert capabilities == dict(phase="03", contentApiAvailable=True, learningContentAvailable=True, aiEnabled=False, asrEnabled=False, pronunciationScoringEnabled=False)
 settings, headers = request("/settings")
 assert set(settings) == {"timezone", "defaultSpeed", "showTranslation", "showHints", "shortcutEnabled", "recordingRetention", "rowVersion"}
 assert isinstance(settings["showTranslation"], bool) and "no-store" in headers["Cache-Control"]
 request("/missing", 404)
-request("/settings", 405, method="POST")
+request("/settings", 405, method="POST", headers={"Origin": "http://127.0.0.1:" + env["WEB_PORT"], "X-Northstar-Request": "local-workspace", "Content-Type": "application/json"})
 request("/health", 403, headers={"Origin": "https://untrusted.example"})
 request("/health", 403, headers={"Host": "untrusted.example"})
 print("PASS: actual health/capabilities/settings; cache headers; 404/405/403 Problem contract; Host/Origin rejection; no CORS wildcard")

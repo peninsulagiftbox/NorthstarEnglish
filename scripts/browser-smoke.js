@@ -5,9 +5,9 @@ async (page) => {
   if (response.status() !== 200 || (await response.json()).project !== "northstar-english-local-v1") {
     throw new Error("Expected actual project API health");
   }
-  await page.goto("http://127.0.0.1:" + new URL(page.url()).port);
+  await page.goto("http://127.0.0.1:" + new URL(page.url()).port + "/settings");
   await page.getByText("已连接", { exact: true }).first().waitFor();
-  await page.getByRole("heading", { name: "学习内容尚未开放" }).waitFor();
+  await page.getByRole("heading", { name: "本地偏好" }).waitFor();
   for (const [width, height] of [[1440, 900], [1512, 900], [1280, 800], [375, 812]]) {
     await page.setViewportSize({ width, height });
     if (await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)) throw new Error("Horizontal overflow: " + width);

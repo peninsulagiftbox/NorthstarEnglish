@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
   title: Northstar English Local API
-  version: 0.2.0
-  description: Phase 02 read-only catalog and local test content API. Source/voice rights pending review; formal publication blocked. Training writes are unavailable.
+  version: 0.3.0
+  description: Phase 03 course browsing and revisioned browsing checkpoint API. Source/voice rights pending review; formal publication blocked. Exercise submissions remain unavailable.
 servers:
   - url: /api/v1
 paths:
@@ -42,9 +42,9 @@ paths:
                 type: object
                 required: [phase, contentApiAvailable, learningContentAvailable, aiEnabled, asrEnabled, pronunciationScoringEnabled]
                 properties:
-                  phase: {type: string, const: '02'}
+                  phase: {type: string, const: '03'}
                   contentApiAvailable: {type: boolean, const: true}
-                  learningContentAvailable: {type: boolean, const: false}
+                  learningContentAvailable: {type: boolean, const: true}
                   aiEnabled: {type: boolean, const: false}
                   asrEnabled: {type: boolean, const: false}
                   pronunciationScoringEnabled: {type: boolean, const: false}
@@ -207,6 +207,66 @@ paths:
         '416':
           description: Malformed or unsatisfiable byte range; Content-Range bytes */size. Spring Resource response may have an empty body.
         '503': {$ref: '#/components/responses/Unavailable'}
+  /study/resume:
+    get:
+      operationId: getBrowsingCheckpoint
+      summary: Read the local browsing checkpoint; never exercise evidence
+      responses:
+        '200':
+          description: Persisted checkpoint with ETag equal to quoted rowVersion; Cache-Control no-store
+          headers:
+            ETag: {schema: {type: string}}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - {$ref: '#/components/schemas/Checkpoint'}
+                  - type: object
+                    required: [sessionId, rowVersion]
+                    properties:
+                      sessionId: {type: string, format: uuid}
+                      rowVersion: {type: integer, minimum: 1}
+        '204': {description: No checkpoint has been saved}
+        '403': {$ref: '#/components/responses/LocalOnly'}
+        '503': {description: Local database unavailable}
+    put: &saveCheckpoint
+      operationId: saveBrowsingCheckpoint
+      description: Requires allowed loopback Origin, application/json and X-Northstar-Request local-workspace. If-Match is the quoted prior revision, initially "0". Atomic revision check rejects other-page conflicts. No audio position, training status, drafts or attempts are stored here.
+      parameters:
+        - in: header
+          name: If-Match
+          required: true
+          schema: {type: string, pattern: '^"[0-9]{1,16}"$'}
+        - in: header
+          name: X-Northstar-Request
+          required: true
+          schema: {type: string, const: local-workspace}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/Checkpoint'}
+      responses:
+        '200':
+          description: Checkpoint saved; new revision and matching ETag. Response body only contains rowVersion.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [rowVersion]
+                properties:
+                  rowVersion: {type: integer, minimum: 1}
+        '400': {description: Invalid tab, boolean, revision or request body; Problem JSON}
+        '403': {$ref: '#/components/responses/LocalOnly'}
+        '404': {description: Unavailable lesson, stale version or foreign sentence; Problem JSON}
+        '412': {description: Another page has changed the checkpoint; preserve local draft and reload; Problem JSON}
+        '428': {description: If-Match missing; Problem JSON}
+        '503': {description: Local database or checkpoint write grant unavailable; Problem JSON}
+  /study/sessions:
+    post:
+      <<: *saveCheckpoint
+      operationId: openBrowsingSession
+      summary: Initialize or update the singleton local browsing session with the same revision rules
 components:
   responses:
     ContentNotFound:
@@ -225,6 +285,16 @@ components:
         application/problem+json:
           schema: {$ref: '#/components/schemas/Problem'}
   schemas:
+    Checkpoint:
+      type: object
+      required: [lessonId, versionId, sentenceId, tab, showEnglish, showTranslation]
+      properties:
+        lessonId: {type: string, minLength: 1, maxLength: 64}
+        versionId: {type: string, minLength: 1, maxLength: 64}
+        sentenceId: {type: string, minLength: 1, maxLength: 64}
+        tab: {type: string, enum: [text, dictation, vocabulary, speaking, writing, quiz]}
+        showEnglish: {type: boolean}
+        showTranslation: {type: boolean}
     Book:
       type: object
       required: [id, catalogKey, sequence, title, editionLabel, availability, declaredLessonCount, metadataSource]

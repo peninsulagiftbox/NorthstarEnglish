@@ -21,3 +21,8 @@
 只加入本阶段必要依赖。前端单元测试用 Node 内建 runner；后端 JUnit/Mockito，集成测试连接本项目 MySQL8.4 的独立 `northstar_phase01_test` schema，不用 H2。浏览器冒烟使用 Playwright CLI，不引入产品运行依赖。后续功能阶段再引入相应组件测试工具。
 
 版本可用性与最终兼容性分开：编译、构建、测试的真实结果以 `docs/progress/PHASE_01.md` 为准。
+
+
+## Phase 03 构建执行补充
+
+依赖版本及 package-lock 未变化。`apps/web/package.json` 的生产构建指定同版 Next.js 内置 `--webpack`：本阶段 Turbopack 在普通和获准环境均因 PostCSS 辅助进程本地端口绑定被拒而失败；webpack 生产构建实际通过，失败日志保留在本地 Phase 03 证据目录。开发脚本与全局 Node/Java 不变。
