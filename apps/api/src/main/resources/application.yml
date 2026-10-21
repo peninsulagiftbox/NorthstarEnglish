@@ -1,0 +1,32 @@
+server:
+  address: 127.0.0.1
+  port: ${API_PORT:8085}
+  error:
+    include-message: never
+    include-stacktrace: never
+spring:
+  application:
+    name: northstar-api
+  datasource:
+    url: jdbc:mysql://127.0.0.1:${MYSQL_PORT:3308}/${DB_NAME:northstar_english}?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000
+    username: northstar_app
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 4
+      minimum-idle: 1
+      connection-timeout: 3000
+  flyway:
+    url: ${spring.datasource.url}
+    user: northstar_migrator
+    password: ${DB_MIGRATION_PASSWORD}
+    clean-disabled: true
+    baseline-on-migrate: false
+    baseline-version: "0"
+    validate-on-migrate: true
+  jackson:
+    time-zone: UTC
+northstar:
+  web-port: ${WEB_PORT:3100}
+  api-port: ${API_PORT:8085}
+  db-password: ${DB_PASSWORD}
+  migration-password: ${DB_MIGRATION_PASSWORD}

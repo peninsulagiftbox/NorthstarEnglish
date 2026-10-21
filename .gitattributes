@@ -1,0 +1,4 @@
+* text=auto
+*.cmd text eol=crlf
+# Two trailing spaces are intentional Markdown line breaks in reference documents.
+*.md whitespace=-blank-at-eol

@@ -1,0 +1,97 @@
+openapi: 3.1.0
+info:
+  title: Northstar English Local API
+  version: 0.1.0
+  description: Phase 01 read-only local API. No learning content or training writes yet.
+servers:
+  - url: /api/v1
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      summary: Query actual MySQL project identity, settings and migration version
+      responses:
+        '200':
+          description: Database available and project identity valid; Cache-Control no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, database, project, migrationVersion, checkedAt]
+                properties:
+                  status: {type: string, const: UP}
+                  database: {type: string, const: UP}
+                  project: {type: string, const: northstar-english-local-v1}
+                  migrationVersion: {type: string}
+                  checkedAt: {type: string, format: date-time}
+        '403': {$ref: '#/components/responses/LocalOnly'}
+        '503':
+          description: MySQL unavailable or identity invalid; never a simulated UP
+          content:
+            application/problem+json:
+              schema: {$ref: '#/components/schemas/Problem'}
+  /capabilities:
+    get:
+      operationId: getCapabilities
+      responses:
+        '200':
+          description: Actual feature boundaries for this phase
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [phase, learningContentAvailable, aiEnabled, asrEnabled, pronunciationScoringEnabled]
+                properties:
+                  phase: {type: string, const: '01'}
+                  learningContentAvailable: {type: boolean, const: false}
+                  aiEnabled: {type: boolean, const: false}
+                  asrEnabled: {type: boolean, const: false}
+                  pronunciationScoringEnabled: {type: boolean, const: false}
+        '403': {$ref: '#/components/responses/LocalOnly'}
+  /settings:
+    get:
+      operationId: getLocalSettings
+      description: Read-only preferences. Editing and optimistic concurrency are introduced in Phase 08.
+      responses:
+        '200':
+          description: Persisted local preferences, no credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [timezone, defaultSpeed, showTranslation, showHints, shortcutEnabled, recordingRetention, rowVersion]
+                properties:
+                  timezone: {type: string, example: Asia/Shanghai}
+                  defaultSpeed: {type: number, enum: [0.75, 1, 1.25, 1.5]}
+                  showTranslation: {type: boolean}
+                  showHints: {type: boolean}
+                  shortcutEnabled: {type: boolean}
+                  recordingRetention: {type: string, const: manual}
+                  rowVersion: {type: integer, minimum: 0}
+        '403': {$ref: '#/components/responses/LocalOnly'}
+        '503':
+          description: Database unavailable
+          content:
+            application/problem+json:
+              schema: {$ref: '#/components/schemas/Problem'}
+components:
+  responses:
+    LocalOnly:
+      description: Host or Origin is outside configured localhost/127.0.0.1 ports; no wildcard CORS
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/Problem'}
+  schemas:
+    Problem:
+      type: object
+      required: [type, title, status, code, detail, instance, traceId, retryable, fieldErrors]
+      properties:
+        type: {type: string, format: uri}
+        title: {type: string}
+        status: {type: integer}
+        code: {type: string}
+        detail: {type: string}
+        instance: {type: string}
+        traceId: {type: string, format: uuid}
+        retryable: {type: boolean}
+        fieldErrors: {type: array, items: {type: object}}

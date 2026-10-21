@@ -1,0 +1,44 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+.local/
+node_modules/
+.next/
+target/
+*.tsbuildinfo
+__pycache__/
+output/
+.playwright-cli/
+*.log
+
+# Local evidence contains machine paths, process details and service inventories.
+docs/evidence/
+
+# Original prototype media remains local until its source/rights review is complete.
+/english_lab_desktop_prototype.html
+/preview_*.png
+/Northstar_English_Codex/references/phase1/*.html
+/Northstar_English_Codex/references/phase1/*.png
+
+# Personal tooling, recordings, backups, credentials and database exports.
+.codex/
+.agents/
+.idea/
+.vscode/
+*.iml
+recordings/
+backups/
+*.dump
+*.sql.gz
+dump*.sql
+backup*.sql
+*.bak
+*.zip
+*.tar.gz
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
