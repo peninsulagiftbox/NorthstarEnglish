@@ -34,6 +34,10 @@ class ContentPackageTest {
         var bundle = new ContentPackage("../../content").load();
         assertEquals(10, bundle.lesson().path("sentences").size());
         assertFalse(bundle.manifest().path("releaseReady").asBoolean());
+        var content = new ContentPackage("../../content");
+        assertEquals(java.util.List.of(1,2), content.publishedVersions());
+        assertEquals(2, content.activeVersion());
+        assertEquals("demo-01-v2", content.load(2).lesson().path("versionId").asText());
         assertTrue(bundle.manifest().path("licenses").valueStream().allMatch(l -> l.path("reviewStatus").asText().equals("pending_review")));
     }
 }

@@ -25,6 +25,7 @@ public class HealthController {
                 return unavailable();
             }
             return ResponseEntity.ok().cacheControl(org.springframework.http.CacheControl.noStore())
+                    .header("X-Northstar-Test-Database", Boolean.toString("northstar_phase01_test".equals(jdbc.queryForObject("SELECT DATABASE()", String.class))))
                     .body(new Health("UP", "UP", project, version, Instant.now()));
         } catch (DataAccessException exception) {
             return unavailable();
@@ -39,7 +40,7 @@ public class HealthController {
 
     @GetMapping("/api/v1/capabilities")
     public Map<String, Object> capabilities() {
-        return Map.of("phase", "03", "contentApiAvailable", true, "learningContentAvailable", true, "aiEnabled", false, "asrEnabled", false, "pronunciationScoringEnabled", false);
+        return Map.of("phase", "04", "contentApiAvailable", true, "learningContentAvailable", true, "aiEnabled", false, "asrEnabled", false, "pronunciationScoringEnabled", false);
     }
 
     @GetMapping("/api/v1/settings")

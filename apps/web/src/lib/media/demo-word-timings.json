@@ -1,0 +1,417 @@
+{
+  "versionId": "demo-01-v2",
+  "source": "edge-tts 7.3.1 WordBoundary from the same audio generation; service alignment, not manually corrected",
+  "sourceRecordSha256": "b2da495291f8ea37b52c74e4e9ba009040400e06b9e6e57db2902d9fadda44b3",
+  "tracks": [
+    {
+      "sentenceId": "demo-01-v2-s01",
+      "audioSha256": "4b9a53e056377f039afbaf5b13d6af384265fb584087fef1ed7c932037c3ae0c",
+      "durationMs": 3408,
+      "words": [
+        {
+          "text": "Good",
+          "startMs": 100.0,
+          "durationMs": 237.5
+        },
+        {
+          "text": "morning",
+          "startMs": 350.0,
+          "durationMs": 562.5
+        },
+        {
+          "text": "Is",
+          "startMs": 1312.5,
+          "durationMs": 162.5
+        },
+        {
+          "text": "this",
+          "startMs": 1487.5,
+          "durationMs": 237.5
+        },
+        {
+          "text": "the",
+          "startMs": 1737.5,
+          "durationMs": 112.5
+        },
+        {
+          "text": "community",
+          "startMs": 1862.5,
+          "durationMs": 575.0
+        },
+        {
+          "text": "garden",
+          "startMs": 2450.0,
+          "durationMs": 587.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "demo-01-v2-s02",
+      "audioSha256": "2a92ea2f0254401b775ca0909da3298af149aa35d75eb67c08373c04a1b0fefb",
+      "durationMs": 3936,
+      "words": [
+        {
+          "text": "Yes",
+          "startMs": 100.0,
+          "durationMs": 462.5
+        },
+        {
+          "text": "it",
+          "startMs": 712.5,
+          "durationMs": 125.0
+        },
+        {
+          "text": "is",
+          "startMs": 850.0,
+          "durationMs": 362.5
+        },
+        {
+          "text": "Are",
+          "startMs": 2075.0,
+          "durationMs": 100.0
+        },
+        {
+          "text": "you",
+          "startMs": 2187.5,
+          "durationMs": 125.0
+        },
+        {
+          "text": "here",
+          "startMs": 2325.0,
+          "durationMs": 162.5
+        },
+        {
+          "text": "to",
+          "startMs": 2500.0,
+          "durationMs": 87.5
+        },
+        {
+          "text": "help",
+          "startMs": 2600.0,
+          "durationMs": 462.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "demo-01-v2-s03",
+      "audioSha256": "1c053cf756705dfde4df612eb33aafea4f198b1b6e9b85839f648b2bba4a988b",
+      "durationMs": 2616,
+      "words": [
+        {
+          "text": "I",
+          "startMs": 150.0,
+          "durationMs": 137.5
+        },
+        {
+          "text": "am",
+          "startMs": 300.0,
+          "durationMs": 400.0
+        },
+        {
+          "text": "My",
+          "startMs": 1075.0,
+          "durationMs": 175.0
+        },
+        {
+          "text": "name",
+          "startMs": 1262.5,
+          "durationMs": 337.5
+        },
+        {
+          "text": "is",
+          "startMs": 1612.5,
+          "durationMs": 162.5
+        },
+        {
+          "text": "Mia",
+          "startMs": 1787.5,
+          "durationMs": 462.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "demo-01-v2-s04",
+      "audioSha256": "8620ccfd1a480328767265d806a614ae3caffad65c9b910a0c6dcb98a50d5c28",
+      "durationMs": 4200,
+      "words": [
+        {
+          "text": "Nice",
+          "startMs": 100.0,
+          "durationMs": 375.0
+        },
+        {
+          "text": "to",
+          "startMs": 487.5,
+          "durationMs": 100.0
+        },
+        {
+          "text": "meet",
+          "startMs": 600.0,
+          "durationMs": 262.5
+        },
+        {
+          "text": "you",
+          "startMs": 875.0,
+          "durationMs": 150.0
+        },
+        {
+          "text": "Mia",
+          "startMs": 1312.5,
+          "durationMs": 375.0
+        },
+        {
+          "text": "I",
+          "startMs": 2550.0,
+          "durationMs": 150.0
+        },
+        {
+          "text": "am",
+          "startMs": 2712.5,
+          "durationMs": 162.5
+        },
+        {
+          "text": "Leo",
+          "startMs": 2887.5,
+          "durationMs": 450.0
+        }
+      ]
+    },
+    {
+      "sentenceId": "demo-01-v2-s05",
+      "audioSha256": "67c38c59992871687b5509b5ae5a6431f04c368e969033c18e5b2481c3419a0b",
+      "durationMs": 2544,
+      "words": [
+        {
+          "text": "Where",
+          "startMs": 137.5,
+          "durationMs": 200.0
+        },
+        {
+          "text": "should",
+          "startMs": 350.0,
+          "durationMs": 187.5
+        },
+        {
+          "text": "I",
+          "startMs": 550.0,
+          "durationMs": 100.0
+        },
+        {
+          "text": "put",
+          "startMs": 662.5,
+          "durationMs": 275.0
+        },
+        {
+          "text": "these",
+          "startMs": 950.0,
+          "durationMs": 200.0
+        },
+        {
+          "text": "small",
+          "startMs": 1162.5,
+          "durationMs": 300.0
+        },
+        {
+          "text": "plants",
+          "startMs": 1475.0,
+          "durationMs": 687.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "demo-01-v2-s06",
+      "audioSha256": "bba41d99234f59338bb36c3912064b4db48df9b8340531aa1406219df2b5b87d",
+      "durationMs": 2904,
+      "words": [
+        {
+          "text": "Please",
+          "startMs": 100.0,
+          "durationMs": 287.5
+        },
+        {
+          "text": "put",
+          "startMs": 400.0,
+          "durationMs": 162.5
+        },
+        {
+          "text": "them",
+          "startMs": 575.0,
+          "durationMs": 150.0
+        },
+        {
+          "text": "beside",
+          "startMs": 737.5,
+          "durationMs": 412.5
+        },
+        {
+          "text": "the",
+          "startMs": 1162.5,
+          "durationMs": 87.5
+        },
+        {
+          "text": "blue",
+          "startMs": 1262.5,
+          "durationMs": 275.0
+        },
+        {
+          "text": "bench",
+          "startMs": 1550.0,
+          "durationMs": 487.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "demo-01-v2-s07",
+      "audioSha256": "43bea5d0071e3cba51723cf910b0fd5c472cee81326298ae4be287d56e2bceec",
+      "durationMs": 1896,
+      "words": [
+        {
+          "text": "Do",
+          "startMs": 100.0,
+          "durationMs": 175.0
+        },
+        {
+          "text": "they",
+          "startMs": 287.5,
+          "durationMs": 150.0
+        },
+        {
+          "text": "need",
+          "startMs": 450.0,
+          "durationMs": 225.0
+        },
+        {
+          "text": "water",
+          "startMs": 687.5,
+          "durationMs": 400.0
+        },
+        {
+          "text": "now",
+          "startMs": 1100.0,
+          "durationMs": 425.0
+        }
+      ]
+    },
+    {
+      "sentenceId": "demo-01-v2-s08",
+      "audioSha256": "4390b9909d9add200f6499d5e16d484a160bed0c3fd7784cc7177d2f452ab4bf",
+      "durationMs": 3936,
+      "words": [
+        {
+          "text": "Just",
+          "startMs": 100.0,
+          "durationMs": 300.0
+        },
+        {
+          "text": "a",
+          "startMs": 412.5,
+          "durationMs": 50.0
+        },
+        {
+          "text": "little",
+          "startMs": 475.0,
+          "durationMs": 400.0
+        },
+        {
+          "text": "The",
+          "startMs": 1737.5,
+          "durationMs": 150.0
+        },
+        {
+          "text": "soil",
+          "startMs": 1900.0,
+          "durationMs": 362.5
+        },
+        {
+          "text": "is",
+          "startMs": 2275.0,
+          "durationMs": 112.5
+        },
+        {
+          "text": "still",
+          "startMs": 2400.0,
+          "durationMs": 287.5
+        },
+        {
+          "text": "wet",
+          "startMs": 2700.0,
+          "durationMs": 362.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "demo-01-v2-s09",
+      "audioSha256": "252f691e7406ba15a915645d81266c3f24e230f81d8e281644d8ef4bfa8f3315",
+      "durationMs": 2232,
+      "words": [
+        {
+          "text": "I",
+          "startMs": 137.5,
+          "durationMs": 112.5
+        },
+        {
+          "text": "can",
+          "startMs": 262.5,
+          "durationMs": 212.5
+        },
+        {
+          "text": "bring",
+          "startMs": 487.5,
+          "durationMs": 237.5
+        },
+        {
+          "text": "a",
+          "startMs": 737.5,
+          "durationMs": 50.0
+        },
+        {
+          "text": "watering",
+          "startMs": 800.0,
+          "durationMs": 550.0
+        },
+        {
+          "text": "can",
+          "startMs": 1362.5,
+          "durationMs": 487.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "demo-01-v2-s10",
+      "audioSha256": "fd3caf2e575955975ef48a7869fb243c908eb81e7b263c16c4582dab70086881",
+      "durationMs": 3432,
+      "words": [
+        {
+          "text": "That",
+          "startMs": 100.0,
+          "durationMs": 237.5
+        },
+        {
+          "text": "would",
+          "startMs": 350.0,
+          "durationMs": 100.0
+        },
+        {
+          "text": "be",
+          "startMs": 462.5,
+          "durationMs": 100.0
+        },
+        {
+          "text": "great",
+          "startMs": 575.0,
+          "durationMs": 512.5
+        },
+        {
+          "text": "Thank",
+          "startMs": 1950.0,
+          "durationMs": 300.0
+        },
+        {
+          "text": "you",
+          "startMs": 2262.5,
+          "durationMs": 287.5
+        }
+      ]
+    }
+  ]
+}

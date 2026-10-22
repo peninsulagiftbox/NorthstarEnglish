@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Grant only checkpoint writes after a verified V003 migration; preserve all data."""
+"""Grant only phase-specific writes after verified migrations; preserve all data."""
 import subprocess
 import local
 
@@ -23,7 +23,13 @@ def grant(env):
         if sql(f"SELECT COUNT(*) FROM {schema}.flyway_schema_history WHERE version='003' AND success=1;") != '1':
             raise RuntimeError('未发现成功的 V003，拒绝授权')
         sql(f"GRANT INSERT, UPDATE ON {schema}.study_resume TO 'northstar_app'@'%';")
-        print(f'{schema}: PASS，仅授予 study_resume INSERT/UPDATE；未修改数据。')
+        print(f'{schema}: PASS，study_resume INSERT/UPDATE；未修改数据。')
+        if sql(f"SELECT COUNT(*) FROM {schema}.flyway_schema_history WHERE version='004' AND success=1;") == '1':
+            for table in ('exercise_attempt', 'learning_evidence', 'study_event', 'review_source'):
+                sql(f"GRANT INSERT ON {schema}.{table} TO 'northstar_app'@'%';")
+            for table in ('command_receipt', 'study_stage', 'exercise_draft', 'review_item'):
+                sql(f"GRANT INSERT, UPDATE ON {schema}.{table} TO 'northstar_app'@'%';")
+            print(f'{schema}: PASS，V004 最小写权限；内容与历史证据保持只读。')
 
 
 if __name__ == '__main__':

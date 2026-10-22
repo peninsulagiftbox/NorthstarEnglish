@@ -26,3 +26,13 @@
 ## Phase 03 构建执行补充
 
 依赖版本及 package-lock 未变化。`apps/web/package.json` 的生产构建指定同版 Next.js 内置 `--webpack`：本阶段 Turbopack 在普通和获准环境均因 PostCSS 辅助进程本地端口绑定被拒而失败；webpack 生产构建实际通过，失败日志保留在本地 Phase 03 证据目录。开发脚本与全局 Node/Java 不变。
+
+
+## Phase 04 执行补充
+
+沿用现有精确版本与锁文件，未新增依赖或改变全局 Node/Java。音频使用 HTMLAudioElement、IndexedDB 和浏览器原生 API；英文 token 对齐使用 Java 标准库。浏览器脚本继续固定 Playwright CLI 0.1.22，写入型用例要求实际连接隔离测试库。实际编译、测试、浏览器版本和限制见 `docs/progress/PHASE_04.md`。
+
+
+## Edge 语音评测工具（可选）
+
+2026-10-22实际使用edge-tts7.3.1，依据PyPI同版本发布页及上游README；完整隔离环境依赖锁在 `scripts/tts-evaluation-requirements.txt`。工具仅用于显式在线生成课程素材，学习时仍读本地MP3，不添加Python服务/Key作为应用依赖。技术与授权边界见 `docs/TTS_EDGE_EVALUATION.md`。

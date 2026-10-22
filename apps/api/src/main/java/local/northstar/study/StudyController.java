@@ -24,7 +24,7 @@ public class StudyController {
 
     @GetMapping("/api/v1/study/resume")
     public ResponseEntity<?> resume() {
-        var rows = jdbc.queryForList("SELECT session_id AS sessionId, lesson_id AS lessonId, version_id AS versionId, sentence_id AS sentenceId, tab_key AS tab, show_english AS showEnglish, show_translation AS showTranslation, row_version AS rowVersion FROM study_resume WHERE owner_key='local'");
+        var rows = jdbc.queryForList("SELECT session_id AS sessionId, lesson_id AS lessonId, version_id AS versionId, sentence_id AS sentenceId, tab_key AS tab, show_english AS showEnglish, show_translation AS showTranslation, row_version AS rowVersion, playing_sentence_id AS playingSentenceId, position_ms AS positionMs FROM study_resume WHERE owner_key='local'");
         if (rows.isEmpty()) return ResponseEntity.noContent().build();
         var row = rows.getFirst();
         return ResponseEntity.ok().eTag("\"" + row.get("rowVersion") + "\"").body(row);
@@ -39,14 +39,14 @@ public class StudyController {
         long revision = Long.parseLong(match.substring(1, match.length() - 1));
         if (revision == 0) {
             try {
-                jdbc.update("INSERT INTO study_resume(owner_key,session_id,lesson_id,version_id,sentence_id,tab_key,show_english,show_translation) VALUES ('local',?,?,?,?,?,?,?)",
+                jdbc.update("INSERT INTO study_resume(owner_key,session_id,lesson_id,version_id,sentence_id,tab_key,show_english,show_translation,playing_sentence_id,position_ms) VALUES ('local',?,?,?,?,?,?,?,?,?)",
                         UUID.randomUUID().toString(), checkpoint.lessonId, checkpoint.versionId, checkpoint.sentenceId,
-                        checkpoint.tab, checkpoint.showEnglish, checkpoint.showTranslation);
+                        checkpoint.tab, checkpoint.showEnglish, checkpoint.showTranslation, checkpoint.playingSentenceId, checkpoint.positionMs == null ? 0 : checkpoint.positionMs);
             } catch (DuplicateKeyException exception) { throw conflict(); }
         } else {
-            int changed = jdbc.update("UPDATE study_resume SET lesson_id=?,version_id=?,sentence_id=?,tab_key=?,show_english=?,show_translation=?,row_version=row_version+1,updated_at=UTC_TIMESTAMP(3) WHERE owner_key='local' AND row_version=?",
+            int changed = jdbc.update("UPDATE study_resume SET lesson_id=?,version_id=?,sentence_id=?,tab_key=?,show_english=?,show_translation=?,playing_sentence_id=?,position_ms=?,row_version=row_version+1,updated_at=UTC_TIMESTAMP(3) WHERE owner_key='local' AND row_version=?",
                     checkpoint.lessonId, checkpoint.versionId, checkpoint.sentenceId, checkpoint.tab,
-                    checkpoint.showEnglish, checkpoint.showTranslation, revision);
+                    checkpoint.showEnglish, checkpoint.showTranslation, checkpoint.playingSentenceId, checkpoint.positionMs == null ? 0 : checkpoint.positionMs, revision);
             if (changed != 1) throw conflict();
         }
         // Return the committed revision, not a subsequent reader's potentially newer checkpoint.
@@ -60,9 +60,14 @@ public class StudyController {
     }
 
     private void validate(Checkpoint value) {
+        if (value.positionMs != null && (value.positionMs < 0 || value.positionMs > 600000)) throw new Failure(HttpStatus.BAD_REQUEST, "INVALID_POSITION", "播放位置超出范围。");
+        if (value.playingSentenceId != null) {
+            Integer valid = jdbc.queryForObject("SELECT COUNT(*) FROM sentence WHERE id=? AND lesson_id=? AND lesson_version_id=? AND end_ms>=?", Integer.class, value.playingSentenceId, value.lessonId, value.versionId, value.positionMs == null ? 0 : value.positionMs);
+            if (valid == null || valid != 1) throw new Failure(HttpStatus.BAD_REQUEST, "INVALID_PLAYING_SENTENCE", "播放句或位置与内容版本不匹配。");
+        }
         if (!TABS.contains(value.tab)) throw new Failure(HttpStatus.BAD_REQUEST, "INVALID_TAB", "学习页签不受支持。");
-        Integer count = jdbc.queryForObject("SELECT COUNT(*) FROM sentence s JOIN lesson l ON l.id=s.lesson_id WHERE s.id=? AND s.lesson_id=? AND s.lesson_version_id=? AND l.current_version_id=? AND l.availability='available'", Integer.class,
-                value.sentenceId, value.lessonId, value.versionId, value.versionId);
+        Integer count = jdbc.queryForObject("SELECT COUNT(*) FROM sentence s JOIN lesson l ON l.id=s.lesson_id WHERE s.id=? AND s.lesson_id=? AND s.lesson_version_id=? AND l.availability='available'", Integer.class,
+                value.sentenceId, value.lessonId, value.versionId);
         if (count == null || count != 1) throw new Failure(HttpStatus.NOT_FOUND, "CONTEXT_NOT_FOUND", "课次、内容版本或句子不匹配。");
     }
 
@@ -77,5 +82,5 @@ public class StudyController {
     }
     public record Checkpoint(@NotBlank @Size(max=64) String lessonId, @NotBlank @Size(max=64) String versionId,
             @NotBlank @Size(max=64) String sentenceId, @NotBlank @Size(max=16) String tab,
-            @NotNull Boolean showEnglish, @NotNull Boolean showTranslation) {}
+            @NotNull Boolean showEnglish, @NotNull Boolean showTranslation, @Size(max=64) String playingSentenceId, Integer positionMs) {}
 }

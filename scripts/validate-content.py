@@ -16,7 +16,7 @@ def validate(root):
     assert extract.digest(raw) == manifest['lessonSha256'], 'Lesson digest mismatch'
     lesson = json.loads(raw)
     assert lesson['id'] == manifest['lessonId'] == 'demo-01'
-    assert lesson['versionId'] == manifest['versionId'] == 'demo-01-v1'
+    assert lesson['versionId'] == manifest['versionId'] == f"demo-01-v{lesson['version']}"
     assert lesson['bookId'] is None and not lesson['releaseReady'] and not manifest['releaseReady']
     assert len(lesson['sentences']) == len(manifest['audioAssets']) == 10
     assert len(manifest['books']) == 4 and all(b['availability'] == 'catalog_only' for b in manifest['books'])

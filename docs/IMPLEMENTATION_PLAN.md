@@ -1,6 +1,6 @@
 # Northstar English 实施计划
 
-日期：2026-10-21（Asia/Shanghai）。执行更新：**用户已授权 Phase 03；桌面页面、六 Tab、真实课程浏览及恢复点已实施，验收结果见 `docs/progress/PHASE_03.md`；素材正式发布仍受来源授权审查阻塞；Phase 04–09 未开始。**
+日期：2026-10-22（Asia/Shanghai）。执行更新：**用户已授权 Phase 04；真实逐句音频、句内 A–B、听写/草稿/证据与复习来源已实施，验收结果见 `docs/progress/PHASE_04.md`，等待本阶段审核；用户追加授权的英式 Edge v2 更换与验收见 `docs/TTS_EDGE_EVALUATION.md`；素材正式发布仍受来源授权审查阻塞；Phase 05–09 未开始。**
 
 以下规划正文保留实施前的只读快照，原“本轮未初始化/未启动”等描述指规划轮次；当前执行事实以上述阶段报告为准。
 
@@ -544,4 +544,4 @@ HTTP：400格式、404未知资源、409事件内容冲突/内容版本不匹配
 
 主要未解决项：JDK21定位/取得方式；Docker daemon权限和可用资源；合成音频具体来源证明；实际框架精确补丁构建验证；真实Chrome/Safari麦克风与恢复演练。均已安排到相应阶段，不模拟通过。
 
-Phase01 结果见 `docs/progress/PHASE_01.md`。Phase02 已按提示词实施，结果见 `docs/progress/PHASE_02.md`；后续用户授权实施 Phase03，结果见 `docs/progress/PHASE_03.md`。用户已授权将 Phase02、Phase03 按阶段分别提交并推送 GitHub；不自动进入 Phase04，素材来源和声音授权仍待补齐。
+Phase01 结果见 `docs/progress/PHASE_01.md`。Phase02 已按提示词实施，结果见 `docs/progress/PHASE_02.md`；后续用户授权实施 Phase03，结果见 `docs/progress/PHASE_03.md`。用户已授权将 Phase02、Phase03 按阶段分别提交并推送 GitHub；第四阶段已由用户单独授权实施，结果见 `docs/progress/PHASE_04.md`；不自动进入 Phase05，素材来源和声音授权仍待补齐。

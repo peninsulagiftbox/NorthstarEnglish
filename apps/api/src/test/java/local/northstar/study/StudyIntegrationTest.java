@@ -53,8 +53,8 @@ class StudyIntegrationTest {
                 if (original.isEmpty()) admin.update("DELETE FROM study_resume WHERE owner_key='local'");
                 else {
                     var row = original.getFirst();
-                    admin.update("UPDATE study_resume SET session_id=?,lesson_id=?,version_id=?,sentence_id=?,tab_key=?,show_english=?,show_translation=?,row_version=?,updated_at=? WHERE owner_key='local'",
-                            row.get("session_id"), row.get("lesson_id"), row.get("version_id"), row.get("sentence_id"), row.get("tab_key"), row.get("show_english"), row.get("show_translation"), row.get("row_version"), row.get("updated_at"));
+                    admin.update("UPDATE study_resume SET session_id=?,lesson_id=?,version_id=?,sentence_id=?,tab_key=?,show_english=?,show_translation=?,row_version=?,updated_at=?,playing_sentence_id=?,position_ms=? WHERE owner_key='local'",
+                            row.get("session_id"), row.get("lesson_id"), row.get("version_id"), row.get("sentence_id"), row.get("tab_key"), row.get("show_english"), row.get("show_translation"), row.get("row_version"), row.get("updated_at"), row.get("playing_sentence_id"), row.get("position_ms"));
                 }
             }
         }

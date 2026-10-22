@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "demo-01",
+  "versionId": "demo-01-v2",
+  "source": {
+    "path": "content/demo-01/v1/lesson.json",
+    "sha256": "8b9f28f5efbce6276b234fa7c794fd1e1b186fece0fe00961bb91525ab6abbd8"
+  },
+  "durationMethod": "macOS afinfo MP3 decoder estimated duration, rounded to milliseconds; sentence-local timeline",
+  "lessonSha256": "2b628a96067bc974bd5e5df96be6f8fab9bfd623306c4a1f4424e8061374a1c0",
+  "licenses": [
+    {
+      "id": "demo-text-v1",
+      "sourceType": "original",
+      "medium": "text",
+      "owner": "unknown",
+      "sourceRef": "prototype:0debbd92494b34f9905e38386fe57fc833170c8dfd2ed50e1fa1cc5a4623306f:text",
+      "rightsScope": "local_test_only; formal publication blocked pending review",
+      "territory": "unknown",
+      "reviewStatus": "pending_review",
+      "proofRef": null,
+      "generator": "unknown",
+      "voice": "unknown",
+      "declaration": "参考设计声明文本及讲解原创、音频本地合成用于功能测试；未取得独立授权凭据。"
+    },
+    {
+      "id": "demo-edge-gb-v2",
+      "sourceType": "original",
+      "medium": "audio",
+      "owner": "unknown",
+      "sourceRef": "edge-tts:7.3.1:demo-01-v2",
+      "rightsScope": "local_test_only; formal publication blocked pending review",
+      "territory": "unknown",
+      "reviewStatus": "pending_review",
+      "proofRef": null,
+      "generator": "edge-tts 7.3.1 / Microsoft Edge online text-to-speech",
+      "voice": "Mia=en-GB-SoniaNeural; Leo=en-GB-RyanNeural",
+      "declaration": "从本项目原创10句文本在线合成；生成技术与参数已记录，服务及输出正式发布权利尚未独立核实。",
+      "generatedDate": "2026-10-22",
+      "parameters": {
+        "rate": "+0%",
+        "volume": "+0%",
+        "pitch": "+0Hz",
+        "format": "audio-24khz-48kbitrate-mono-mp3"
+      },
+      "selectionEvidence": "2026-10-22 user listening preference: British Edge Sonia/Ryan is better; local technical evaluation passed"
+    }
+  ],
+  "books": [
+    {
+      "id": "nce-book-1",
+      "catalogKey": "nce-1",
+      "sequence": 1,
+      "title": "新概念英语第1册",
+      "editionLabel": "1997 revised (catalog metadata only)",
+      "availability": "catalog_only",
+      "declaredLessonCount": 144,
+      "metadataSource": "references/phase1/Northstar_English_Phase1_桌面Web详细设计与验收.md#P02"
+    },
+    {
+      "id": "nce-book-2",
+      "catalogKey": "nce-2",
+      "sequence": 2,
+      "title": "新概念英语第2册",
+      "editionLabel": "1997 revised (catalog metadata only)",
+      "availability": "catalog_only",
+      "declaredLessonCount": 96,
+      "metadataSource": "references/phase1/Northstar_English_Phase1_桌面Web详细设计与验收.md#P02"
+    },
+    {
+      "id": "nce-book-3",
+      "catalogKey": "nce-3",
+      "sequence": 3,
+      "title": "新概念英语第3册",
+      "editionLabel": "1997 revised (catalog metadata only)",
+      "availability": "catalog_only",
+      "declaredLessonCount": 60,
+      "metadataSource": "references/phase1/Northstar_English_Phase1_桌面Web详细设计与验收.md#P02"
+    },
+    {
+      "id": "nce-book-4",
+      "catalogKey": "nce-4",
+      "sequence": 4,
+      "title": "新概念英语第4册",
+      "editionLabel": "1997 revised (catalog metadata only)",
+      "availability": "catalog_only",
+      "declaredLessonCount": 48,
+      "metadataSource": "references/phase1/Northstar_English_Phase1_桌面Web详细设计与验收.md#P02"
+    }
+  ],
+  "audioAssets": [
+    {
+      "id": "demo-01-v2-a01",
+      "storageKey": "audio/01.mp3",
+      "licenseId": "demo-edge-gb-v2",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 20448,
+      "durationMs": 3408,
+      "sha256": "4b9a53e056377f039afbaf5b13d6af384265fb584087fef1ed7c932037c3ae0c",
+      "voice": "en-GB-SoniaNeural"
+    },
+    {
+      "id": "demo-01-v2-a02",
+      "storageKey": "audio/02.mp3",
+      "licenseId": "demo-edge-gb-v2",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 23616,
+      "durationMs": 3936,
+      "sha256": "2a92ea2f0254401b775ca0909da3298af149aa35d75eb67c08373c04a1b0fefb",
+      "voice": "en-GB-RyanNeural"
+    },
+    {
+      "id": "demo-01-v2-a03",
+      "storageKey": "audio/03.mp3",
+      "licenseId": "demo-edge-gb-v2",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 15696,
+      "durationMs": 2616,
+      "sha256": "1c053cf756705dfde4df612eb33aafea4f198b1b6e9b85839f648b2bba4a988b",
+      "voice": "en-GB-SoniaNeural"
+    },
+    {
+      "id": "demo-01-v2-a04",
+      "storageKey": "audio/04.mp3",
+      "licenseId": "demo-edge-gb-v2",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 25200,
+      "durationMs": 4200,
+      "sha256": "8620ccfd1a480328767265d806a614ae3caffad65c9b910a0c6dcb98a50d5c28",
+      "voice": "en-GB-RyanNeural"
+    },
+    {
+      "id": "demo-01-v2-a05",
+      "storageKey": "audio/05.mp3",
+      "licenseId": "demo-edge-gb-v2",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 15264,
+      "durationMs": 2544,
+      "sha256": "67c38c59992871687b5509b5ae5a6431f04c368e969033c18e5b2481c3419a0b",
+      "voice": "en-GB-SoniaNeural"
+    },
+    {
+      "id": "demo-01-v2-a06",
+      "storageKey": "audio/06.mp3",
+      "licenseId": "demo-edge-gb-v2",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 17424,
+      "durationMs": 2904,
+      "sha256": "bba41d99234f59338bb36c3912064b4db48df9b8340531aa1406219df2b5b87d",
+      "voice": "en-GB-RyanNeural"
+    },
+    {
+      "id": "demo-01-v2-a07",
+      "storageKey": "audio/07.mp3",
+      "licenseId": "demo-edge-gb-v2",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 11376,
+      "durationMs": 1896,
+      "sha256": "43bea5d0071e3cba51723cf910b0fd5c472cee81326298ae4be287d56e2bceec",
+      "voice": "en-GB-SoniaNeural"
+    },
+    {
+      "id": "demo-01-v2-a08",
+      "storageKey": "audio/08.mp3",
+      "licenseId": "demo-edge-gb-v2",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 23616,
+      "durationMs": 3936,
+      "sha256": "4390b9909d9add200f6499d5e16d484a160bed0c3fd7784cc7177d2f452ab4bf",
+      "voice": "en-GB-RyanNeural"
+    },
+    {
+      "id": "demo-01-v2-a09",
+      "storageKey": "audio/09.mp3",
+      "licenseId": "demo-edge-gb-v2",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 13392,
+      "durationMs": 2232,
+      "sha256": "252f691e7406ba15a915645d81266c3f24e230f81d8e281644d8ef4bfa8f3315",
+      "voice": "en-GB-SoniaNeural"
+    },
+    {
+      "id": "demo-01-v2-a10",
+      "storageKey": "audio/10.mp3",
+      "licenseId": "demo-edge-gb-v2",
+      "sourceKind": "original_tts",
+      "mimeType": "audio/mpeg",
+      "byteSize": 20592,
+      "durationMs": 3432,
+      "sha256": "fd3caf2e575955975ef48a7869fb243c908eb81e7b263c16c4582dab70086881",
+      "voice": "en-GB-RyanNeural"
+    }
+  ],
+  "releaseReady": false
+}

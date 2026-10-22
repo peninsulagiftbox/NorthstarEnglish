@@ -1,5 +1,5 @@
 'use client';
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ApiError } from '@/lib/api/client';
@@ -9,12 +9,18 @@ import { lessonHref, resolveContext } from './context';
 import { Button, Message } from '@/components/ui/Primitives';
 import Link from 'next/link';
 
-type Workspace = { lesson: Lesson; checkpoint: Checkpoint; update: (patch: Partial<Checkpoint>) => void; sync: string; syncError: boolean };
+type Workspace = { lesson: Lesson; checkpoint: Checkpoint; update: (patch: Partial<Checkpoint>) => void; sync: string; syncError: boolean; playback: Pick<Checkpoint, "playingSentenceId" | "positionMs">; savePlayback: (id: string, ms: number) => void };
 const Context = createContext<Workspace | null>(null);
 export function useLesson() { const value = useContext(Context); if (!value) throw new Error('LessonProvider required'); return value; }
 export function LessonProvider({ lessonId, children }: { lessonId: string; children: ReactNode }) {
+  const versionId = useSearchParams().get('version');
+  return <VersionedLessonProvider key={`${lessonId}:${versionId ?? 'current'}`} lessonId={lessonId} versionId={versionId}>{children}</VersionedLessonProvider>;
+}
+function VersionedLessonProvider({ lessonId, versionId, children }: { lessonId: string; versionId: string | null; children: ReactNode }) {
   const params = useSearchParams();
   const [loaded, setLoaded] = useState<{ lesson: Lesson; resume: Resume | null } | null>(null);
+  const [playback, setPlayback] = useState<Pick<Checkpoint, 'playingSentenceId' | 'positionMs'>>({});
+  const savePlayback = useCallback((id: string, ms: number) => setPlayback(old => old.playingSentenceId === id && old.positionMs === ms ? old : { playingSentenceId: id, positionMs: ms }), []);
   const [error, setError] = useState<ApiError | Error | null>(null);
   const [retry, setRetry] = useState(0);
   const [sync, setSync] = useState('正在读取浏览位置…');
@@ -24,7 +30,7 @@ export function LessonProvider({ lessonId, children }: { lessonId: string; child
   const queue = useRef<Promise<void>>(Promise.resolve());
   useEffect(() => {
     let active = true;
-    Promise.all([getLesson(lessonId), getResume().then(resume => ({ resume, failed: false })).catch(() => ({ resume: null, failed: true }))]).then(([lesson, result]) => {
+    Promise.all([getLesson(lessonId, versionId ?? undefined), getResume().then(resume => ({ resume, failed: false })).catch(() => ({ resume: null, failed: true }))]).then(([lesson, result]) => {
       if (!active) return;
       if (!lesson.sentences.length) { setError(new Error('本课暂无可浏览句子。')); return; }
       revision.current = result.failed ? null : result.resume?.rowVersion ?? 0;
@@ -32,12 +38,13 @@ export function LessonProvider({ lessonId, children }: { lessonId: string; child
       setSyncError(result.failed);
       const checkpoint = resolveContext(lesson, new URLSearchParams(window.location.search), result.resume);
       window.history.replaceState(null, '', lessonHref(checkpoint));
+      if (result.resume?.versionId === lesson.versionId) setPlayback({ playingSentenceId: result.resume.playingSentenceId, positionMs: result.resume.positionMs });
       setLoaded({ lesson, resume: result.resume });
     }).catch(e => { if (active) setError(e); });
     return () => { active = false; };
-  }, [lessonId, retry]);
+  }, [lessonId, versionId, retry]);
   const checkpoint = useMemo(() => loaded ? resolveContext(loaded.lesson, new URLSearchParams(params.toString()), loaded.resume) : null, [loaded, params]);
-  const serialized = checkpoint ? JSON.stringify(checkpoint) : null;
+  const serialized = checkpoint ? JSON.stringify({ ...checkpoint, ...playback }) : null;
   useEffect(() => {
     if (!serialized || revision.current === null) return;
     let active = true;
@@ -63,5 +70,5 @@ export function LessonProvider({ lessonId, children }: { lessonId: string; child
   if (!loaded || !checkpoint) return <Message>正在读取课文与浏览位置…</Message>;
   const update = (patch: Partial<Checkpoint>) => window.history.pushState(null, '', lessonHref({ ...checkpoint, ...patch }));
   const displaySync = !syncError && serialized !== savedKey ? '浏览位置更新中…' : sync;
-  return <Context.Provider value={{ lesson: loaded.lesson, checkpoint, update, sync: displaySync, syncError }}>{children}</Context.Provider>;
+  return <Context.Provider value={{ lesson: loaded.lesson, checkpoint, update, sync: displaySync, syncError, playback, savePlayback }}>{children}</Context.Provider>;
 }

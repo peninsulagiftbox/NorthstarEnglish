@@ -19,37 +19,44 @@ public class ContentSeeder implements ApplicationRunner {
     @Override public void run(ApplicationArguments arguments) throws Exception { seed(); }
 
     public void seed() throws Exception {
-        var bundle = content.load();
+        var bundles = new java.util.ArrayList<ContentPackage.Bundle>();
+        for (int number : content.publishedVersions()) bundles.add(content.load(number));
+        String activeVersion = "demo-01-v" + content.activeVersion();
         var source = flyway.getConfiguration().getDataSource();
         var jdbc = new JdbcTemplate(source);
         new TransactionTemplate(new DataSourceTransactionManager(source)).executeWithoutResult(transaction -> {
             // Lock the project row so simultaneous local startups cannot race the seed.
             jdbc.queryForObject("SELECT project_key FROM project_identity FOR UPDATE", String.class);
-            var versions = jdbc.queryForList("SELECT content_sha256, manifest_sha256 FROM lesson_version WHERE id = 'demo-01-v1'");
+            for (var bundle : bundles) {
+            String versionId = text(bundle.lesson(), "versionId");
+            String folder = "demo-01/v" + bundle.lesson().path("version").asInt() + "/";
+            var versions = jdbc.queryForList("SELECT content_sha256, manifest_sha256 FROM lesson_version WHERE id = ?", versionId);
             if (!versions.isEmpty()) {
                 if (!Objects.equals(bundle.lessonHash(), versions.getFirst().get("content_sha256"))
                         || !Objects.equals(bundle.manifestHash(), versions.getFirst().get("manifest_sha256"))) {
                     throw new IllegalStateException("Frozen content version changed; create a new version");
                 }
                 verifyRows(jdbc, bundle);
-                return;
+                continue;
             }
             JsonNode lesson = bundle.lesson(), manifest = bundle.manifest();
             for (JsonNode license : manifest.path("licenses")) {
+                if (jdbc.queryForObject("SELECT COUNT(*) FROM content_license WHERE id=?", Integer.class, text(license,"id")) == 1) continue;
                 jdbc.update("INSERT INTO content_license (id,source_type,source_ref,review_status,details_json) VALUES (?,?,?,?,?)",
                         text(license,"id"), text(license,"sourceType"), text(license,"sourceRef"), text(license,"reviewStatus"), license.toString());
             }
             for (JsonNode book : manifest.path("books")) {
+                if (jdbc.queryForObject("SELECT COUNT(*) FROM book WHERE id=?", Integer.class, text(book,"id")) == 1) continue;
                 jdbc.update("INSERT INTO book (id,catalog_key,sequence_no,title,edition_label,availability,declared_lesson_count,metadata_source) VALUES (?,?,?,?,?,?,?,?)",
                         text(book,"id"), text(book,"catalogKey"), book.path("sequence").asInt(), text(book,"title"), text(book,"editionLabel"),
                         text(book,"availability"), book.path("declaredLessonCount").asInt(), text(book,"metadataSource"));
             }
-            jdbc.update("INSERT INTO lesson (id,slug,kind,availability) VALUES (?,?,?,?)", text(lesson,"id"), text(lesson,"slug"), text(lesson,"kind"), text(lesson,"availability"));
+            if (jdbc.queryForObject("SELECT COUNT(*) FROM lesson WHERE id=?", Integer.class, text(lesson,"id")) == 0) jdbc.update("INSERT INTO lesson (id,slug,kind,availability) VALUES (?,?,?,?)", text(lesson,"id"), text(lesson,"slug"), text(lesson,"kind"), text(lesson,"availability"));
             jdbc.update("INSERT INTO lesson_version (id,lesson_id,version_no,license_id,content_sha256,manifest_sha256,payload_json,release_ready) VALUES (?,?,?,?,?,?,?,FALSE)",
                     text(lesson,"versionId"), text(lesson,"id"), lesson.path("version").asInt(), text(lesson,"licenseId"), bundle.lessonHash(), bundle.manifestHash(), lesson.toString());
             for (JsonNode audio : manifest.path("audioAssets")) {
                 jdbc.update("INSERT INTO audio_asset (id,lesson_version_id,license_id,source_kind,storage_key,mime_type,byte_size,duration_ms,sha256,status) VALUES (?,?,?,?,?,?,?,?,?,'ready')",
-                        text(audio,"id"), text(lesson,"versionId"), text(audio,"licenseId"), text(audio,"sourceKind"), "demo-01/v1/" + text(audio,"storageKey"),
+                        text(audio,"id"), text(lesson,"versionId"), text(audio,"licenseId"), text(audio,"sourceKind"), folder + text(audio,"storageKey"),
                         text(audio,"mimeType"), audio.path("byteSize").asInt(), audio.path("durationMs").asInt(), text(audio,"sha256"));
             }
             for (JsonNode s : lesson.path("sentences")) {
@@ -57,28 +64,41 @@ public class ContentSeeder implements ApplicationRunner {
                         text(s,"id"), text(lesson,"id"), text(lesson,"versionId"), text(s,"stableKey"), s.path("sequence").asInt(), text(s,"speaker"),
                         text(s,"text"), text(s,"translation"), text(s,"explanation"), text(s,"focus"), text(s,"audioAssetId"), 0, s.path("endMs").asInt());
             }
-            jdbc.update("UPDATE lesson SET current_version_id = ? WHERE id = ?", text(lesson,"versionId"), text(lesson,"id"));
+            // Phase 04 dictation targets publish atomically with the immutable version.
+            for (JsonNode sentence : lesson.path("sentences")) {
+                jdbc.update("INSERT INTO exercise(id,lesson_id,version_id,sentence_id,kind) VALUES (?,?,?,?,'dictation')",
+                        text(sentence,"id") + "-dictation", text(lesson,"id"), versionId, text(sentence,"id"));
+            }
             verifyRows(jdbc, bundle);
+            }
+            var current = jdbc.queryForList("SELECT current_version_id FROM lesson WHERE id='demo-01'");
+            Object old = current.getFirst().get("current_version_id");
+            if (old != null && bundles.stream().noneMatch(b -> old.equals(text(b.lesson(),"versionId")))) throw new IllegalStateException("Unknown active content version; refuse overwrite");
+            jdbc.update("UPDATE lesson SET current_version_id=? WHERE id='demo-01'", activeVersion);
         });
     }
 
     private void verifyRows(JdbcTemplate jdbc, ContentPackage.Bundle bundle) {
-        if (jdbc.queryForObject("SELECT COUNT(*) FROM sentence WHERE lesson_version_id = 'demo-01-v1'", Integer.class) != 10
-                || jdbc.queryForObject("SELECT COUNT(*) FROM audio_asset WHERE lesson_version_id = 'demo-01-v1'", Integer.class) != 10
+        String versionId = text(bundle.lesson(),"versionId");
+        String folder = "demo-01/v" + bundle.lesson().path("version").asInt() + "/";
+        if (jdbc.queryForObject("SELECT COUNT(*) FROM sentence WHERE lesson_version_id = ?", Integer.class, versionId) != 10
+                || jdbc.queryForObject("SELECT COUNT(*) FROM audio_asset WHERE lesson_version_id = ?", Integer.class, versionId) != 10
                 || jdbc.queryForObject("SELECT COUNT(*) FROM book WHERE availability = 'catalog_only'", Integer.class) != 4) {
             throw new IllegalStateException("Seed data incomplete; refuse silent repair");
         }
-        String payload = jdbc.queryForObject("SELECT payload_json FROM lesson_version WHERE id = 'demo-01-v1'", String.class);
+        String payload = jdbc.queryForObject("SELECT payload_json FROM lesson_version WHERE id = ?", String.class, versionId);
         if (!tools.jackson.databind.json.JsonMapper.builder().build().readTree(payload).equals(bundle.lesson())) {
             throw new IllegalStateException("Stored content differs from frozen version");
         }
         for (JsonNode sentence : bundle.lesson().path("sentences")) {
+            verify(jdbc, "exercise", text(sentence,"id") + "-dictation", new String[]{"lesson_id","version_id","sentence_id","kind","algorithm_version"},
+                    new Object[]{"demo-01",versionId,text(sentence,"id"),"dictation","english_token_v1"});
             verify(jdbc, "sentence", text(sentence,"id"), new String[]{"lesson_id","lesson_version_id","stable_key","sequence_no","speaker","text","translation","explanation","focus","audio_asset_id","start_ms","end_ms"},
-                    new Object[]{"demo-01","demo-01-v1",text(sentence,"stableKey"),sentence.path("sequence").asInt(),text(sentence,"speaker"),text(sentence,"text"),text(sentence,"translation"),text(sentence,"explanation"),text(sentence,"focus"),text(sentence,"audioAssetId"),0,sentence.path("endMs").asInt()});
+                    new Object[]{"demo-01",versionId,text(sentence,"stableKey"),sentence.path("sequence").asInt(),text(sentence,"speaker"),text(sentence,"text"),text(sentence,"translation"),text(sentence,"explanation"),text(sentence,"focus"),text(sentence,"audioAssetId"),0,sentence.path("endMs").asInt()});
         }
         for (JsonNode audio : bundle.manifest().path("audioAssets")) {
             verify(jdbc, "audio_asset", text(audio,"id"), new String[]{"lesson_version_id","license_id","source_kind","storage_key","mime_type","byte_size","duration_ms","sha256","status"},
-                    new Object[]{"demo-01-v1",text(audio,"licenseId"),text(audio,"sourceKind"),"demo-01/v1/"+text(audio,"storageKey"),text(audio,"mimeType"),audio.path("byteSize").asInt(),audio.path("durationMs").asInt(),text(audio,"sha256"),"ready"});
+                    new Object[]{versionId,text(audio,"licenseId"),text(audio,"sourceKind"),folder+text(audio,"storageKey"),text(audio,"mimeType"),audio.path("byteSize").asInt(),audio.path("durationMs").asInt(),text(audio,"sha256"),"ready"});
         }
         for (JsonNode book : bundle.manifest().path("books")) {
             verify(jdbc, "book", text(book,"id"), new String[]{"catalog_key","sequence_no","title","edition_label","availability","declared_lesson_count","metadata_source"},
@@ -92,8 +112,8 @@ public class ContentSeeder implements ApplicationRunner {
                 throw new IllegalStateException("Stored license differs from frozen version");
             }
         }
-        verify(jdbc, "lesson", "demo-01", new String[]{"slug","kind","availability","book_id","current_version_id"},
-                new Object[]{text(bundle.lesson(),"slug"),"original_demo","available",null,"demo-01-v1"});
+        verify(jdbc, "lesson", "demo-01", new String[]{"slug","kind","availability","book_id"},
+                new Object[]{text(bundle.lesson(),"slug"),"original_demo","available",null});
     }
 
     private static void verify(JdbcTemplate jdbc, String table, String id, String[] columns, Object[] expected) {

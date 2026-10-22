@@ -11,9 +11,10 @@ import local.northstar.config.DatabaseGuard;
 class HealthControllerTest {
     @Test void reportsActualDatabaseAndMigration() {
         JdbcOperations jdbc = mock(JdbcOperations.class);
-        when(jdbc.queryForObject(anyString(), eq(String.class))).thenReturn(DatabaseGuard.PROJECT, "001");
+        when(jdbc.queryForObject(anyString(), eq(String.class))).thenReturn(DatabaseGuard.PROJECT, "001", "northstar_phase01_test");
         var response = new HealthController(jdbc).health();
         assertEquals(200, response.getStatusCode().value());
+        assertEquals("true", response.getHeaders().getFirst("X-Northstar-Test-Database"));
         assertEquals("001", ((HealthController.Health) response.getBody()).migrationVersion());
     }
 

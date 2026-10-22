@@ -1,0 +1,121 @@
+async (page) => {
+  page.setDefaultTimeout(12000);
+  const base = new URL(page.url()).origin, checks = [], errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const shot = name => page.screenshot({ path: `docs/evidence/phase-04/screenshots/${name}.png`, fullPage: false });
+  const pick = async n => { await page.getByRole('button', { name: `选择句子 ${n}`, exact: true }).click(); await page.getByRole('button', {name:`选择句子 ${n}`,exact:true,pressed:true}).waitFor(); await page.waitForFunction(()=>{const input=document.querySelector('textarea');return input&&!input.disabled;}); };
+  const play = () => page.getByRole('button', { name: '播放本句', exact: true }).click();
+  const paused = async () => { if (!await page.locator('audio').evaluate(a=>a.paused)) { await page.getByRole('button',{name:'暂停播放',exact:true}).click(); await page.waitForFunction(()=>document.querySelector('audio')?.paused); } };
+  const setSpeed=async value=>{const button=page.getByRole('button',{name:'播放速度',exact:true});for(let i=0;i<4&&await button.getAttribute('data-speed')!==value;i++)await button.click();assert(await button.getAttribute('data-speed')===value,'Speed cycle target missing');};
+  const seek = async time => { if (!await page.getByRole('slider', { name:'当前句播放进度' }).count()) await page.getByRole('button',{name:'播放设置',exact:true}).click(); return page.getByRole('slider', { name:'当前句播放进度' }).evaluate((el, value) => {
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(el, String(value)); el.dispatchEvent(new Event('input',{bubbles:true})); el.dispatchEvent(new Event('change',{bubbles:true}));
+  }, time); };
+  const noOverflow = async () => assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Horizontal overflow');
+  await page.unrouteAll({behavior:'wait'});
+  try {
+    const health = await page.request.get(base + '/api/v1/health');
+    assert(health.headers()['x-northstar-test-database'] === 'true', 'Write E2E requires the verified isolated test database');
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto(base + '/lesson/demo-01?version=demo-01-v1&tab=dictation&sentence=demo-01-v1-s06&english=1&translation=1');
+  await page.getByLabel('本句听写草稿', {exact:true}).waitFor();
+  await page.waitForFunction(() => !document.querySelector('textarea')?.disabled);
+  const baselines = await page.evaluate(async () => (await fetch('/api/v1/study/stages?lessonId=demo-01&versionId=demo-01-v1')).json());
+  const count6 = baselines.find(s => s.sentenceId.endsWith('s06')).practiceCount + 1;
+  const count7 = baselines.find(s => s.sentenceId.endsWith('s07')).practiceCount + 1;
+  await page.getByLabel('本句听写草稿',{exact:true}).fill('');
+  const protectedText = await page.locator('body').innerText();
+  assert(!protectedText.includes('Please put them beside the blue bench.') && !protectedText.includes('请把它们放在蓝色长椅旁边。'), 'Pre-submit answer leak');
+  const attrs = await page.locator('[title],[aria-label],[alt]').evaluateAll(els => els.map(e => [e.title,e.getAttribute('aria-label'),e.getAttribute('alt')]).flat().join(' '));
+  assert(!attrs.includes('beside') && !attrs.includes('blue bench'), 'Auxiliary answer leak');
+  assert(await page.locator('audio').count()===1,'Single media element');
+  assert(!await page.getByRole('button',{name:'检查听写',exact:true}).isEnabled(),'Blank answer must be disabled');
+  await shot('dictation-protected-1440x900');
+  checks.push('pre-submit text/translation/auxiliary protection, single element, blank rejection');
+  for(let n=1;n<=10;n++) {
+    await pick(n); await play();
+    await page.waitForFunction(id => { const a=document.querySelector('audio');return a && !a.paused && a.readyState>=2 && a.currentTime>0 && a.src.includes(id); },`a${String(n).padStart(2,'0')}`);
+    await paused();
+  }
+  checks.push('ten real MP3 sources decoded and currentTime advanced');
+  await pick(6);await play();
+  await page.waitForFunction(()=>document.querySelector('audio')?.currentTime>.1);await paused();
+  for (const speed of ['0.75','1','1.25','1.5']) { await setSpeed(speed);assert(await page.locator('audio').evaluate(a=>a.playbackRate)===Number(speed),'Actual playbackRate mismatch'); }
+  await setSpeed('1');
+  await seek(.4); assert(Math.abs(await page.locator('audio').evaluate(a=>a.currentTime)-.4)<.06,'Real seek');
+  if(!await page.getByRole('button',{name:'A–B',exact:true}).count()) await page.getByRole('button',{name:'播放设置',exact:true}).click();
+  await page.getByRole('button',{name:'A–B',exact:true}).click();
+  await page.getByRole('button',{name:'设 A = 当前时间',exact:true}).click();
+  await seek(1.2);await page.getByRole('button',{name:'设 B = 当前时间',exact:true}).click();
+  await page.getByRole('button',{name:'开启 A–B 循环',exact:true}).click();
+  await page.evaluate(()=>{window.abTimes=[];const audio=document.querySelector('audio');audio.addEventListener('timeupdate',()=>window.abTimes.push(audio.currentTime));});
+  await play();await page.waitForFunction(()=>window.abTimes.length>5 && window.abTimes.some((v,i,a)=>i>0 && a[i-1]-v>.2));
+  await paused(); await shot('ab-loop-1440x900');
+  await page.getByRole('button',{name:'清除区间',exact:true}).click();
+  await page.getByRole('button',{name:'A–B',exact:true}).click();
+  checks.push('all four rates, real local seek, valid AB wraps on the same source');
+  const editor=page.getByLabel('本句听写草稿',{exact:true});
+  await editor.fill('Please put them behind the blue bench.');
+  await editor.press('Space');await editor.press('j');await editor.press('k');await editor.press('r');
+  assert(await page.locator('audio').evaluate(a=>a.paused),'Input shortcuts stole focus');
+  await editor.fill('Please put them behind the blue bench.');await editor.blur();
+  await page.getByText('草稿已保存到服务端',{exact:true}).waitFor();
+  await pick(5); await page.waitForFunction(()=>['','Draft for sentence five.'].includes(document.querySelector('textarea')?.value));
+  await page.getByLabel('本句听写草稿',{exact:true}).fill('Draft for sentence five.');
+  await pick(6); await page.waitForFunction(()=>document.querySelector('textarea')?.value==='Please put them behind the blue bench.');
+  await page.reload();await page.waitForFunction(()=>document.querySelector('textarea')?.value==='Please put them behind the blue bench.');
+  assert(await page.locator('audio').evaluate(a=>a.paused),'Reload autoplay');
+  await play();await page.waitForFunction(()=>document.querySelector('.player-bar')?.dataset.status==='playing');await paused();
+  let firstBody=null,firstResponse=null;
+  page.on('request', req=>{if(req.url().endsWith('/attempts')&&!firstBody)firstBody=req.postDataJSON();});
+  const response=page.waitForResponse(res=>res.url().endsWith('/attempts')&&res.request().method()==='POST');
+  await page.getByRole('button',{name:'检查听写',exact:true}).click();firstResponse=await (await response).json();
+  await page.getByRole('region',{name:'听写对照'}).waitFor();
+  assert(firstResponse.result.edits.filter(e=>e.kind!=='equal').length===1 && firstResponse.result.edits[3].expected==='beside' && firstResponse.result.edits[3].actual==='behind','Exact token position');
+  assert(await editor.inputValue()==='Please put them behind the blue bench.','Original overwritten');
+  await page.waitForFunction(count => { const text=document.querySelector('[data-testid="practice-state"]')?.textContent;return text?.includes('已练习') && text.includes(`${count} 次`); }, count6);
+  const replay=await page.evaluate(async body => {const r=await fetch('/api/v1/exercises/demo-01-v1-s06-dictation/attempts',{method:'POST',headers:{'Content-Type':'application/json','X-Northstar-Request':'local-workspace'},body:JSON.stringify(body)});return {status:r.status,data:await r.json()};},firstBody);
+  assert(replay.status===200 && replay.data.attemptId===firstResponse.attemptId,'Replay generated duplicate');
+  await page.getByRole('region',{name:'听写对照'}).scrollIntoViewIfNeeded();
+  await shot('dictation-diff-1440x900');
+  checks.push('per-sentence drafts/refresh, paused restore, input shortcut guard, beside/behind alignment, same event replay');
+  await page.getByRole('button',{name:'跳过本句',exact:true}).click();
+  await page.waitForFunction(()=>document.querySelector('[data-testid="practice-state"]')?.textContent.includes('已跳过'));
+  assert(await page.getByTestId('practice-state').innerText().then(t=>t.includes(`${count6} 次`)),'Skip increased practice');
+  await page.getByRole('button',{name:'暂停本轮',exact:true}).click();
+  await page.waitForFunction(()=>document.querySelector('[data-testid="practice-state"]')?.textContent.includes('已暂停'));
+  assert(await page.getByTestId('practice-state').innerText().then(t=>t.includes(`${count6} 次`)),'Pause increased practice');
+  checks.push('skipped/paused separate from historical evidence');
+  // Commit the command server-side but drop the response once. Reload must replay its saved UUID.
+  await pick(7);await play();await page.waitForFunction(()=>document.querySelector('.player-bar')?.dataset.status==='playing');await paused();
+  await page.getByLabel('本句听写草稿',{exact:true}).fill('Do they need water now?');
+  let droppedBody;
+  await page.route('**/exercises/demo-01-v1-s07-dictation/attempts',async route=>{droppedBody=route.request().postDataJSON();await route.fetch();await route.abort('failed');},{times:1});
+  await page.getByRole('button',{name:'检查听写',exact:true}).click();
+  await page.getByRole('button',{name:'重试同一次提交',exact:true}).waitFor();
+  await page.reload();await page.getByRole('button',{name:'重试同一次提交',exact:true}).waitFor();
+  const retryResponse=page.waitForResponse(r=>r.url().endsWith('/s07-dictation/attempts')||r.url().endsWith('demo-01-v1-s07-dictation/attempts'));
+  await page.getByRole('button',{name:'重试同一次提交',exact:true}).click();
+  const retried=await (await retryResponse).json();assert(retried.eventId===droppedBody.eventId,'Outbox UUID changed');
+  await page.getByRole('heading',{name:/听写准确/}).waitFor();
+  assert(await page.getByTestId('practice-state').innerText().then(t=>t.includes(`${count7} 次`)),'Lost response retry duplicated evidence');
+  checks.push('response committed then lost, IndexedDB outbox survives refresh and replays same event');
+  // A missing source cannot enable submission or produce practice evidence.
+  await pick(8);await page.route('**/audio/*a08*',route=>route.abort());await play();
+  await page.getByRole('alert').filter({hasText:/音频|音源|播放/}).waitFor();
+  await page.getByLabel('本句听写草稿',{exact:true}).fill('Just a little.');
+  assert(!await page.getByRole('button',{name:'检查听写',exact:true}).isEnabled(),'Missing source permitted practice');
+  await shot('audio-error-1440x900');await page.unroute('**/audio/*a08*');
+  await page.getByRole('button',{name:'重试播放',exact:true}).click();await page.waitForFunction(()=>document.querySelector('.player-bar')?.dataset.status==='playing');await paused();
+  checks.push('missing source visible fault, no valid attempt, playback retry');
+  for(const width of [1440,1280,979,375]) {await page.setViewportSize({width,height:900});await noOverflow();await shot(`player-${width}x900`);}
+  await page.setViewportSize({width:1440,height:900});
+  await page.getByRole('navigation',{name:'主导航'}).getByRole('link',{name:'智能复习',exact:true}).click();
+  await page.locator('.review-source').filter({hasText:'demo-01-v1-s06'}).getByRole('heading').first().waitFor();
+  assert(await page.locator('body').innerText().then(t=>t.includes('behind')&&t.includes('demo-01-v1-s06')),'Review missing original/source');
+  await shot('review-sources-1440x900');
+  checks.push('actual review source with original attempt, responsive no horizontal overflow');
+  assert(errors.length===0,'Page errors: '+errors.join(';'));
+  return {passed:true,checks,pageErrors:errors,eventId:firstBody.eventId,attemptId:firstResponse.attemptId};
+  } catch (error) { throw new Error('After '+checks.join(' | ')+': '+error.message); } finally { await page.unrouteAll({behavior:'wait'}); }
+}

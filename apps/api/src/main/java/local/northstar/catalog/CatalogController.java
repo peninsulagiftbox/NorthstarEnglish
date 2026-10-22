@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.servlet.http.HttpServletRequest;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
@@ -38,8 +39,8 @@ public class CatalogController {
     }
 
     @GetMapping("/api/v1/lessons/{id}")
-    public JsonNode lesson(@PathVariable String id) {
-        List<String> payloads = jdbc.queryForList("SELECT v.payload_json FROM lesson l JOIN lesson_version v ON l.current_version_id = v.id WHERE l.id = ? AND l.availability = 'available'", String.class, id);
+    public JsonNode lesson(@PathVariable String id, @RequestParam(required=false) String versionId) {
+        List<String> payloads = jdbc.queryForList("SELECT v.payload_json FROM lesson l JOIN lesson_version v ON v.lesson_id=l.id AND v.id=COALESCE(?,l.current_version_id) WHERE l.id = ? AND l.availability = 'available'", String.class, versionId, id);
         if (payloads.isEmpty()) throw new CatalogFailure(HttpStatus.NOT_FOUND, "LESSON_NOT_FOUND", "课程不存在或尚未开放。");
         ObjectNode result = (ObjectNode) mapper.readTree(payloads.getFirst());
         // Standard answers stay in the versioned server package until grading endpoints exist.

@@ -46,3 +46,5 @@ backup*.sql
 *.pfx
 *.jks
 *.keystore
+# Edge TTS v2 audio remains local pending service/output rights review.
+/content/demo-01/v2/audio/*.mp3

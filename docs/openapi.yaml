@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
   title: Northstar English Local API
-  version: 0.3.0
-  description: Phase 03 course browsing and revisioned browsing checkpoint API. Source/voice rights pending review; formal publication blocked. Exercise submissions remain unavailable.
+  version: 0.4.0
+  description: Phase 04 local sentence audio, revisioned drafts, idempotent dictation attempts and review sources. Source/voice rights pending review; formal publication blocked.
 servers:
   - url: /api/v1
 paths:
@@ -13,6 +13,8 @@ paths:
       responses:
         '200':
           description: Database available and project identity valid; Cache-Control no-store
+          headers:
+            X-Northstar-Test-Database: {schema: {type: string, enum: ["true", "false"]}, description: True only when SELECT DATABASE() matches the isolated test schema; write E2E requires true}
           content:
             application/json:
               schema:
@@ -42,7 +44,7 @@ paths:
                 type: object
                 required: [phase, contentApiAvailable, learningContentAvailable, aiEnabled, asrEnabled, pronunciationScoringEnabled]
                 properties:
-                  phase: {type: string, const: '03'}
+                  phase: {type: string, const: '04'}
                   contentApiAvailable: {type: boolean, const: true}
                   learningContentAvailable: {type: boolean, const: true}
                   aiEnabled: {type: boolean, const: false}
@@ -111,8 +113,10 @@ paths:
     get:
       operationId: getLesson
       parameters:
+        - {name: versionId, in: query, required: false, schema: {type: string}, example: demo-01-v2}
         - {name: id, in: path, required: true, schema: {type: string}, example: demo-01}
       description: One request returns ten original sentences, translations, preset explanations, vocabulary, exercise definitions and audio URIs. Answer keys and quiz explanations remain server-side. Audio integrity is checked before returning success.
+      description: Returns the current default version, or an explicit immutable published version. Old-version learning records remain bound to that version.
       responses:
         '200':
           description: Frozen versioned local-test content; releaseReady=false
@@ -231,7 +235,7 @@ paths:
         '503': {description: Local database unavailable}
     put: &saveCheckpoint
       operationId: saveBrowsingCheckpoint
-      description: Requires allowed loopback Origin, application/json and X-Northstar-Request local-workspace. If-Match is the quoted prior revision, initially "0". Atomic revision check rejects other-page conflicts. No audio position, training status, drafts or attempts are stored here.
+      description: Requires allowed loopback Origin, application/json and X-Northstar-Request local-workspace. If-Match is the quoted prior revision, initially "0". Atomic revision check rejects other-page conflicts. Optional playingSentenceId and sentence-local positionMs restore paused. No training evidence or drafts are stored here.
       parameters:
         - in: header
           name: If-Match
@@ -258,7 +262,7 @@ paths:
                   rowVersion: {type: integer, minimum: 1}
         '400': {description: Invalid tab, boolean, revision or request body; Problem JSON}
         '403': {$ref: '#/components/responses/LocalOnly'}
-        '404': {description: Unavailable lesson, stale version or foreign sentence; Problem JSON}
+        '404': {description: Unavailable lesson, unknown version or foreign sentence; Problem JSON}
         '412': {description: Another page has changed the checkpoint; preserve local draft and reload; Problem JSON}
         '428': {description: If-Match missing; Problem JSON}
         '503': {description: Local database or checkpoint write grant unavailable; Problem JSON}
@@ -267,6 +271,155 @@ paths:
       <<: *saveCheckpoint
       operationId: openBrowsingSession
       summary: Initialize or update the singleton local browsing session with the same revision rules
+  /drafts/{sentence}:
+    parameters:
+      - {name: sentence, in: path, required: true, schema: {type: string}}
+    get:
+      operationId: getDictationDraft
+      parameters:
+        - {name: lessonId, in: query, required: true, schema: {type: string}}
+        - {name: versionId, in: query, required: true, schema: {type: string}}
+      responses:
+        '200':
+          description: Text plus rowVersion; empty draft returns text empty and rowVersion 0
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/DraftSnapshot'}
+        '422': {description: Target does not belong to the available lesson/version}
+    put:
+      operationId: saveDictationDraft
+      description: Local Origin, JSON and X-Northstar-Request local-workspace required. If-Match uses quoted prior revision, initially "0". Conflict never overwrites the server draft.
+      parameters:
+        - {name: If-Match, in: header, required: true, schema: {type: string}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [lessonId, versionId, text]
+              properties:
+                lessonId: {type: string, maxLength: 64}
+                versionId: {type: string, maxLength: 64}
+                text: {type: string, maxLength: 10000}
+      responses:
+        '200': {description: Saved; body contains new rowVersion}
+        '400': {description: Invalid payload or quoted revision}
+        '403': {$ref: '#/components/responses/LocalOnly'}
+        '412': {description: DRAFT_VERSION_CONFLICT; retain local and server copies for explicit resolution}
+        '422': {description: Invalid lesson/version/sentence binding}
+        '428': {description: If-Match is required}
+        '503': {$ref: '#/components/responses/Unavailable'}
+  /exercises/{id}/attempts:
+    post:
+      operationId: submitDictation
+      description: Exercise id is sentenceId-dictation. All writes require local Origin, JSON and X-Northstar-Request local-workspace. UUID is persisted in IndexedDB before sending. Same operation and payload replay the original response; different payload with same UUID returns 409. Receipt, attempt, evidence, stage and optional review source commit atomically. audioPlayed is a browser playback observation, not a professional or server-side listening assessment. Server independently verifies source readiness, size and SHA-256.
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - {$ref: '#/components/schemas/LearningCommand'}
+                - type: object
+                  required: [text, audioPlayed, answerExposed]
+                  properties:
+                    text: {type: string, maxLength: 10000}
+                    audioPlayed: {type: boolean}
+                    answerExposed: {type: boolean}
+      responses:
+        '200':
+          description: A real attempt, including incorrect submissions, is practiced; original input and aligned token edits returned
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [attemptId, eventId, evidenceId, state, rawText, standardText, result, answerExposed, reviewItemId]
+                properties:
+                  attemptId: {type: string, format: uuid}
+                  eventId: {type: string, format: uuid}
+                  evidenceId: {type: string, format: uuid}
+                  state: {type: string, const: practiced}
+                  rawText: {type: string}
+                  standardText: {type: string}
+                  answerExposed: {type: boolean}
+                  reviewItemId: {type: string, description: Empty if correct; stable per sentence otherwise}
+                  result: {$ref: '#/components/schemas/TokenResult'}
+        '400': {description: Invalid UUID, timestamp or payload}
+        '403': {$ref: '#/components/responses/LocalOnly'}
+        '409': {description: IDEMPOTENCY_CONFLICT; same eventId cannot change operation or payload}
+        '422': {description: EMPTY_ANSWER, AUDIO_NOT_PLAYED or CONTEXT_MISMATCH; no evidence persisted}
+        '503': {$ref: '#/components/responses/Unavailable'}
+  /study/events:
+    post:
+      operationId: recordStudyAction
+      description: Same local write headers and UUID replay contract as attempts. Only start/skip/pause accepted. Never creates an attempt, evidence or increments practiceCount.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - {$ref: '#/components/schemas/LearningCommand'}
+                - type: object
+                  required: [action]
+                  properties:
+                    action: {type: string, enum: [start, skip, pause]}
+      responses:
+        '200': {description: eventId and state in_progress/skipped/paused; historical evidence retained}
+        '400': {description: Invalid payload, UUID or timestamp}
+        '403': {$ref: '#/components/responses/LocalOnly'}
+        '409': {description: IDEMPOTENCY_CONFLICT}
+        '422': {description: Invalid action or context; practiced/correct cannot be reported directly}
+        '503': {$ref: '#/components/responses/Unavailable'}
+  /study/stages:
+    get:
+      operationId: getDictationStages
+      parameters:
+        - {name: lessonId, in: query, required: true, schema: {type: string}}
+        - {name: versionId, in: query, required: true, schema: {type: string}}
+      responses:
+        '200':
+          description: One item per sentence; current round state and historical attempt count are separate
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    sentenceId: {type: string}
+                    state: {type: string, enum: [not_started, in_progress, practiced, skipped, paused]}
+                    practiceCount: {type: integer, minimum: 0}
+  /reviews/items:
+    get:
+      operationId: getReviewSources
+      description: One row per incorrect attempt source, grouped by stable item id in UI. No scheduling, flip-card assessment or mastery score in Phase 04.
+      responses:
+        '200':
+          description: All pending sources; empty array when there are no errors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: {type: string}
+                    status: {type: string, const: pending}
+                    attemptId: {type: string, format: uuid}
+                    lessonId: {type: string}
+                    versionId: {type: string}
+                    sentenceId: {type: string}
+                    exerciseId: {type: string}
+                    sequence: {type: integer}
+                    rawText: {type: string}
+                    standardText: {type: string}
+                    reason: {type: string, const: dictation_token_difference}
+                    recordedAt: {type: string, description: UTC server time}
+        '503': {$ref: '#/components/responses/Unavailable'}
 components:
   responses:
     ContentNotFound:
@@ -285,6 +438,37 @@ components:
         application/problem+json:
           schema: {$ref: '#/components/schemas/Problem'}
   schemas:
+    LearningCommand:
+      type: object
+      required: [eventId, lessonId, versionId, sentenceId, clientOccurredAt]
+      properties:
+        eventId: {type: string, format: uuid, maxLength: 36}
+        lessonId: {type: string, maxLength: 64}
+        versionId: {type: string, maxLength: 64}
+        sentenceId: {type: string, maxLength: 64}
+        clientOccurredAt: {type: string, format: date-time, maxLength: 40, description: Untrusted client time; recordedAt is server UTC}
+    DraftSnapshot:
+      type: object
+      required: [text, rowVersion]
+      properties:
+        text: {type: string}
+        rowVersion: {type: integer, minimum: 0}
+    TokenResult:
+      type: object
+      required: [correct, algorithmVersion, edits]
+      properties:
+        correct: {type: boolean}
+        algorithmVersion: {type: string, const: english_token_v1}
+        edits:
+          type: array
+          items:
+            type: object
+            properties:
+              kind: {type: string, enum: [equal, omit, insert, replace]}
+              expected: {type: string}
+              actual: {type: string}
+              expectedIndex: {type: integer, minimum: 0}
+              actualIndex: {type: integer, minimum: 0}
     Checkpoint:
       type: object
       required: [lessonId, versionId, sentenceId, tab, showEnglish, showTranslation]
@@ -295,6 +479,8 @@ components:
         tab: {type: string, enum: [text, dictation, vocabulary, speaking, writing, quiz]}
         showEnglish: {type: boolean}
         showTranslation: {type: boolean}
+        playingSentenceId: {type: [string, "null"], maxLength: 64}
+        positionMs: {type: integer, minimum: 0, maximum: 600000}
     Book:
       type: object
       required: [id, catalogKey, sequence, title, editionLabel, availability, declaredLessonCount, metadataSource]

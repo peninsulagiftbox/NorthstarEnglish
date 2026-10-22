@@ -30,7 +30,7 @@ class CatalogIntegrationTest {
             seed.seed();
             seed.seed();
             assertEquals(before, counts(jdbc));
-            assertEquals(Map.of("book",4,"lesson",1,"lesson_version",1,"sentence",10,"audio_asset",10,"content_license",2), before);
+            assertEquals(Map.of("book",4,"lesson",1,"lesson_version",2,"sentence",20,"audio_asset",20,"content_license",3), before);
             assertEquals(0, flyway.migrate().migrationsExecuted);
             assertNull(jdbc.queryForMap("SELECT book_id FROM lesson WHERE id = 'demo-01'").get("book_id"));
             assertEquals(4, jdbc.queryForObject("SELECT COUNT(*) FROM book WHERE availability = 'catalog_only'", Integer.class));
@@ -46,7 +46,11 @@ class CatalogIntegrationTest {
             assertProblem(client, base + "/lessons/nce-book-1", 404, "LESSON_NOT_FOUND");
             assertProblem(client, base + "/audio/unknown", 404, "AUDIO_NOT_FOUND");
             assertProblem(client, base + "/licenses/unknown", 404, "LICENSE_NOT_FOUND");
-            var response = get(client, base + "/lessons/demo-01", null);
+            var latest = mapper.readTree(get(client, base + "/lessons/demo-01", null).body());
+            assertEquals("demo-01-v2",latest.path("versionId").asText());
+            assertEquals("demo-01-v2-a06",latest.path("sentences").get(5).path("audio").path("id").asText());
+            assertTrue(latest.path("audioLabel").asText().contains("Sonia"));
+            var response = get(client, base + "/lessons/demo-01?versionId=demo-01-v1", null);
             assertEquals(200, response.statusCode());
             assertEquals("no-store", response.headers().firstValue("cache-control").orElseThrow());
             var lesson = mapper.readTree(response.body());
@@ -74,7 +78,7 @@ class CatalogIntegrationTest {
             try {
                 admin.update("UPDATE audio_asset SET storage_key='demo-01/v999/audio/01.mp3' WHERE id='demo-01-v1-a01'");
                 assertProblem(client, base + "/audio/demo-01-v1-a01", 503, "AUDIO_UNAVAILABLE");
-                assertProblem(client, base + "/lessons/demo-01", 503, "AUDIO_UNAVAILABLE");
+                assertProblem(client, base + "/lessons/demo-01?versionId=demo-01-v1", 503, "AUDIO_UNAVAILABLE");
             } finally { admin.update("UPDATE audio_asset SET storage_key=? WHERE id='demo-01-v1-a01'", key); }
             try {
                 admin.update("UPDATE audio_asset SET sha256=? WHERE id='demo-01-v1-a01'", "0".repeat(64));

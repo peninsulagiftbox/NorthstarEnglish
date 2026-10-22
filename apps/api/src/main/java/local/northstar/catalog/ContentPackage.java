@@ -22,21 +22,38 @@ public class ContentPackage {
 
     public record Bundle(JsonNode lesson, JsonNode manifest, String lessonHash, String manifestHash) {}
 
-    public Bundle load() throws IOException {
-        byte[] raw = Files.readAllBytes(root.resolve("demo-01/v1/lesson.json"));
-        byte[] manifestRaw = Files.readAllBytes(root.resolve("demo-01/v1/manifest.json"));
+    public Bundle load() throws IOException { return load(1); }
+
+    public java.util.List<Integer> publishedVersions() throws IOException {
+        var list = mapper.readTree(Files.readAllBytes(root.resolve("demo-01/active.json")));
+        var versions = new java.util.ArrayList<Integer>();
+        for (JsonNode version : list.path("publishedVersions")) {
+            int number = version.asInt(); require(number > 0 && number < 100 && !versions.contains(number)); versions.add(number);
+        }
+        require(versions.contains(list.path("activeVersion").asInt()));
+        return versions;
+    }
+    public int activeVersion() throws IOException { return mapper.readTree(Files.readAllBytes(root.resolve("demo-01/active.json"))).path("activeVersion").asInt(); }
+
+    public Bundle load(int version) throws IOException {
+        require(version > 0 && version < 100);
+        String folder = "demo-01/v" + version + "/";
+        String versionId = "demo-01-v" + version;
+        byte[] raw = Files.readAllBytes(root.resolve(folder + "lesson.json"));
+        byte[] manifestRaw = Files.readAllBytes(root.resolve(folder + "manifest.json"));
         JsonNode lesson = mapper.readTree(raw), manifest = mapper.readTree(manifestRaw);
         require(sha256(raw).equals(manifest.path("lessonSha256").asText()));
-        require(lesson.path("id").asText().equals("demo-01") && lesson.path("versionId").asText().equals("demo-01-v1"));
-        require(manifest.path("lessonId").asText().equals("demo-01") && manifest.path("versionId").asText().equals("demo-01-v1"));
+        require(lesson.path("id").asText().equals("demo-01") && lesson.path("versionId").asText().equals(versionId));
+        require(manifest.path("lessonId").asText().equals("demo-01") && manifest.path("versionId").asText().equals(versionId));
         require(!lesson.path("releaseReady").asBoolean() && !manifest.path("releaseReady").asBoolean());
         require(lesson.path("sentences").size() == 10 && manifest.path("audioAssets").size() == 10);
+        require(lesson.path("version").asInt() == version);
         require(manifest.path("books").size() == 4 && lesson.path("bookId").isNull());
         var ids = new HashSet<String>();
         for (JsonNode book : manifest.path("books")) require(book.path("availability").asText().equals("catalog_only"));
         for (int i = 0; i < 10; i++) {
             JsonNode sentence = lesson.path("sentences").get(i), audio = manifest.path("audioAssets").get(i);
-            String key = "demo-01/v1/audio/%02d.mp3".formatted(i + 1);
+            String key = folder + "audio/%02d.mp3".formatted(i + 1);
             require(ids.add(sentence.path("id").asText()) && ids.add(audio.path("id").asText()));
             require(sentence.path("audioAssetId").asText().equals(audio.path("id").asText()));
             require(sentence.path("sequence").asInt() == i + 1 && sentence.path("startMs").asInt() == 0);
