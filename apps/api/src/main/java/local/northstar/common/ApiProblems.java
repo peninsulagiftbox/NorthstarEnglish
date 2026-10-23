@@ -24,6 +24,9 @@ public class ApiProblems {
 
     @ExceptionHandler(Exception.class)
     ProblemDetail unexpected(Exception exception, HttpServletRequest request) {
+        if (exception instanceof org.springframework.web.server.ResponseStatusException expected) {
+            return problem(HttpStatus.valueOf(expected.getStatusCode().value()), "PRACTICE_REQUEST", expected.getReason(), request.getRequestURI());
+        }
         if (exception instanceof org.springframework.dao.DataAccessException) {
             return problem(HttpStatus.SERVICE_UNAVAILABLE, "DATABASE_UNAVAILABLE", "数据库连接暂不可用，请检查本地服务。", request.getRequestURI());
         }

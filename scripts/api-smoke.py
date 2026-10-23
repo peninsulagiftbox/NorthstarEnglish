@@ -29,7 +29,7 @@ health, headers = request("/health")
 assert health["status"] == health["database"] == "UP"
 assert health["project"] == local.IDENTITY and "no-store" in headers["Cache-Control"]
 capabilities, _ = request("/capabilities")
-assert capabilities == dict(phase="05", contentApiAvailable=True, learningContentAvailable=True, aiEnabled=False, asrEnabled=False, pronunciationScoringEnabled=False)
+assert capabilities == dict(phase="06", contentApiAvailable=True, learningContentAvailable=True, aiEnabled=False, asrEnabled=False, pronunciationScoringEnabled=False)
 settings, headers = request("/settings")
 assert set(settings) == {"timezone", "defaultSpeed", "showTranslation", "showHints", "shortcutEnabled", "recordingRetention", "rowVersion"}
 assert isinstance(settings["showTranslation"], bool) and "no-store" in headers["Cache-Control"]

@@ -38,6 +38,7 @@ public class ContentSeeder implements ApplicationRunner {
                 }
                 verifyRows(jdbc, bundle);
                 seedReading(jdbc, bundle.lesson());
+                seedWriting(jdbc, bundle.lesson());
                 continue;
             }
             JsonNode lesson = bundle.lesson(), manifest = bundle.manifest();
@@ -72,12 +73,23 @@ public class ContentSeeder implements ApplicationRunner {
             }
             verifyRows(jdbc, bundle);
             seedReading(jdbc, lesson);
+            seedWriting(jdbc, lesson);
             }
             var current = jdbc.queryForList("SELECT current_version_id FROM lesson WHERE id='demo-01'");
             Object old = current.getFirst().get("current_version_id");
             if (old != null && bundles.stream().noneMatch(b -> old.equals(text(b.lesson(),"versionId")))) throw new IllegalStateException("Unknown active content version; refuse overwrite");
             jdbc.update("UPDATE lesson SET current_version_id=? WHERE id='demo-01'", activeVersion);
         });
+    }
+
+    private void seedWriting(JdbcTemplate jdbc, JsonNode lesson) {
+        String version=text(lesson,"versionId"), id=version+"-writing-01";
+        if(jdbc.queryForObject("SELECT COUNT(*) FROM writing_task WHERE id=?",Integer.class,id)==0) {
+            jdbc.update("INSERT INTO writing_task(id,lesson_id,version_id,prompt) VALUES (?,?,?,?)",id,text(lesson,"id"),version,"Write 2–3 sentences about helping in a garden. Use please, beside, or I can ...");
+            for(JsonNode exercise:lesson.path("exercises")) if("writing_prompt".equals(text(exercise,"kind")))
+                for(JsonNode sentence:exercise.path("sentenceIds")) jdbc.update("INSERT INTO writing_source(task_id,version_id,sentence_id) VALUES (?,?,?)",id,version,sentence.asText());
+        }
+        if(jdbc.queryForObject("SELECT COUNT(*) FROM writing_source WHERE task_id=?",Integer.class,id)!=3)throw new IllegalStateException("Writing source incomplete");
     }
 
     private void seedReading(JdbcTemplate jdbc, JsonNode lesson) {

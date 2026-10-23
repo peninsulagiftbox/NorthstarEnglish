@@ -40,3 +40,5 @@
 ## Phase 05 执行补充
 
 沿用现有 Node22 / Java21 与全部锁定依赖，未添加产品或测试依赖。词条、阅读题来自冻结内容包，经 Flyway V005 和内容播种建立关联；收藏存 MySQL，待确认阅读命令复用既有 IndexedDB outbox。浏览器继续使用固定 Playwright CLI 0.1.22，验证范围及环境失败记录见 `docs/progress/PHASE_05.md`。
+
+Phase06没有新增依赖；使用浏览器原生 MediaRecorder/getUserMedia、IndexedDB Blob 和 Java NIO 私有文件。Playwright沿用既有CLI与已安装Chromium，假麦克风测试不需要真实设备。

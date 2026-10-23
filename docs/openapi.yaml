@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
   title: Northstar English Local API
-  version: 0.5.0
-  description: Phase 05 adds contextual vocabulary, favorites, reading attempts and evidence-linked review sources. Source/voice rights pending review; formal publication blocked.
+  version: 0.6.0
+  description: Phase 06 adds private local recordings, client-observed playback evidence, separate writing drafts and immutable concurrent revisions. Source/voice rights pending review; formal publication blocked.
 servers:
   - url: /api/v1
 paths:
@@ -44,7 +44,7 @@ paths:
                 type: object
                 required: [phase, contentApiAvailable, learningContentAvailable, aiEnabled, asrEnabled, pronunciationScoringEnabled]
                 properties:
-                  phase: {type: string, const: '05'}
+                  phase: {type: string, const: '06'}
                   contentApiAvailable: {type: boolean, const: true}
                   learningContentAvailable: {type: boolean, const: true}
                   aiEnabled: {type: boolean, const: false}
@@ -500,6 +500,180 @@ paths:
         '200': {description: eventId and resulting current state}
         '409': {description: IDEMPOTENCY_CONFLICT}
         '422': {description: CONTEXT_MISMATCH or INVALID_ACTION}
+  /writing:
+    get:
+      summary: Read the versioned original writing task, source sentence IDs, draft, state and immutable revision history
+      parameters:
+        - {name: lessonId, in: query, required: true, schema: {type: string}}
+        - {name: versionId, in: query, required: true, schema: {type: string}}
+      responses:
+        '200': {description: Task and history; no grammar or ability scoring}
+        '422': {description: Course/version mismatch}
+  /writing/draft:
+    put:
+      summary: Save draft with optimistic rowVersion; zero creates, existing writes increment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [lessonId, versionId, text, rowVersion]
+              properties:
+                lessonId: {type: string}
+                versionId: {type: string}
+                text: {type: string, maxLength: 10000}
+                rowVersion: {type: integer, minimum: 0}
+      responses:
+        '200': {description: New rowVersion; draft alone creates no evidence}
+        '412': {description: Draft conflict; preserve client text and compare}
+  /writing/revisions:
+    post:
+      summary: Idempotently save a nonempty immutable revision; allocate next number under draft row lock
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [eventId, lessonId, versionId, text, draftVersion]
+              properties:
+                eventId: {type: string, format: uuid}
+                lessonId: {type: string}
+                versionId: {type: string}
+                text: {type: string, minLength: 1, maxLength: 10000}
+                draftVersion: {type: integer, minimum: 1}
+                parentRevisionId: {type: [string, 'null'], format: uuid}
+      responses:
+        '200': {description: Revision id, server versionNo, practiced state and new learning evidence}
+        '409': {description: Same eventId with different payload}
+        '412': {description: Draft version/text not current}
+        '422': {description: Parent revision belongs to another task}
+  /recordings:
+    get:
+      summary: List current available or missing local recordings and per-sentence state; deleted files excluded
+      parameters:
+        - {name: lessonId, in: query, required: true, schema: {type: string}}
+        - {name: versionId, in: query, required: true, schema: {type: string}}
+        - {name: sentenceId, in: query, required: true, schema: {type: string}}
+      responses:
+        '200': {description: Recordings with stable IDs, MIME, client duration, timestamp, status and playback count}
+    post:
+      summary: Idempotent bounded JSON/base64 upload; private atomic file then pending metadata then ready; startup reconciles missing files
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [eventId, lessonId, versionId, sentenceId, createdAt, mimeType, durationMs, audioBase64]
+              properties:
+                eventId: {type: string, format: uuid}
+                lessonId: {type: string}
+                versionId: {type: string}
+                sentenceId: {type: string}
+                createdAt: {type: string, format: date-time}
+                mimeType: {type: string, enum: ['audio/webm', 'audio/webm;codecs=opus', 'audio/mp4', 'audio/ogg', 'audio/ogg;codecs=opus']}
+                durationMs: {type: integer, minimum: 250, maximum: 120000, description: Client observed recording time, not speech analysis}
+                audioBase64: {type: string, maxLength: 11184812, description: 32 bytes to 8 MiB decoded; MIME/container header checked, decoding observed in browser}
+      responses:
+        '200': {description: Stable recording ID; upload creates no practiced evidence}
+        '409': {description: Event payload conflict}
+        '413': {description: File size invalid}
+        '415': {description: Unsupported MIME or container signature}
+        '422': {description: Course/version/sentence mismatch}
+        '503': {description: File persistence failed; retain IndexedDB buffer}
+  /recordings/{id}/audio:
+    get:
+      summary: Return checked ready private recording bytes with original MIME and no-store
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+      responses:
+        '200': {description: Actual recording bytes}
+        '404': {description: Deleted, missing or unavailable file}
+  /recordings/{id}/playbacks:
+    post:
+      summary: Idempotent client-observed playback and optional human self-rating; never pronunciation grading
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [eventId, lessonId, versionId, sentenceId, observedMs, selfRating]
+              properties:
+                eventId: {type: string, format: uuid}
+                lessonId: {type: string}
+                versionId: {type: string}
+                sentenceId: {type: string}
+                observedMs: {type: integer, minimum: 250}
+                selfRating: {type: string, enum: [replay_only, try_again, satisfied]}
+      responses:
+        '200': {description: Playback observation, learning evidence and practiced state}
+        '422': {description: No ready recording for this sentence or invalid observation}
+  /recordings/{id}/ratings:
+    post:
+      summary: Save an immutable human rating receipt linked to a validated playback; never add playback count or practice evidence
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [eventId, lessonId, versionId, sentenceId, playbackEventId, selfRating]
+              properties:
+                eventId: {type: string, format: uuid}
+                lessonId: {type: string}
+                versionId: {type: string}
+                sentenceId: {type: string}
+                playbackEventId: {type: string, format: uuid}
+                selfRating: {type: string, enum: [try_again, satisfied]}
+      responses:
+        '200': {description: Immutable command receipt with recordingId/playbackEventId/selfRating; no extra observation or evidence}
+        '409': {description: Event payload conflict}
+        '422': {description: Missing actual playback or context mismatch}
+  /recordings/{id}/delete:
+    post:
+      summary: Confirmed idempotent tombstone before unlink; preserve past evidence; retry interrupted unlink
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string, format: uuid}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [eventId, confirmed]
+              properties:
+                eventId: {type: string, format: uuid}
+                confirmed: {type: boolean, const: true}
+      responses:
+        '200': {description: Deleted current file; evidence retained}
+        '422': {description: Confirmation required}
+  /practice/events:
+    post:
+      summary: Idempotent start, pause or skip for speaking/writing; never direct completion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [eventId, lessonId, versionId, kind, action]
+              properties:
+                eventId: {type: string, format: uuid}
+                lessonId: {type: string}
+                versionId: {type: string}
+                sentenceId: {type: string, description: Required for speaking; writing resolves task sources}
+                kind: {type: string, enum: [speaking, writing]}
+                action: {type: string, enum: [start, pause, skip]}
+      responses:
+        '200': {description: New current state; no learning evidence created}
+        '422': {description: Invalid context or direct completion request}
 components:
   responses:
     ContentNotFound:

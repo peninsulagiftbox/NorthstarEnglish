@@ -4,10 +4,11 @@ import type { ReactNode } from 'react';
 import { useLesson } from '@/lib/state/LessonProvider';
 import { AudioController, ignoreShortcut, initialMedia } from './AudioController';
 import type { MediaState } from './AudioController';
-const Context = createContext<{ controller: AudioController | null; media: MediaState } | null>(null);
+const Context = createContext<{ controller: AudioController | null; media: MediaState; captureBusy: boolean; setCaptureBusy: (busy: boolean) => void } | null>(null);
 export function useMedia() { const value = useContext(Context); if (!value) throw new Error('MediaProvider required'); return value; }
 export function MediaProvider({ children }: { children: ReactNode }) {
   const { lesson, checkpoint, playback, savePlayback, update } = useLesson();
+  const [captureBusy, setCaptureBusy] = useState(false);
   const audio = useRef<HTMLAudioElement>(null);
   const latestMedia = useRef(initialMedia);
   const [controller, setController] = useState<AudioController | null>(null);
@@ -30,7 +31,7 @@ export function MediaProvider({ children }: { children: ReactNode }) {
   }, [media.sentenceId, media.status, media.time, media.duration, savePlayback]);
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
-      if (!controller || ignoreShortcut(event)) return;
+      if (captureBusy || !controller || ignoreShortcut(event)) return;
       const key = event.key.toLowerCase(); if (![' ', 'j', 'k', 'r'].includes(key)) return;
       event.preventDefault();
       if (key === ' ') { controller.toggle(controller.state.sentenceId ?? checkpoint.sentenceId); }
@@ -42,6 +43,6 @@ export function MediaProvider({ children }: { children: ReactNode }) {
       }
     };
     window.addEventListener('keydown', handler); return () => window.removeEventListener('keydown', handler);
-  }, [controller, media, checkpoint.sentenceId, lesson, update]);
-  return <Context.Provider value={{ controller, media }}><audio ref={audio} hidden preload="metadata" />{children}</Context.Provider>;
+  }, [controller, media, checkpoint.sentenceId, lesson, update, captureBusy]);
+  return <Context.Provider value={{ controller, media, captureBusy, setCaptureBusy }}><audio ref={audio} hidden preload="metadata" />{children}</Context.Provider>;
 }

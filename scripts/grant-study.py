@@ -36,5 +36,13 @@ def grant(env):
                 sql(f"GRANT INSERT, UPDATE ON {schema}.{table} TO 'northstar_app'@'%';")
             print(f'{schema}: PASS，V005 收藏/阅读最小写权限；不授权改写历史。')
 
+        if sql(f"SELECT COUNT(*) FROM {schema}.flyway_schema_history WHERE version='006' AND success=1;") == '1':
+            for table in ('writing_revision', 'recording_observation'):
+                sql(f"GRANT INSERT ON {schema}.{table} TO 'northstar_app'@'%';")
+            for table in ('writing_draft', 'personal_recording', 'practice_progress'):
+                sql(f"GRANT INSERT, UPDATE ON {schema}.{table} TO 'northstar_app'@'%';")
+            print(f'{schema}: PASS，V006 录音/写作最小写权限；不可变版本不可改写。')
+
+
 if __name__ == '__main__':
     grant(local.environment())
