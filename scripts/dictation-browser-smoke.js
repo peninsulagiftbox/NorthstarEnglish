@@ -80,6 +80,8 @@ async (page) => {
   await shot('dictation-diff-1440x900');
   checks.push('per-sentence drafts/refresh, paused restore, input shortcut guard, beside/behind alignment, same event replay');
   await page.getByRole('button',{name:'跳过本句',exact:true}).click();
+  await page.getByRole('button',{name:'选择句子 7',exact:true,pressed:true}).waitFor();
+  await pick(6);
   await page.waitForFunction(()=>document.querySelector('[data-testid="practice-state"]')?.textContent.includes('已跳过'));
   assert(await page.getByTestId('practice-state').innerText().then(t=>t.includes(`${count6} 次`)),'Skip increased practice');
   await page.getByRole('button',{name:'暂停本轮',exact:true}).click();

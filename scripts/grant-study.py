@@ -30,7 +30,11 @@ def grant(env):
             for table in ('command_receipt', 'study_stage', 'exercise_draft', 'review_item'):
                 sql(f"GRANT INSERT, UPDATE ON {schema}.{table} TO 'northstar_app'@'%';")
             print(f'{schema}: PASS，V004 最小写权限；内容与历史证据保持只读。')
-
+        if sql(f"SELECT COUNT(*) FROM {schema}.flyway_schema_history WHERE version='005' AND success=1;") == '1':
+            sql(f"GRANT INSERT ON {schema}.reading_answer TO 'northstar_app'@'%';")
+            for table in ('vocabulary_favorite', 'reading_progress'):
+                sql(f"GRANT INSERT, UPDATE ON {schema}.{table} TO 'northstar_app'@'%';")
+            print(f'{schema}: PASS，V005 收藏/阅读最小写权限；不授权改写历史。')
 
 if __name__ == '__main__':
     grant(local.environment())

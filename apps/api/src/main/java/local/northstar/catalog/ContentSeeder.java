@@ -37,6 +37,7 @@ public class ContentSeeder implements ApplicationRunner {
                     throw new IllegalStateException("Frozen content version changed; create a new version");
                 }
                 verifyRows(jdbc, bundle);
+                seedReading(jdbc, bundle.lesson());
                 continue;
             }
             JsonNode lesson = bundle.lesson(), manifest = bundle.manifest();
@@ -70,12 +71,37 @@ public class ContentSeeder implements ApplicationRunner {
                         text(sentence,"id") + "-dictation", text(lesson,"id"), versionId, text(sentence,"id"));
             }
             verifyRows(jdbc, bundle);
+            seedReading(jdbc, lesson);
             }
             var current = jdbc.queryForList("SELECT current_version_id FROM lesson WHERE id='demo-01'");
             Object old = current.getFirst().get("current_version_id");
             if (old != null && bundles.stream().noneMatch(b -> old.equals(text(b.lesson(),"versionId")))) throw new IllegalStateException("Unknown active content version; refuse overwrite");
             jdbc.update("UPDATE lesson SET current_version_id=? WHERE id='demo-01'", activeVersion);
         });
+    }
+
+    private void seedReading(JdbcTemplate jdbc, JsonNode lesson) {
+        String version = text(lesson,"versionId"), lessonId = text(lesson,"id");
+        var notes = java.util.Map.of("community garden","名词短语 · 本课指社区共用的花园", "beside","介词 · 表示在某物旁边，相当于 next to", "bench","名词 · 本课指供人坐的长椅", "soil","不可数名词 · 本课指种植物的土壤", "watering can","名词短语 · 本课指浇水用的壶");
+        for (JsonNode word : lesson.path("vocabulary")) {
+            String id = text(word,"id"), sentence = word.path("sentenceIds").get(0).asText();
+            Object[] values = {lessonId,version,sentence,text(word,"term"),text(word,"meaning"),notes.getOrDefault(text(word,"term"),"本课语境用法"),text(word,"example")};
+            if (jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_point WHERE id=?", Integer.class,id)==0)
+                jdbc.update("INSERT INTO knowledge_point(id,lesson_id,version_id,sentence_id,term,meaning,usage_note,example_text) VALUES (?,?,?,?,?,?,?,?)",id,values[0],values[1],values[2],values[3],values[4],values[5],values[6]);
+            verify(jdbc,"knowledge_point",id,new String[]{"lesson_id","version_id","sentence_id","term","meaning","usage_note","example_text"},values);
+        }
+        for (JsonNode question : lesson.path("exercises")) {
+            if (!"reading_choice".equals(text(question,"kind"))) continue;
+            String id=text(question,"id"), sentence=question.path("sentenceIds").get(0).asText();
+            if(jdbc.queryForObject("SELECT COUNT(*) FROM exercise WHERE id=?",Integer.class,id)==0) {
+                jdbc.update("INSERT INTO exercise(id,lesson_id,version_id,sentence_id,kind,algorithm_version) VALUES (?,?,?,?,'reading_choice','reading_choice_v1')",id,lessonId,version,sentence);
+                jdbc.update("INSERT INTO reading_question(exercise_id,version_id,sentence_id,knowledge_point_id,payload_json) VALUES (?,?,?,?,?)",id,version,sentence,version+"-kp-beside",question.toString());
+                for(JsonNode option : question.path("options")) jdbc.update("INSERT INTO reading_option(id,exercise_id) VALUES (?,?)",text(option,"id"),id);
+            }
+            verify(jdbc,"exercise",id,new String[]{"lesson_id","version_id","sentence_id","kind","algorithm_version"},new Object[]{lessonId,version,sentence,"reading_choice","reading_choice_v1"});
+            var stored=jdbc.queryForMap("SELECT payload_json,knowledge_point_id FROM reading_question WHERE exercise_id=?",id);
+            if(!tools.jackson.databind.json.JsonMapper.builder().build().readTree(stored.get("payload_json").toString()).equals(question) || !(version+"-kp-beside").equals(stored.get("knowledge_point_id"))) throw new IllegalStateException("Reading content differs from frozen version");
+        }
     }
 
     private void verifyRows(JdbcTemplate jdbc, ContentPackage.Bundle bundle) {

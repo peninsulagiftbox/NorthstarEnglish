@@ -13,7 +13,7 @@ type Draft = { text: string; rowVersion: number; dirty?: boolean };
 type Attempt = { attemptId: string; state: string; rawText: string; standardText: string; answerExposed: boolean; reviewItemId: string; result: { correct: boolean; edits: { kind: string; expected: string; actual: string; expectedIndex: number; actualIndex: number }[] } };
 const stateLabels: Record<string, string> = { not_started: '未开始', in_progress: '正在尝试', practiced: '已练习', skipped: '已跳过', paused: '已暂停' };
 export function DictationEditor({ exposureUncertain = false }: { exposureUncertain?: boolean }) {
-  const { lesson, checkpoint } = useLesson();
+  const { lesson, checkpoint, update } = useLesson();
   const { controller, media } = useMedia();
   const key = draftKey(checkpoint), sentenceId = checkpoint.sentenceId;
   const [tabId] = useState(() => {
@@ -27,6 +27,7 @@ export function DictationEditor({ exposureUncertain = false }: { exposureUncerta
   const [ready, setReady] = useState(false);
   const [status, setStatus] = useState('正在读取草稿…');
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const [exposureUnavailable, setExposureUnavailable] = useState(false);
   const [serverDraft, setServerDraft] = useState<Draft | null>(null);
   const [pending, setPending] = useState<Command | null>(null);
@@ -89,11 +90,21 @@ export function DictationEditor({ exposureUncertain = false }: { exposureUncerta
     });
   };
   async function send(command: Command) {
-    setBusy(true); setError('');
+    setBusy(true); setError(''); setNotice('');
     try {
       const response = await deliver<Attempt | { state: string }>(key, command);
       if (!active.current) return;
       setPending(null);
+      if (command.body.action === 'skip' && response.state === 'skipped') {
+        controller?.pause();
+        const next = lesson.sentences[lesson.sentences.findIndex(s => s.id === sentenceId) + 1];
+        if (next) {
+          controller?.load(next.id);
+          update({ sentenceId: next.id });
+          return;
+        }
+        setNotice('已跳过最后一句。可选择其他句子补练，或切换到精读词汇继续学习；跳过不计练习完成。');
+      }
       if ('attemptId' in response) {
         try { await write('exposure', sentenceId, true); } catch { setExposureUnavailable(true); setError('听写结果已保存；本机答案暴露标记保存失败，请检查浏览器存储后再开始新的听写。'); }
         started.current = false; setResult(response);
@@ -126,6 +137,7 @@ export function DictationEditor({ exposureUncertain = false }: { exposureUncerta
       latest.current = serverDraft.text; setText(serverDraft.text); revision.current = serverDraft.rowVersion; dirty.current = false; blocked.current = false; setServerDraft(null); setError(''); void write('drafts', cacheKey, serverDraft); setStatus('已采用服务端草稿');
     }}>采用服务端稿</Button></div>}
     {error && <Message error>{error}</Message>}
+    {notice && <Message>{notice}</Message>}
     {pending ? <Message>有一次待确认提交：<pre>{String(pending.body.text ?? pending.body.action)}</pre><Button disabled={busy} onClick={() => void send(pending)}>重试同一次提交</Button><Button disabled={busy} onClick={async () => { await remove('outbox', key, pending.eventId); setPending(null); setError(''); }}>结束本次重试（服务端已存记录仍保留）</Button></Message> : <div className="toolbar"><Button className="primary" disabled={!ready || busy || !text.trim() || !audioReady || exposureUncertain || exposureUnavailable} onClick={() => void submit()}>检查听写</Button><Button disabled={!ready || busy} onClick={() => void submit('start')}>开始 / 恢复</Button><Button disabled={!ready || busy} onClick={() => void submit('pause')}>暂停本轮</Button><Button disabled={!ready || busy} onClick={() => void submit('skip')}>跳过本句</Button></div>}
     {!audioReady && <p className="boundary">请先成功播放本句；音源故障时不能生成有效听写。</p>}
     {result && <section className="dictation-result" aria-label="听写对照"><h3>{result.result.correct ? '听写准确' : '已练习 · 有需要复习的词'}{result.answerExposed && ' · 答案曾暴露'}</h3><div className="comparison"><div><h4>你的原文</h4><p>{result.rawText}</p></div><div><h4>标准写法</h4><p lang="en">{result.standardText}</p></div></div><p>忽略大小写与标点，按英文词序对齐；不将同义词视为准确听写。</p><ul className="token-diff">{result.result.edits.map((edit, index) => <li key={index} data-kind={edit.kind}>{edit.kind === 'equal' ? edit.actual : `${({ omit: '遗漏', insert: '插入', replace: '替换' } as Record<string,string>)[edit.kind]}：${edit.expected || '∅'} → ${edit.actual || '∅'}`}<small>标准词位 {edit.expectedIndex + 1} / 输入词位 {edit.actualIndex + 1}</small></li>)}</ul><Button onClick={() => void controller?.playTrack(sentenceId)}>回听本句</Button>{result.reviewItemId && <Link className="button" href="/review">查看复习来源 →</Link>}</section>}

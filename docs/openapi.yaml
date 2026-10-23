@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
   title: Northstar English Local API
-  version: 0.4.0
-  description: Phase 04 local sentence audio, revisioned drafts, idempotent dictation attempts and review sources. Source/voice rights pending review; formal publication blocked.
+  version: 0.5.0
+  description: Phase 05 adds contextual vocabulary, favorites, reading attempts and evidence-linked review sources. Source/voice rights pending review; formal publication blocked.
 servers:
   - url: /api/v1
 paths:
@@ -44,7 +44,7 @@ paths:
                 type: object
                 required: [phase, contentApiAvailable, learningContentAvailable, aiEnabled, asrEnabled, pronunciationScoringEnabled]
                 properties:
-                  phase: {type: string, const: '04'}
+                  phase: {type: string, const: '05'}
                   contentApiAvailable: {type: boolean, const: true}
                   learningContentAvailable: {type: boolean, const: true}
                   aiEnabled: {type: boolean, const: false}
@@ -396,7 +396,7 @@ paths:
   /reviews/items:
     get:
       operationId: getReviewSources
-      description: One row per incorrect attempt source, grouped by stable item id in UI. No scheduling, flip-card assessment or mastery score in Phase 04.
+      description: One row per incorrect attempt source, grouped by stable item id in UI. Reading and dictation share sentence cards and retain distinct error sources. No scheduling or mastery score.
       responses:
         '200':
           description: All pending sources; empty array when there are no errors
@@ -417,9 +417,89 @@ paths:
                     sequence: {type: integer}
                     rawText: {type: string}
                     standardText: {type: string}
-                    reason: {type: string, const: dictation_token_difference}
+                    reason: {type: string, enum: [dictation_token_difference, reading_evidence_mismatch]}
+                    kind: {type: string, enum: [dictation, reading_choice]}
+                    knowledgePointId: {type: [string, "null"]}
+                    optionId: {type: [string, "null"]}
                     recordedAt: {type: string, description: UTC server time}
         '503': {$ref: '#/components/responses/Unavailable'}
+  /reading:
+    get:
+      operationId: getReading
+      description: Read versioned vocabulary and reading questions with saved favorites and immutable history. Answer keys are omitted; previous submitted feedback remains in history. Does not create practice evidence.
+      parameters:
+        - {name: lessonId, in: query, required: true, schema: {type: string}}
+        - {name: versionId, in: query, required: true, schema: {type: string}}
+      responses:
+        '200':
+          description: vocabulary entries (id, sentenceId, sequence, sourceText, term, meaning, usageNote, example, favorite boolean), questions (stable id, prompt, options, knowledgePointId, sentenceId, current state, history). History rows contain attemptId, eventId, optionId, correct, resultJson and recordedAt.
+        '422': {description: CONTEXT_MISMATCH - lesson/version mismatch}
+  /knowledge/{id}/favorite:
+    put:
+      operationId: saveVocabularyFavorite
+      description: Set desired favorite state; repeated identical PUTs are safe. Does not imply mastery, practice or error review. Same-origin write headers required.
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [lessonId, versionId, favorite]
+              properties:
+                lessonId: {type: string}
+                versionId: {type: string}
+                favorite: {type: boolean}
+      responses:
+        '200': {description: Persisted favorite boolean}
+        '422': {description: CONTEXT_MISMATCH - word does not belong to this lesson/version}
+  /reading/{id}/attempts:
+    post:
+      operationId: submitReadingAttempt
+      description: Grade server-side by stable option ID. Transactionally save attempt, option, immutable result, evidence and practiced state; incorrect answers append knowledge-linked review sources. Same eventId/payload replays receipt; changed payload conflicts. Same-origin write headers required.
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [eventId, lessonId, versionId, optionId, clientOccurredAt]
+              properties:
+                eventId: {type: string, format: uuid}
+                lessonId: {type: string}
+                versionId: {type: string}
+                optionId: {type: string}
+                clientOccurredAt: {type: string, format: date-time}
+      responses:
+        '200': {description: Receipt with attemptId, eventId, evidenceId, state practiced and result (correct, correctOptionId, correctText, sentenceId, knowledgePointId, standardText, explanation, algorithmVersion)}
+        '409': {description: IDEMPOTENCY_CONFLICT - event reused with another payload}
+        '422': {description: CONTEXT_MISMATCH or INVALID_OPTION - no receipt/attempt committed}
+  /reading/{id}/events:
+    post:
+      operationId: changeReadingRound
+      description: Idempotent start/pause/skip changes current round only; immutable attempt history is retained. No practice evidence is created. Same-origin write headers required.
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [eventId, lessonId, versionId, action, clientOccurredAt]
+              properties:
+                eventId: {type: string, format: uuid}
+                lessonId: {type: string}
+                versionId: {type: string}
+                action: {type: string, enum: [start, pause, skip]}
+                clientOccurredAt: {type: string, format: date-time}
+      responses:
+        '200': {description: eventId and resulting current state}
+        '409': {description: IDEMPOTENCY_CONFLICT}
+        '422': {description: CONTEXT_MISMATCH or INVALID_ACTION}
 components:
   responses:
     ContentNotFound:
