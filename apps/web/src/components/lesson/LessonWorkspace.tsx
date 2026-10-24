@@ -3,10 +3,11 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useLesson } from '@/lib/state/LessonProvider';
 import { draftKey, isBlind, lessonVersionHref, tabs } from '@/lib/state/context';
-import { Button, Card, EmptyState, Message, Modal } from '@/components/ui/Primitives';
+import { Button, Card, Message, Modal } from '@/components/ui/Primitives';
 import { MediaProvider, useMedia } from '@/lib/media/MediaProvider';
 import { VocabularyPanel } from '@/components/exercises/VocabularyPanel';
 import { RecorderPanel } from '@/components/exercises/RecorderPanel';
+import { QuizPanel } from '@/components/exercises/QuizPanel';
 import { WritingEditor } from '@/components/exercises/WritingEditor';
 import { DictationEditor } from '@/components/exercises/DictationEditor';
 import { write } from '@/lib/persistence/db';
@@ -59,10 +60,10 @@ function WorkspaceContent() {
       <div className="section-heading"><div><h2>{tabs.find(t => t[0] === checkpoint.tab)?.[1]}{checkpoint.tab === 'text' ? ' · 完整对话' : ''}</h2><p className="muted">{checkpoint.tab === 'text' ? '点击句子即可选中、播放原句并查看讲解。' : checkpoint.tab === 'vocabulary' ? '点词卡定位原句；提交阅读答案后查看证据与反馈。' : checkpoint.tab === 'speaking' ? '先听本句示范，再录制、回放并人工自评。' : checkpoint.tab === 'writing' ? '保留草稿，保存独立版本，再比较和修改。' : '选择目标句，保留逐句草稿；浏览与播放不计练习完成。'}</p></div>{(showTranslationControl || showBlindControl) && <div className="toolbar" aria-label="内容显示设置">{showTranslationControl && <Button aria-pressed={!checkpoint.showTranslation} onClick={() => update({ showTranslation: !checkpoint.showTranslation })}>{checkpoint.showTranslation ? '隐藏译文' : '显示译文'}</Button>}{showBlindControl && <Button aria-pressed={!checkpoint.showEnglish} onClick={() => update({ showEnglish: !checkpoint.showEnglish })}>{checkpoint.showEnglish ? '盲听模式' : '显示英文'}</Button>}</div>}</div>
       {checkpoint.tab === 'text' ? <SentenceList /> : <><div className="sentence-picker" aria-label="选择句子">{lesson.sentences.map(s => <Button key={s.id} disabled={captureBusy} aria-label={`选择句子 ${s.sequence}`} aria-pressed={checkpoint.sentenceId === s.id} onClick={() => update({ sentenceId: s.id })}>{String(s.sequence).padStart(2, '0')}</Button>)}</div>
       {checkpoint.tab === 'vocabulary' && <VocabularyPanel key={lesson.versionId} />}
-      {checkpoint.tab === 'dictation' && <DictationEditor key={key} exposureUncertain={exposureError} />}
+      {checkpoint.tab === 'dictation' && <DictationEditor key={lesson.versionId} exposureUncertain={exposureError} />}
       {checkpoint.tab === 'writing' && <WritingEditor key={lesson.versionId} />}
       {checkpoint.tab === 'speaking' && <RecorderPanel key={key} />}
-      {checkpoint.tab === 'quiz' && <EmptyState title="下一阶段开发"><p>真实测验提交与复习将在 Phase 07 开放。</p></EmptyState>}</>}
+      {checkpoint.tab === 'quiz' && <QuizPanel key={lesson.versionId} />}</>}
     </div></Card><aside className="surface tutor-desktop" aria-label="句子助教"><TutorPanel /></aside></div>
     <div className={`sync-status ${syncError ? 'error' : ''}`} role="status">{sync}{syncError && <Button onClick={() => window.location.reload()}>重新载入同步</Button>}</div>
     <Button className="tutor-toggle" onClick={() => setDrawer(true)}>打开句子助教</Button>

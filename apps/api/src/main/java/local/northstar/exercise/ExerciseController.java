@@ -34,7 +34,7 @@ public class ExerciseController {
     @GetMapping("/api/v1/reading")
     public Object reading(@RequestParam String lessonId,@RequestParam String versionId) {
         readingContext(lessonId,versionId);
-        var words=jdbc.queryForList("SELECT k.id,k.sentence_id AS sentenceId,s.sequence_no AS sequence,s.text AS sourceText,k.term,k.meaning,k.usage_note AS usageNote,k.example_text AS example,COALESCE(f.favorite,FALSE) AS favorite FROM knowledge_point k JOIN sentence s ON s.id=k.sentence_id LEFT JOIN vocabulary_favorite f ON f.knowledge_point_id=k.id WHERE k.lesson_id=? AND k.version_id=? ORDER BY s.sequence_no,k.id",lessonId,versionId);
+        var words=jdbc.queryForList("SELECT k.id,k.sentence_id AS sentenceId,s.sequence_no AS sequence,s.text AS sourceText,k.term,k.meaning,k.usage_note AS usageNote,k.example_text AS example,COALESCE(f.favorite,FALSE) AS favorite FROM knowledge_point k JOIN sentence s ON s.id=k.sentence_id LEFT JOIN vocabulary_favorite f ON f.knowledge_point_id=k.id WHERE k.id<>CONCAT(k.version_id,'-kp-please') AND k.lesson_id=? AND k.version_id=? ORDER BY s.sequence_no,k.id",lessonId,versionId);
         for(var word:words) word.put("favorite",((Number)word.get("favorite")).intValue()!=0);
         var questions=new ArrayList<Object>();
         for(var row:jdbc.queryForList("SELECT r.exercise_id,r.payload_json,r.knowledge_point_id,r.sentence_id,COALESCE(p.current_state,'not_started') AS state FROM reading_question r JOIN exercise e ON e.id=r.exercise_id LEFT JOIN reading_progress p ON p.exercise_id=e.id WHERE e.lesson_id=? AND e.version_id=? ORDER BY e.id",lessonId,versionId)) {
@@ -84,8 +84,8 @@ public class ExerciseController {
             jdbc.update("INSERT INTO learning_evidence(id,attempt_id,event_id) VALUES (?,?,?)",evidence,attempt,value.eventId);
             jdbc.update("INSERT INTO reading_progress(exercise_id,current_state) VALUES (?,'practiced') ON DUPLICATE KEY UPDATE current_state='practiced'",id);
             if(!correct) {
-                jdbc.update("INSERT INTO review_item(id,sentence_id,version_id) VALUES (?,?,?) ON DUPLICATE KEY UPDATE id=id",sentence+"-review",sentence,value.versionId);
-                jdbc.update("INSERT INTO review_source(attempt_id,item_id,reason,sentence_id,version_id) VALUES (?,?,'reading_evidence_mismatch',?,?)",attempt,sentence+"-review",sentence,value.versionId);
+                jdbc.update("INSERT INTO review_item(id,sentence_id,version_id,target_key,card_kind,knowledge_point_id) VALUES (?,?,?,?,'reading_choice',?) ON DUPLICATE KEY UPDATE due_at=LEAST(due_at,UTC_TIMESTAMP(3)),reps=0,row_version=row_version+1",knowledge+"-reading",sentence,value.versionId,knowledge,knowledge);
+                jdbc.update("INSERT INTO review_source(attempt_id,item_id,reason,sentence_id,version_id) VALUES (?,?,'reading_evidence_mismatch',?,?)",attempt,knowledge+"-reading",sentence,value.versionId);
             }
             return mapper.valueToTree(Map.of("attemptId",attempt,"eventId",value.eventId,"evidenceId",evidence,"state","practiced","result",result));
         });
@@ -121,7 +121,7 @@ public class ExerciseController {
             stage(value.sentenceId,value.versionId,"practiced",1);
             if(!result.correct()) {
                 String itemId=value.sentenceId+"-review";
-                jdbc.update("INSERT INTO review_item(id,sentence_id,version_id) VALUES (?,?,?) ON DUPLICATE KEY UPDATE id=id",itemId,value.sentenceId,value.versionId);
+                jdbc.update("INSERT INTO review_item(id,sentence_id,version_id,target_key) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE due_at=LEAST(due_at,UTC_TIMESTAMP(3)),reps=0,row_version=row_version+1",itemId,value.sentenceId,value.versionId,value.sentenceId);
                 jdbc.update("INSERT INTO review_source(attempt_id,item_id,reason,sentence_id,version_id) VALUES (?,?,'dictation_token_difference',?,?)",attemptId,itemId,value.sentenceId,value.versionId);
             }
             return response;
@@ -147,7 +147,7 @@ public class ExerciseController {
     }
     @GetMapping("/api/v1/reviews/items")
     public Object reviews() {
-        return jdbc.queryForList("SELECT r.id,r.status,a.id AS attemptId,a.lesson_id AS lessonId,a.version_id AS versionId,a.sentence_id AS sentenceId,a.exercise_id AS exerciseId,e.kind,rq.knowledge_point_id AS knowledgePointId,ra.option_id AS optionId,a.raw_text AS rawText,s.sequence_no AS sequence,s.text AS standardText,rs.reason,a.recorded_at AS recordedAt FROM review_item r JOIN review_source rs ON rs.item_id=r.id JOIN exercise_attempt a ON a.id=rs.attempt_id JOIN exercise e ON e.id=a.exercise_id LEFT JOIN reading_question rq ON rq.exercise_id=e.id LEFT JOIN reading_answer ra ON ra.attempt_id=a.id JOIN sentence s ON s.id=a.sentence_id ORDER BY a.recorded_at DESC,a.id");
+        return jdbc.queryForList("SELECT r.id,r.status,a.id AS attemptId,a.lesson_id AS lessonId,a.version_id AS versionId,a.sentence_id AS sentenceId,a.exercise_id AS exerciseId,e.kind,COALESCE(r.knowledge_point_id,rq.knowledge_point_id) AS knowledgePointId,ra.option_id AS optionId,a.raw_text AS rawText,s.sequence_no AS sequence,s.text AS standardText,rs.reason,a.recorded_at AS recordedAt FROM review_item r JOIN review_source rs ON rs.item_id=r.id JOIN exercise_attempt a ON a.id=rs.attempt_id JOIN exercise e ON e.id=a.exercise_id LEFT JOIN reading_question rq ON rq.exercise_id=e.id LEFT JOIN reading_answer ra ON ra.attempt_id=a.id JOIN sentence s ON s.id=a.sentence_id ORDER BY a.recorded_at DESC,a.id");
     }
     @GetMapping("/api/v1/drafts/{sentence}")
     public Object draft(@PathVariable String sentence,@RequestParam String lessonId,@RequestParam String versionId) {
@@ -176,7 +176,7 @@ public class ExerciseController {
     private void timestamp(String value) {
         try { Instant.parse(value); } catch(Exception error) { throw failure(400,"INVALID_TIMESTAMP","客户端时间必须为 ISO-8601 时间。"); }
     }
-    private JsonNode command(String eventId,String operation,Object value,java.util.function.Supplier<JsonNode> work) {
+    JsonNode command(String eventId,String operation,Object value,java.util.function.Supplier<JsonNode> work) {
         try {UUID.fromString(eventId);} catch(Exception error) {throw failure(400,"INVALID_EVENT_ID","事件标识必须为 UUID。");}
         String hash;
         try {hash=HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest((operation+":"+mapper.writeValueAsString(value)).getBytes(StandardCharsets.UTF_8)));}
@@ -204,7 +204,7 @@ public class ExerciseController {
     @ExceptionHandler(Failure.class)
     public ProblemDetail failure(Failure error,HttpServletRequest request) {return ApiProblems.problem(HttpStatus.valueOf(error.status),error.code,error.getMessage(),request.getRequestURI());}
     private static Failure failure(int status,String code,String message) {return new Failure(status,code,message);}
-    private static class Failure extends RuntimeException {
+    static class Failure extends RuntimeException {
         final int status;final String code;
         Failure(int status,String code,String message) {super(message);this.status=status;this.code=code;}
     }

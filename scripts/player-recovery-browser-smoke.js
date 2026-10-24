@@ -3,7 +3,7 @@ async (page) => {
   const base=new URL(page.url()).origin,checks=[],errors=[];
   page.on('pageerror',e=>errors.push(e.message));
   const assert=(v,m)=>{if(!v)throw new Error(m);};
-  const pick=async n=>{await page.getByRole('button',{name:`选择句子 ${n}`,exact:true}).click();await page.getByRole('button',{name:`选择句子 ${n}`,exact:true,pressed:true}).waitFor();await page.waitForFunction(()=>{const input=document.querySelector('textarea');return input&&!input.disabled;});};
+  const pick=async n=>{await page.getByRole('button',{name:`选择句子 ${n}`,exact:true}).click();await page.getByRole('button',{name:`选择句子 ${n}`,exact:true,pressed:true}).waitFor();await page.waitForFunction(()=>{const input=document.querySelector('textarea');return input&&!input.disabled&&!input.readOnly;});};
   const play=()=>page.getByRole('button',{name:'播放本句',exact:true}).click();
   const pause=async()=>{if(!await page.locator('audio').evaluate(a=>a.paused)){await page.getByRole('button',{name:'暂停播放',exact:true}).click();await page.waitForFunction(()=>document.querySelector('audio')?.paused);}};
   const setSpeed=async value=>{const button=page.getByRole('button',{name:'播放速度',exact:true});for(let i=0;i<4&&await button.getAttribute('data-speed')!==value;i++)await button.click();assert(await button.getAttribute('data-speed')===value,'Speed cycle target missing');};
@@ -56,23 +56,24 @@ async (page) => {
     await page.waitForFunction(()=>{const a=document.querySelector('audio');return a?.src.includes('a06')&&!a.paused&&a.currentTime<.6;});await pause();
     checks.push('real ended: sequential next, list wrap, same-sentence loop');
     await page.getByLabel('播放模式',{exact:true}).selectOption('single');
-    await pick(9);await page.waitForFunction(()=>!document.querySelector('textarea')?.disabled);
+    await pick(9);await page.waitForFunction(()=>{const t=document.querySelector('textarea');return t&&!t.readOnly;});
     const editor=page.getByLabel('本句听写草稿',{exact:true});
     const draftPath='**/api/v1/drafts/demo-01-v1-s09';
     await page.route(draftPath,route=>route.request().method()==='PUT'?route.abort():route.continue());
     await editor.fill('Offline preserved draft for nine.');
-    await page.getByText(/保留本机草稿 · 同步已暂停/,{exact:true}).waitFor();
+    await page.locator('.dictation-draft .message.error').waitFor();
+    assert(await editor.inputValue()==='Offline preserved draft for nine.','Offline failure lost local input');
     await page.unroute(draftPath);await page.reload();
     await page.waitForFunction(()=>document.querySelector('textarea')?.value==='Offline preserved draft for nine.');
-    await page.getByText('草稿已保存到服务端',{exact:true}).waitFor();
+    await page.waitForFunction(async expected=>{const response=await fetch('/api/v1/drafts/demo-01-v1-s09?lessonId=demo-01&versionId=demo-01-v1');return response.ok&&(await response.json()).text===expected;},'Offline preserved draft for nine.');
     checks.push('offline draft write failure preserves IndexedDB text; reload resumes sync');
     other=await page.context().newPage();
     await other.goto(base+'/lesson/demo-01?version=demo-01-v1&tab=dictation&sentence=demo-01-v1-s09&english=1');
     await other.getByLabel('本句听写草稿',{exact:true}).waitFor();
-    await other.waitForFunction(()=>!document.querySelector('textarea')?.disabled);
+    await other.waitForFunction(()=>{const t=document.querySelector('textarea');return t&&!t.readOnly;});
     // Persist the other page's start event first, then edit competing drafts from the same revision.
     await other.getByLabel('本句听写草稿',{exact:true}).fill('Other page draft nine.');
-    await other.getByText('草稿已保存到服务端',{exact:true}).waitFor();
+    await page.waitForFunction(async expected=>{const response=await fetch('/api/v1/drafts/demo-01-v1-s09?lessonId=demo-01&versionId=demo-01-v1');return response.ok&&(await response.json()).text===expected;},'Other page draft nine.');
     await editor.fill('My conflicting local draft nine.');
     await page.getByRole('heading',{name:'服务端草稿（保留本机输入）',exact:true}).waitFor();
     assert(await editor.inputValue()==='My conflicting local draft nine.','Conflict lost local text');
@@ -81,7 +82,7 @@ async (page) => {
     assert(await editor.inputValue()==='My conflicting local draft nine.','Conflict local copy lost on refresh');
     await page.screenshot({path:'docs/evidence/phase-04/screenshots/draft-conflict-1440x900.png'});
     await page.getByRole('button',{name:'比较后保留本机稿并同步',exact:true}).click();
-    await page.getByText('草稿已保存到服务端',{exact:true}).waitFor();
+    await page.waitForFunction(async expected=>{const response=await fetch('/api/v1/drafts/demo-01-v1-s09?lessonId=demo-01&versionId=demo-01-v1');return response.ok&&(await response.json()).text===expected;},'My conflicting local draft nine.');
     await other.close();other=null;
     checks.push('two-page If-Match conflict retains both texts across reload; explicit resolution');
     // Simulate quota/disabled storage only in the test browser; real submission must stay blocked.

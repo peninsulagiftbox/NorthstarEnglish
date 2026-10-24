@@ -320,3 +320,31 @@ dialog.modal.drawer { margin:0 0 0 auto; height:100dvh; max-height:100dvh; width
 .recording-delete { margin-top:16px; }
 /* Recording feedback must not insert a new row above the audio list. */
 .recorder-panel>.toast { position:fixed; right:24px; bottom:96px; z-index:30; max-width:calc(100vw - 48px); margin:0; padding:12px 16px; border:1px solid var(--line); border-radius:10px; background:var(--surface); color:var(--text); box-shadow:0 4px 20px #19274014; }
+
+/* Phase 07: reuse workspace cards, options and button states. */
+.quiz-question { margin: 24px 0; padding: 16px; border: 1px solid var(--line); border-radius: 12px; min-width: 0; }
+.quiz-question legend { font-weight: 600; padding: 0 6px; }
+.quiz-feedback { padding-left: 24px; }
+.quiz-feedback li, .quiz-history article { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.quiz-history { margin-top: 24px; }
+.review-card { margin-top: 20px; overflow-wrap: anywhere; }
+.review-prompt { padding: 20px; background: #f0faf6; border-radius: 12px; font-size: 20px; }
+.review-answer { padding: 16px; border-left: 3px solid #087f70; margin: 16px 0; }
+.review-answer [lang=en] { font-size: 20px; }
+.review-card details { margin-top: 16px; }
+
+.quiz-history article.quiz-source-attempt { border-left: 3px solid var(--accent); padding-left: 16px; }
+
+.quiz-panel > h2 { margin-bottom: 8px; }
+.quiz-panel > [role=status] > h3 { font-size: 18px; margin: 20px 0 8px; }
+.review-card > p { margin: 12px 0; }
+.review-card .review-prompt { margin: 16px 0; }
+
+.review-queue-actions { margin-top: 12px; }
+
+.quiz-result .quiz-feedback { margin-bottom: 0; }
+.quiz-result .quiz-feedback li:last-child { border-bottom: 0; }
+.quiz-result-actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+.quiz-result-actions p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.quiz-result-actions .button { flex-shrink: 0; white-space: nowrap; }
+@media(max-width:640px) { .quiz-result-actions { flex-direction: column; align-items: flex-start; gap: 12px; } }

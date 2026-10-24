@@ -4,7 +4,7 @@ async (page) => {
   page.on('pageerror', error => errors.push(error.message));
   const assert = (condition, message) => { if (!condition) throw new Error(message); };
   const shot = name => page.screenshot({ path: `docs/evidence/phase-04/screenshots/${name}.png`, fullPage: false });
-  const pick = async n => { await page.getByRole('button', { name: `选择句子 ${n}`, exact: true }).click(); await page.getByRole('button', {name:`选择句子 ${n}`,exact:true,pressed:true}).waitFor(); await page.waitForFunction(()=>{const input=document.querySelector('textarea');return input&&!input.disabled;}); };
+  const pick = async n => { await page.getByRole('button', { name: `选择句子 ${n}`, exact: true }).click(); await page.getByRole('button', {name:`选择句子 ${n}`,exact:true,pressed:true}).waitFor(); await page.waitForFunction(()=>{const input=document.querySelector('textarea');return input&&!input.disabled&&!input.readOnly;}); };
   const play = () => page.getByRole('button', { name: '播放本句', exact: true }).click();
   const paused = async () => { if (!await page.locator('audio').evaluate(a=>a.paused)) { await page.getByRole('button',{name:'暂停播放',exact:true}).click(); await page.waitForFunction(()=>document.querySelector('audio')?.paused); } };
   const setSpeed=async value=>{const button=page.getByRole('button',{name:'播放速度',exact:true});for(let i=0;i<4&&await button.getAttribute('data-speed')!==value;i++)await button.click();assert(await button.getAttribute('data-speed')===value,'Speed cycle target missing');};
@@ -19,7 +19,7 @@ async (page) => {
   await page.setViewportSize({width:1440,height:900});
   await page.goto(base + '/lesson/demo-01?version=demo-01-v1&tab=dictation&sentence=demo-01-v1-s06&english=1&translation=1');
   await page.getByLabel('本句听写草稿', {exact:true}).waitFor();
-  await page.waitForFunction(() => !document.querySelector('textarea')?.disabled);
+  await page.waitForFunction(() => document.querySelector('textarea')&&!document.querySelector('textarea').readOnly);
   const baselines = await page.evaluate(async () => (await fetch('/api/v1/study/stages?lessonId=demo-01&versionId=demo-01-v1')).json());
   const count6 = baselines.find(s => s.sentenceId.endsWith('s06')).practiceCount + 1;
   const count7 = baselines.find(s => s.sentenceId.endsWith('s07')).practiceCount + 1;
@@ -59,7 +59,7 @@ async (page) => {
   await editor.press('Space');await editor.press('j');await editor.press('k');await editor.press('r');
   assert(await page.locator('audio').evaluate(a=>a.paused),'Input shortcuts stole focus');
   await editor.fill('Please put them behind the blue bench.');await editor.blur();
-  await page.getByText('草稿已保存到服务端',{exact:true}).waitFor();
+  await page.waitForFunction(async()=>{const response=await fetch('/api/v1/drafts/demo-01-v1-s06?lessonId=demo-01&versionId=demo-01-v1');return response.ok && (await response.json()).text==='Please put them behind the blue bench.';});
   await pick(5); await page.waitForFunction(()=>['','Draft for sentence five.'].includes(document.querySelector('textarea')?.value));
   await page.getByLabel('本句听写草稿',{exact:true}).fill('Draft for sentence five.');
   await pick(6); await page.waitForFunction(()=>document.querySelector('textarea')?.value==='Please put them behind the blue bench.');
@@ -73,7 +73,7 @@ async (page) => {
   await page.getByRole('region',{name:'听写对照'}).waitFor();
   assert(firstResponse.result.edits.filter(e=>e.kind!=='equal').length===1 && firstResponse.result.edits[3].expected==='beside' && firstResponse.result.edits[3].actual==='behind','Exact token position');
   assert(await editor.inputValue()==='Please put them behind the blue bench.','Original overwritten');
-  await page.waitForFunction(count => { const text=document.querySelector('[data-testid="practice-state"]')?.textContent;return text?.includes('已练习') && text.includes(`${count} 次`); }, count6);
+  await page.waitForFunction(count => { const text=document.querySelector('[data-testid="practice-state"]')?.textContent;return Number(document.querySelector('[data-testid="practice-count"]')?.textContent)===count; }, count6);
   const replay=await page.evaluate(async body => {const r=await fetch('/api/v1/exercises/demo-01-v1-s06-dictation/attempts',{method:'POST',headers:{'Content-Type':'application/json','X-Northstar-Request':'local-workspace'},body:JSON.stringify(body)});return {status:r.status,data:await r.json()};},firstBody);
   assert(replay.status===200 && replay.data.attemptId===firstResponse.attemptId,'Replay generated duplicate');
   await page.getByRole('region',{name:'听写对照'}).scrollIntoViewIfNeeded();
@@ -82,11 +82,13 @@ async (page) => {
   await page.getByRole('button',{name:'跳过本句',exact:true}).click();
   await page.getByRole('button',{name:'选择句子 7',exact:true,pressed:true}).waitFor();
   await pick(6);
-  await page.waitForFunction(()=>document.querySelector('[data-testid="practice-state"]')?.textContent.includes('已跳过'));
-  assert(await page.getByTestId('practice-state').innerText().then(t=>t.includes(`${count6} 次`)),'Skip increased practice');
+  await page.waitForFunction(()=>{const t=document.querySelector('#dictation-text');return t&&!t.readOnly;});
+  await page.waitForFunction(expected=>Number(document.querySelector('[data-testid="practice-count"]')?.textContent)===expected,count6);
+  assert(Number(await page.getByTestId('practice-count').innerText())===count6,'Skip increased practice');
   await page.getByRole('button',{name:'暂停本轮',exact:true}).click();
-  await page.waitForFunction(()=>document.querySelector('[data-testid="practice-state"]')?.textContent.includes('已暂停'));
-  assert(await page.getByTestId('practice-state').innerText().then(t=>t.includes(`${count6} 次`)),'Pause increased practice');
+  await page.waitForFunction(()=>document.querySelector('.dictation-actions')?.getAttribute('aria-busy')==='false');
+  await page.waitForFunction(expected=>Number(document.querySelector('[data-testid="practice-count"]')?.textContent)===expected,count6);
+  assert(Number(await page.getByTestId('practice-count').innerText())===count6,'Pause increased practice');
   checks.push('skipped/paused separate from historical evidence');
   // Commit the command server-side but drop the response once. Reload must replay its saved UUID.
   await pick(7);await play();await page.waitForFunction(()=>document.querySelector('.player-bar')?.dataset.status==='playing');await paused();
@@ -100,7 +102,8 @@ async (page) => {
   await page.getByRole('button',{name:'重试同一次提交',exact:true}).click();
   const retried=await (await retryResponse).json();assert(retried.eventId===droppedBody.eventId,'Outbox UUID changed');
   await page.getByRole('heading',{name:/听写准确/}).waitFor();
-  assert(await page.getByTestId('practice-state').innerText().then(t=>t.includes(`${count7} 次`)),'Lost response retry duplicated evidence');
+  await page.waitForFunction(expected=>Number(document.querySelector('[data-testid="practice-count"]')?.textContent)===expected,count7);
+  assert(Number(await page.getByTestId('practice-count').innerText())===count7,'Lost response retry duplicated evidence');
   checks.push('response committed then lost, IndexedDB outbox survives refresh and replays same event');
   // A missing source cannot enable submission or produce practice evidence.
   await pick(8);await page.route('**/audio/*a08*',route=>route.abort());await play();
@@ -113,8 +116,12 @@ async (page) => {
   for(const width of [1440,1280,979,375]) {await page.setViewportSize({width,height:900});await noOverflow();await shot(`player-${width}x900`);}
   await page.setViewportSize({width:1440,height:900});
   await page.getByRole('navigation',{name:'主导航'}).getByRole('link',{name:'智能复习',exact:true}).click();
-  await page.locator('.review-source').filter({hasText:'demo-01-v1-s06'}).getByRole('heading').first().waitFor();
-  assert(await page.locator('body').innerText().then(t=>t.includes('behind')&&t.includes('demo-01-v1-s06')),'Review missing original/source');
+  await page.locator('.review-card').filter({hasText:'demo-01-v1-s06'}).getByRole('heading').first().waitFor();
+  const sourceCard=page.locator('.review-card').filter({has:page.locator(`a[href*="attempt=${firstResponse.attemptId}"]`)});
+  await sourceCard.getByRole('button',{name:'翻开答案',exact:true}).click();
+  await sourceCard.locator('.review-answer').waitFor();
+  await sourceCard.getByText('查看本卡错误原答',{exact:true}).click();
+  assert((await sourceCard.innerText()).includes('behind'),'Review missing original attempt after flip');
   await shot('review-sources-1440x900');
   checks.push('actual review source with original attempt, responsive no horizontal overflow');
   assert(errors.length===0,'Page errors: '+errors.join(';'));

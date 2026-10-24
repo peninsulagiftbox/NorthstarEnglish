@@ -95,8 +95,8 @@ async (page) => {
   assert(new URL(page.url()).searchParams.get('tab')==='text','Late response must not change current tab');
   assert((await reading()).questions[0].history.length===count+3,'Late accepted answer remains in history');
   checks.push('Accepted late answer after leaving tab does not steal context');
-  await page.goto(base+'/review');await page.locator('.review-source').first().waitFor();
-  assert((await page.locator('main').innerText()).includes('阅读选择'),'Review distinguishes reading');await shot('review-source-1440');
+  await page.goto(base+'/review');await page.locator('.review-card').first().waitFor();
+  assert((await page.locator('main').innerText()).includes('阅读证据'),'Review distinguishes reading');await shot('review-source-1440');
   await page.goto(url);await page.locator('.vocabulary-card').first().waitFor();
   for(const width of [1280,979,375]) {
     await page.setViewportSize({width,height:900});

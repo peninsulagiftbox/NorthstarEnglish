@@ -40,7 +40,7 @@ public class HealthController {
 
     @GetMapping("/api/v1/capabilities")
     public Map<String, Object> capabilities() {
-        return Map.of("phase", "06", "contentApiAvailable", true, "learningContentAvailable", true, "aiEnabled", false, "asrEnabled", false, "pronunciationScoringEnabled", false);
+        return Map.of("phase", "07", "contentApiAvailable", true, "learningContentAvailable", true, "aiEnabled", false, "asrEnabled", false, "pronunciationScoringEnabled", false);
     }
 
     @GetMapping("/api/v1/settings")

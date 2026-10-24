@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
   title: Northstar English Local API
-  version: 0.6.0
-  description: Phase 06 adds private local recordings, client-observed playback evidence, separate writing drafts and immutable concurrent revisions. Source/voice rights pending review; formal publication blocked.
+  version: 0.7.0
+  description: Phase 07 adds immutable quiz runs and error-linked review cards with simple_v1 self-rating scheduling. Source/voice rights remain pending review.
 servers:
   - url: /api/v1
 paths:
@@ -44,7 +44,7 @@ paths:
                 type: object
                 required: [phase, contentApiAvailable, learningContentAvailable, aiEnabled, asrEnabled, pronunciationScoringEnabled]
                 properties:
-                  phase: {type: string, const: '06'}
+                  phase: {type: string, const: '07'}
                   contentApiAvailable: {type: boolean, const: true}
                   learningContentAvailable: {type: boolean, const: true}
                   aiEnabled: {type: boolean, const: false}
@@ -54,7 +54,7 @@ paths:
   /settings:
     get:
       operationId: getLocalSettings
-      description: Read-only preferences. Editing and optimistic concurrency are introduced in Phase 08.
+      description: Read-only preferences. Editing is introduced in Phase 08.
       responses:
         '200':
           description: Persisted local preferences, no credentials
@@ -674,6 +674,102 @@ paths:
       responses:
         '200': {description: New current state; no learning evidence created}
         '422': {description: Invalid context or direct completion request}
+  /quiz:
+    get:
+      operationId: getQuiz
+      summary: Three frozen questions without answer keys and all immutable run/answer history
+      parameters:
+        - {name: lessonId, in: query, required: true, schema: {type: string}}
+        - {name: versionId, in: query, required: true, schema: {type: string}}
+      responses:
+        '200': {description: questions, state, history with run IDs, correctCount, UTC submittedAt and per-question attempt/option/result snapshots}
+        '422': {description: Course/version mismatch}
+  /quiz/attempts:
+    post:
+      operationId: submitQuizRun
+      summary: Atomically submit all three choices; one run, three attempts and evidence; wrong answers append deduplicated card sources
+      description: Parent eventId is retained on quiz_run; stable child UUIDs derive from parent and exercise ID. Same event/payload replays before business validation; different payload conflicts. Redo uses a new parent event. Draft selections are browser IndexedDB only and are not evidence.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [eventId, lessonId, versionId, answers, clientOccurredAt]
+              properties:
+                eventId: {type: string, format: uuid}
+                lessonId: {type: string, maxLength: 64}
+                versionId: {type: string, maxLength: 64}
+                answers: {type: object, minProperties: 3, maxProperties: 3, additionalProperties: {type: string}, description: Frozen exercise ID to its option ID}
+                clientOccurredAt: {type: string, format: date-time}
+      responses:
+        '200': {description: runId, correctCount and individual result snapshots with source sentence/knowledge point and explanation}
+        '409': {description: Same event with different payload}
+        '422': {description: Incomplete questions, invalid option or course/version mismatch; entire transaction rolled back}
+  /quiz/events:
+    post:
+      operationId: recordQuizState
+      summary: Explicit start/pause/skip updates current state without creating attempts or review success
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [eventId, lessonId, versionId, action, clientOccurredAt]
+              properties:
+                eventId: {type: string, format: uuid}
+                lessonId: {type: string}
+                versionId: {type: string}
+                action: {type: string, enum: [start, pause, skip]}
+                clientOccurredAt: {type: string, format: date-time}
+      responses:
+        '200': {description: Current state; no evidence generated}
+        '409': {description: Same event with different payload}
+        '422': {description: Invalid context or action}
+  /reviews/due:
+    get:
+      operationId: getReviewSchedule
+      summary: Real due cards with source attempts, rowVersion, UTC dueAt and immutable self-rating history; no English answers
+      description: Card uniqueness is local owner + version + target knowledge point (or dictation sentence) + card kind. The UI fetches all metadata to recover pending accepted-but-unacknowledged operations even if the due time has advanced, then filters to due/pending cards.
+      parameters:
+        - {name: all, in: query, schema: {type: boolean, default: false}, description: Also include future scheduled cards}
+      responses:
+        '200': {description: Array of cards with source course/version/sentence/exercise/attempt IDs; empty array when none}
+  /reviews/{id}/answer:
+    get:
+      operationId: revealReviewAnswer
+      summary: Fetch the source English sentence and local preset explanation only after explicit flip
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      responses:
+        '200': {description: Source text, local explanation and linked original wrong attempts; fetched after flip only; no AI or measured mastery claim}
+        '404': {description: Unknown card}
+  /reviews/{id}/results:
+    post:
+      operationId: rateReviewCard
+      summary: Idempotent self-rating under card row lock and expected rowVersion
+      description: simple_v1 uses server UTC time. Again schedules 60 seconds and resets success streak; good schedules 1,2,4,8,16,32 days capped at 32. A new genuine error reactivates the same card and invalidates stale card versions. Self-rating is never objective mastery. Retry first replays receipt even after card version or due time changed.
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - {$ref: '#/components/schemas/LearningCommand'}
+                - type: object
+                  required: [rowVersion, rating, answerRevealed]
+                  properties:
+                    rowVersion: {type: integer, minimum: 1}
+                    rating: {type: string, enum: [again, good]}
+                    answerRevealed: {type: boolean, const: true, description: Client-observed flip; not server-measured recall}
+      responses:
+        '200': {description: eventId, nextDueAt with explicit UTC Z, new rowVersion, origin=self_rating, schedulerVersion=simple_v1}
+        '404': {description: Unknown card}
+        '409': {description: Stale rowVersion, future card or conflicting event payload; no extra history}
+        '422': {description: Invalid context, rating or missing flip}
 components:
   responses:
     ContentNotFound:

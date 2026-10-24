@@ -37,7 +37,9 @@ function VersionedLessonProvider({ lessonId, versionId, children }: { lessonId: 
       setSync(result.failed ? '浏览位置读取失败；当前页面可浏览，暂不覆盖服务端记录。' : '浏览位置已读取');
       setSyncError(result.failed);
       const checkpoint = resolveContext(lesson, new URLSearchParams(window.location.search), result.resume);
-      window.history.replaceState(null, '', lessonHref(checkpoint));
+      const sourceAttempt = new URLSearchParams(window.location.search).get('attempt');
+      const sourceQuery = sourceAttempt && /^[0-9a-f-]{36}$/i.test(sourceAttempt) ? `&attempt=${encodeURIComponent(sourceAttempt)}` : '';
+      window.history.replaceState(null, '', lessonHref(checkpoint) + sourceQuery);
       if (result.resume?.versionId === lesson.versionId) setPlayback({ playingSentenceId: result.resume.playingSentenceId, positionMs: result.resume.positionMs });
       setLoaded({ lesson, resume: result.resume });
     }).catch(e => { if (active) setError(e); });

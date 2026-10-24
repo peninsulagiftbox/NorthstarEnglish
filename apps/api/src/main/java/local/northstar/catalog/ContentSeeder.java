@@ -39,6 +39,7 @@ public class ContentSeeder implements ApplicationRunner {
                 verifyRows(jdbc, bundle);
                 seedReading(jdbc, bundle.lesson());
                 seedWriting(jdbc, bundle.lesson());
+                seedQuiz(jdbc, bundle.lesson());
                 continue;
             }
             JsonNode lesson = bundle.lesson(), manifest = bundle.manifest();
@@ -74,12 +75,31 @@ public class ContentSeeder implements ApplicationRunner {
             verifyRows(jdbc, bundle);
             seedReading(jdbc, lesson);
             seedWriting(jdbc, lesson);
+            seedQuiz(jdbc, lesson);
             }
             var current = jdbc.queryForList("SELECT current_version_id FROM lesson WHERE id='demo-01'");
             Object old = current.getFirst().get("current_version_id");
             if (old != null && bundles.stream().noneMatch(b -> old.equals(text(b.lesson(),"versionId")))) throw new IllegalStateException("Unknown active content version; refuse overwrite");
             jdbc.update("UPDATE lesson SET current_version_id=? WHERE id='demo-01'", activeVersion);
         });
+    }
+
+    private void seedQuiz(JdbcTemplate jdbc, JsonNode lesson) {
+        String version=text(lesson,"versionId"), sentence=version+"-s06", please=version+"-kp-please";
+        if(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_point WHERE id=?",Integer.class,please)==0)
+            jdbc.update("INSERT INTO knowledge_point(id,lesson_id,version_id,sentence_id,term,meaning,usage_note,example_text) VALUES (?,?,?,?,?,?,?,?)",please,text(lesson,"id"),version,sentence,"please + verb","请……（礼貌请求）","本地预置讲解 · please + 动词原形","Please put them beside the blue bench.");
+        for(JsonNode question:lesson.path("exercises")) {
+            if(!"quiz_choice".equals(text(question,"kind")))continue;
+            String id=text(question,"id"), target=question.path("sentenceIds").get(0).asText();
+            String point=id.endsWith("01")?version+"-kp-community-garden":id.endsWith("02")?version+"-kp-beside":please;
+            if(jdbc.queryForObject("SELECT COUNT(*) FROM quiz_question WHERE exercise_id=?",Integer.class,id)==0) {
+                jdbc.update("INSERT INTO exercise(id,lesson_id,version_id,sentence_id,kind,algorithm_version) VALUES (?,?,?,?,'quiz_choice','quiz_choice_v1')",id,text(lesson,"id"),version,target);
+                jdbc.update("INSERT INTO quiz_question(exercise_id,version_id,sentence_id,knowledge_point_id,payload_json) VALUES (?,?,?,?,?)",id,version,target,point,question.toString());
+            }
+            var stored=jdbc.queryForMap("SELECT payload_json,knowledge_point_id FROM quiz_question WHERE exercise_id=?",id);
+            if(!tools.jackson.databind.json.JsonMapper.builder().build().readTree(stored.get("payload_json").toString()).equals(question) || !point.equals(stored.get("knowledge_point_id")))throw new IllegalStateException("Quiz differs from frozen content");
+        }
+        if(jdbc.queryForObject("SELECT COUNT(*) FROM quiz_question WHERE version_id=?",Integer.class,version)!=3)throw new IllegalStateException("Quiz requires three questions");
     }
 
     private void seedWriting(JdbcTemplate jdbc, JsonNode lesson) {
