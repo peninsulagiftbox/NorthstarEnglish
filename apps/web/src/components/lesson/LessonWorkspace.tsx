@@ -45,6 +45,8 @@ function WorkspaceContent() {
   const [drawer, setDrawer] = useState(false);
   const [notice, setNotice] = useState(false);
   const blind = isBlind(checkpoint);
+  const showTranslationControl = !blind && ['text', 'vocabulary'].includes(checkpoint.tab);
+  const showBlindControl = ['text', 'speaking'].includes(checkpoint.tab);
   const key = draftKey(checkpoint);
   const [exposureError, setExposureError] = useState(false);
   useEffect(() => {
@@ -54,7 +56,7 @@ function WorkspaceContent() {
   }, [blind, checkpoint.tab, checkpoint.sentenceId, lesson]);
   return <div className="lesson-workspace"><header className="lesson-header"><p className="eyebrow">ORIGINAL DEMONSTRATION · DEMO 01</p><h1>{lesson.title}</h1><div className="section-heading"><p className="muted">原创体验课 · {lesson.sentences.length} 句 · {lesson.versionId.endsWith('-v2') ? '英式 Edge 配音 v2' : '原型配音 v1'} · 日常交流 / 礼貌请求</p><Button onClick={() => setNotice(true)}>内容来源</Button></div></header>
     <LessonTabs /><div className="workspace-grid"><Card className="lesson-card"><div role="tabpanel" id="lesson-panel" aria-labelledby={`tab-${checkpoint.tab}`}>
-      <div className="section-heading"><div><h2>{tabs.find(t => t[0] === checkpoint.tab)?.[1]}{checkpoint.tab === 'text' ? ' · 完整对话' : ''}</h2><p className="muted">{checkpoint.tab === 'text' ? '点击句子即可选中、播放原句并查看讲解。' : checkpoint.tab === 'vocabulary' ? '点词卡定位原句；提交阅读答案后查看证据与反馈。' : checkpoint.tab === 'speaking' ? '先听本句示范，再录制、回放并人工自评。' : checkpoint.tab === 'writing' ? '保留草稿，保存独立版本，再比较和修改。' : '选择目标句，保留逐句草稿；浏览与播放不计练习完成。'}</p></div><div className="toolbar"><Button aria-pressed={!checkpoint.showTranslation} onClick={() => update({ showTranslation: !checkpoint.showTranslation })}>{checkpoint.showTranslation ? '隐藏译文' : '显示译文'}</Button><Button aria-pressed={!checkpoint.showEnglish} onClick={() => update({ showEnglish: !checkpoint.showEnglish })}>{checkpoint.showEnglish ? '盲听模式' : '显示英文'}</Button></div></div>
+      <div className="section-heading"><div><h2>{tabs.find(t => t[0] === checkpoint.tab)?.[1]}{checkpoint.tab === 'text' ? ' · 完整对话' : ''}</h2><p className="muted">{checkpoint.tab === 'text' ? '点击句子即可选中、播放原句并查看讲解。' : checkpoint.tab === 'vocabulary' ? '点词卡定位原句；提交阅读答案后查看证据与反馈。' : checkpoint.tab === 'speaking' ? '先听本句示范，再录制、回放并人工自评。' : checkpoint.tab === 'writing' ? '保留草稿，保存独立版本，再比较和修改。' : '选择目标句，保留逐句草稿；浏览与播放不计练习完成。'}</p></div>{(showTranslationControl || showBlindControl) && <div className="toolbar" aria-label="内容显示设置">{showTranslationControl && <Button aria-pressed={!checkpoint.showTranslation} onClick={() => update({ showTranslation: !checkpoint.showTranslation })}>{checkpoint.showTranslation ? '隐藏译文' : '显示译文'}</Button>}{showBlindControl && <Button aria-pressed={!checkpoint.showEnglish} onClick={() => update({ showEnglish: !checkpoint.showEnglish })}>{checkpoint.showEnglish ? '盲听模式' : '显示英文'}</Button>}</div>}</div>
       {checkpoint.tab === 'text' ? <SentenceList /> : <><div className="sentence-picker" aria-label="选择句子">{lesson.sentences.map(s => <Button key={s.id} disabled={captureBusy} aria-label={`选择句子 ${s.sequence}`} aria-pressed={checkpoint.sentenceId === s.id} onClick={() => update({ sentenceId: s.id })}>{String(s.sequence).padStart(2, '0')}</Button>)}</div>
       {checkpoint.tab === 'vocabulary' && <VocabularyPanel key={lesson.versionId} />}
       {checkpoint.tab === 'dictation' && <DictationEditor key={key} exposureUncertain={exposureError} />}

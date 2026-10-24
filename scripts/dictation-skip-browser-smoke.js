@@ -23,9 +23,9 @@ async page => {
  const stages=async()=> (await page.request.get(api+'/api/v1/study/stages?lessonId=demo-01&versionId=demo-01-v2')).json();
  const reviewsBefore=(await(await page.request.get(api+'/api/v1/reviews/items')).json()).length;
  const before=await stages();
- const target=async n=>{await page.waitForFunction(id=>new URL(location.href).searchParams.get('sentence')===id,`demo-01-v2-s${String(n).padStart(2,'0')}`);await page.waitForFunction(n=>{const t=document.querySelector('#dictation-text');return t&&!t.disabled&&document.querySelector('.draft-editor')?.textContent.includes(`听写目标为第 ${n} 句`);},n);};
+ const target=async n=>{await page.waitForFunction(id=>new URL(location.href).searchParams.get('sentence')===id,`demo-01-v2-s${String(n).padStart(2,'0')}`);await page.waitForFunction(n=>{const t=document.querySelector('#dictation-text');return t&&!t.disabled&&!t.readOnly&&document.querySelector('.draft-editor')?.textContent.includes(`听写目标为第 ${n} 句`);},n);};
  const pick=async n=>{await page.getByRole('button',{name:`选择句子 ${n}`,exact:true}).click();await target(n);};
- const idle=()=>page.waitForFunction(()=>{const b=[...document.querySelectorAll('button')].find(b=>b.textContent==='跳过本句');return b&&!b.disabled;});
+ const idle=()=>page.waitForFunction(()=>{const b=[...document.querySelectorAll('button')].find(b=>b.textContent==='跳过本句');return b&&!b.disabled&&b.getAttribute('aria-disabled')!=='true';});
  const editor=page.getByLabel('本句听写草稿',{exact:true});
  await page.setViewportSize({width:1440,height:900});
  await page.goto(base+'/lesson/demo-01?version=demo-01-v2&tab=dictation&sentence=demo-01-v2-s01');await target(1);await idle();

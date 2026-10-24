@@ -64,7 +64,26 @@ export function WritingEditor() {
     try {
       if (!cmd) { const version = await syncDraft(); cmd = await enqueue(key, '/writing/revisions', { ...context, text: current.current, draftVersion: version, parentRevisionId: parentRef.current }); setPending(cmd); }
       await deliver(key, cmd); if (!active.current) return; setPending(null);
-      const remote = await writingData(lesson.id, lesson.versionId); setData(remote); setSelected(remote.revisions.at(-1)?.id ?? ''); setStatus('新版本已保存，历史内容保持不变');
+      const remote = await writingData(lesson.id, lesson.versionId);
+      if (!active.current) return;
+      setData(remote); setSelected(remote.revisions.at(-1)?.id ?? '');
+      setStatus('新版本已保存，历史内容保持不变');
+      // Only clear the submitted snapshot; another page may already have a newer draft.
+      if (current.current === cmd.body.text && remote.draft.text === cmd.body.text && remote.draft.rowVersion === cmd.body.draftVersion) {
+        try {
+          const cleared = await request<{ rowVersion: number }>('/writing/draft', { method: 'PUT', headers: commandHeaders, body: JSON.stringify({ ...context, text: '', rowVersion: remote.draft.rowVersion }) });
+          if (!active.current) return;
+          await write('drafts', key, { text: '', rowVersion: cleared.rowVersion, parent: null });
+          revision.current = cleared.rowVersion; current.current = ''; parentRef.current = null; dirty.current = false;
+          if (active.current) {
+            setText(''); setParent(null);
+            setData({ ...remote, draft: { text: '', rowVersion: cleared.rowVersion } });
+            setStatus('新版本已保存，输入已清空；历史内容保持不变');
+          }
+        } catch (e) {
+          if (active.current) setError(`新版本已保存，但草稿未能完整清空；原文保留。${e instanceof Error ? e.message : '请重新读取草稿。'}`);
+        }
+      } else setStatus('新版本已保存；草稿已有其他修改，保留当前输入');
     } catch (e) {
       if (e instanceof ApiError && e.status === 412 && cmd) {
         // An explicit conflict proves this command was rejected, so it can be rebuilt after comparison.

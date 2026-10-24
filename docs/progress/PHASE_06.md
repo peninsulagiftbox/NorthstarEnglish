@@ -189,3 +189,39 @@ Phase05独立快照位于被忽略的 `.local/git-closeout-20261024/phase05/`：
 阶段拆分逐文件比对：除README、设计说明与阶段归档记录的定向更新外，代码工作文件内容保持不变。56个候选文件未发现本地.env密码、令牌、私钥、机器绝对路径或大型二进制（最大文件约65KB）；阶段暂存blob再次检查大小/秘密/空白，并确认.env、.local、docs/evidence和课程音频仍忽略。未提交私人录音、数据库、原型媒体、日志、截图和构建产物。详细归档验证日志与路径清单留在 `.local/git-closeout-20261024/`，不上传。
 
 本轮仅Git归档及定向文档修订，不迁移/重建数据库、不重启服务、不进入Phase07。推送操作采用普通fast-forward，推送后核对本地与origin/main引用和工作区状态。
+
+### 用户追加：听写连续切句仍闪烁（2026-10-24）
+
+已查看用户10秒新录屏并以8fps精确提取80帧，重点查看切句前后帧018/019/020；录屏主要为精听听写01→10切换。第020帧新目标出现时，开始/恢复、暂停、跳过整组变灰，随后恢复。修复前600ms延迟实际草稿/状态读取，requestAnimationFrame测得操作按钮opacity 1→0.55且native disabled false→true，输入框也被短暂disabled；不是布局位移或悬停覆盖。此前修复覆盖了回放/悬停等路径，未覆盖该独立加载路径。
+
+本轮修改：
+- `DictationEditor.tsx` 新增局部DictationAction，用aria-disabled和点击守卫保护短暂加载/请求；input改为只读+aria-busy，读取完成前拒绝修改，不再改变原生禁用外观。保留每句独立key，避免晚到结果/保存串句；不通过保留旧句草稿伪装新目标完成加载。
+- 操作区在请求时继续保留，不再被待确认Message替换；只有失败/恢复待确认事件时出现重试入口。空答案、尚未成功播放音频及暴露状态异常等真正不可提交条件仍native disabled。加入同步actionLock，防止React更新前重复提交。
+- `RecorderPanel.tsx` 同步修正新目标读取期间“开始新录音”的临时disabled变灰，移入既有waiting守卫；录制期间/有上传缓冲的真实不可用状态不变。
+- 新增 `scripts/dictation-switch-browser-smoke.js`；已有dictation-browser与dictation-skip测试改为等待textarea非readOnly/按钮非aria-disabled，避免把视觉启用当作业务已就绪。
+
+验证：typecheck、lint、23项前端单测、生产build与git diff --check通过，日志 `docs/evidence/switch-flicker/logs/`。专项浏览器在1440/375px，草稿/状态读取延迟600ms、提交延迟650ms，覆盖20次听写切句、2次暂停请求、4次口语切句，共26组逐帧检查：操作按钮opacity始终1、无短暂native disabled、输入框白底保持、工具栏不断开、成功请求不闪重试块、外壳/播放器坐标稳定；等待中DOM点击/真实Enter均不提交，失败刷新后重试保留原eventId，快速2→3→4→1的晚回执不覆盖最终目标，切句未产生草稿写入，pageErrors=[]。这些写请求均模拟，不能当作真实MySQL回执测试。
+
+另外在核验测试库标记的隔离API8086执行真实 `dictation-skip-browser-smoke.js`：跳过后只前进一句、暂停旧音频、保留原稿，失败/丢回执/刷新复用原事件，不确定回执不前进，晚回执不抢手工选句、最后一句不回绕、练习次数与复习来源不增加，全部通过。精读 `reading-feedback-browser-smoke.js` 同样通过1440/375px外观/几何/重复保护/原事件重试回归，其写请求模拟。主库学习记录和私人音频未操作，API/数据库业务实现未因本轮修改。
+
+证据：`logs/{video,before,typecheck,lint,unit,build,browser-final,skip-regression,reading-regression}.log`、`frames/frame-000..079.png`、`contact-{0,40}.jpg`、`stable-{1440,375}.png`；已查看关键帧和最终两种尺寸截图。初次探针路径漏掉/api/v1导致延迟未生效，修正后才记复现；初次等待态测试使用Playwright click会自动等aria-disabled解除，改用DOM点击验证守卫，保留真实Enter检查，最终通过。
+
+仅重启本项目Web加载生产构建（本轮监督PID86242）；额外测试API与两次隔离浏览器在验证后关闭，原主API/MySQL保留。本轮开始Git工作区干净；执行中发现另有测验/复习/V007相关并行改动，未改写/暂存/提交这些文件，当前结论不覆盖该并行功能。本轮未提交或推送Git。Safari/Firefox、真设备GPU绘制未实测，不宣称所有平台/所有不同加载路径的闪烁已全部消除。
+
+### 用户明确圈出：次数标签与草稿状态闪烁（2026-10-24）
+
+用户澄清闪烁区域为练习状态/次数标签及草稿常规状态文字，上轮按钮变灰验证没有对准这两处。本次按要求只显示“累计N次真实练习”，移除草稿读取/为空/保存中的常规状态行；真实同步错误、次数读取失败、草稿冲突继续明确显示。
+
+`DictationEditor.tsx` 拆分稳定的整课次数/播放区与按句隔离的内部草稿编辑器；`LessonWorkspace.tsx` 只将外层听写组件key改为版本ID，内部仍使用draftKey保证草稿与异步回执目标隔离。进入听写时读取一次整课次数，切句从内存取对应数字；标签DOM不重建、仅数字文本变化，不再重复读次数或切换“练习状态待确认”等文案。暂停/跳过不重取次数，正式作答回执后重新读取；读取失败不虚构0，保留未知值/重试。数字等宽并预留两位宽度，避免0/12等数字长度影响标签。删除不再显示的草稿status状态及其更新，不用隐藏DOM保留无意义状态刷新。已有听写脚本改为等待实际保存响应/数字，保持暂停跳过的服务端行为验证。
+
+验证：typecheck、lint、生产build通过；初次lint将async回调识别为effect同步状态更新，改用明确的请求then/catch回调后复测通过，无禁用规则。新增 `scripts/dictation-count-browser-smoke.js` 在1440/375px各切10句，均只有1次整课次数GET，标签同一节点、只显示有效数字且草稿状态行始终不存在；模拟正式提交后次数更新、暂停不读取，失败显示未知值/重试恢复，pageErrors=[]。所有写请求模拟，未写主库。既有 `dictation-switch-browser-smoke.js` 的26组逐帧、等待保护、失败刷新原UUID重试和快速切句草稿隔离回归同样通过。本轮未重复真实MySQL或无关后端测试。
+
+证据 `docs/evidence/dictation-count/logs/{typecheck,lint,build,browser,switch-regression}.log`、`count-{1440,375}.png`，已查看桌面最终截图。仅更新Web加载生产构建（监督PID92537），API/MySQL保留，隔离验证浏览器关闭。测验/复习等并行改动保留，本轮未提交Git；Safari/Firefox未测。
+
+### 用户确认：按学习场景显示内容控制（2026-10-24）
+
+用户要求落实前轮分析：听写页强制盲听保护，共用的译文/盲听按钮不改变当前显示，却会修改其他Tab的共享偏好，属于不适用操作。本轮仅调整 `LessonWorkspace.tsx` 的显示条件：课文显示英文/译文控制（盲听时只提供恢复英文）；听写不显示二者，原答案保护不变；精读只在英文可见时显示源句译文控制，英文关闭时沿用页内“显示英文并开始精读”的恢复入口；跟读只显示能控制目标原文的盲听开关；写作/测验不显示这两个不控制题目/编辑内容的按钮。无可用控制时整个工具栏不渲染，不保留空容器。不强行改写用户显隐偏好，不改变答案暴露记录或测验业务。
+
+typecheck、lint、生产build及定向git diff --check通过。新增 `scripts/context-controls-browser-smoke.js` 在1440/375px覆盖6Tab共12组按钮清单；实际点击验证课文英文/译文显隐、盲听后恢复英文仍保留原译文偏好、听写往返不修改偏好且右栏继续隐藏答案、精读源句译文显隐与英文恢复入口、跟读目标原文隐藏/恢复，全部通过；pageErrors=[]，无横向溢出。脚本拦截全部写接口并模拟录音/写作/测验GET，最终未发起写请求，未改用户学习数据。初次脚本在React URL状态尚未更新时即断言，改为等待实际DOM结果后通过。
+
+证据 `docs/evidence/context-controls/logs/{typecheck,lint,build,browser}.log`、`dictation-{1440,375}.png`，已查看桌面最终截图。Web已更新（本轮监督PID72071），API/MySQL及既有Phase07改动保留；验证浏览器关闭。本轮未提交Git，纯条件渲染未重复业务单测或后端检查；Safari/Firefox未实测。
