@@ -53,6 +53,7 @@ public class RecordingController {
         String hash=PracticeCommands.hash(bytes);
         // The file is durable before the DB commit; a crash can leave an orphan, never a false ready row.
         JsonNode receipt=c.command(value.eventId,"recording-upload",value,()->{
+            if(!c.jdbc.queryForObject("SELECT recording_enabled FROM user_setting WHERE owner_key='local'",Boolean.class))throw fail(409,"录音功能已在设置中关闭；本机录音缓冲仍保留。");
             String id=UUID.randomUUID().toString();Path temp=null;
             try {
                 temp=Files.createTempFile(root,"upload-",".part",PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rw-------")));

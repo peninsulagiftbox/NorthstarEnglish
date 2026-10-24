@@ -33,7 +33,7 @@ class DatabaseIntegrationTest {
             assertEquals(0, flyway.migrate().migrationsExecuted);
             assertEquals(before, runtime.queryForMap("SELECT * FROM user_setting WHERE owner_key = 'local'"));
             assertThrows(org.springframework.dao.DataAccessException.class,
-                    () -> runtime.update("UPDATE user_setting SET row_version = row_version + 1 WHERE owner_key = 'local'"));
+                    () -> runtime.update("DELETE FROM user_setting WHERE owner_key = 'local'"));
             assertEquals(1, runtime.queryForObject("SELECT COUNT(*) FROM flyway_schema_history WHERE success = TRUE AND version = '001'", Integer.class));
             var forbidden = client.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + "/api/v1/health"))
                     .header("Origin", "https://untrusted.example").build(), HttpResponse.BodyHandlers.ofString());

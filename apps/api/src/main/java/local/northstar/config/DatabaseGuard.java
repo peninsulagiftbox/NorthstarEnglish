@@ -14,7 +14,8 @@ public class DatabaseGuard {
         return flyway -> {
             try (Connection connection = flyway.getConfiguration().getDataSource().getConnection()) {
                 String catalog = connection.getCatalog();
-                if (!"northstar_english".equals(catalog) && !"northstar_phase01_test".equals(catalog)) {
+                if (!"northstar_english".equals(catalog) && !"northstar_phase01_test".equals(catalog)
+                        && !("true".equals(System.getenv("NORTHSTAR_ALLOW_RESTORE_DB")) && catalog != null && catalog.matches("northstar_restore_[0-9]{14}"))) {
                     throw new IllegalStateException("Database schema is not a Northstar schema");
                 }
                 try (var statement = connection.prepareStatement("SELECT project_key FROM project_identity")) {

@@ -40,12 +40,12 @@ public class HealthController {
 
     @GetMapping("/api/v1/capabilities")
     public Map<String, Object> capabilities() {
-        return Map.of("phase", "07", "contentApiAvailable", true, "learningContentAvailable", true, "aiEnabled", false, "asrEnabled", false, "pronunciationScoringEnabled", false);
+        return Map.of("phase", "08", "contentApiAvailable", true, "learningContentAvailable", true, "aiEnabled", false, "asrEnabled", false, "pronunciationScoringEnabled", false);
     }
 
     @GetMapping("/api/v1/settings")
     public Map<String, Object> settings() {
-        return jdbc.queryForMap("SELECT timezone, default_speed AS defaultSpeed, show_translation AS showTranslation, show_hints AS showHints, shortcut_enabled AS shortcutEnabled, recording_retention AS recordingRetention, row_version AS rowVersion FROM user_setting WHERE owner_key = 'local'");
+        return jdbc.queryForMap("SELECT timezone, default_speed AS defaultSpeed, show_translation AS showTranslation, show_hints AS showHints, shortcut_enabled AS shortcutEnabled, recording_retention AS recordingRetention, recording_enabled AS recordingEnabled, row_version AS rowVersion FROM user_setting WHERE owner_key = 'local'");
     }
 
     public record Health(String status, String database, String project, String migrationVersion, Instant checkedAt) {}

@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
   title: Northstar English Local API
-  version: 0.7.0
-  description: Phase 07 adds immutable quiz runs and error-linked review cards with simple_v1 self-rating scheduling. Source/voice rights remain pending review.
+  version: 0.8.0
+  description: Phase 08 adds evidence reports, persisted preferences, logical snapshots and read-only import preview. Restores create new isolated databases only. Source/voice rights pending review; formal publication blocked.
 servers:
   - url: /api/v1
 paths:
@@ -44,7 +44,7 @@ paths:
                 type: object
                 required: [phase, contentApiAvailable, learningContentAvailable, aiEnabled, asrEnabled, pronunciationScoringEnabled]
                 properties:
-                  phase: {type: string, const: '07'}
+                  phase: {type: string, const: '08'}
                   contentApiAvailable: {type: boolean, const: true}
                   learningContentAvailable: {type: boolean, const: true}
                   aiEnabled: {type: boolean, const: false}
@@ -54,7 +54,7 @@ paths:
   /settings:
     get:
       operationId: getLocalSettings
-      description: Read-only preferences. Editing is introduced in Phase 08.
+      description: Persisted local preferences. PUT uses rowVersion optimistic concurrency.
       responses:
         '200':
           description: Persisted local preferences, no credentials
@@ -62,13 +62,14 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [timezone, defaultSpeed, showTranslation, showHints, shortcutEnabled, recordingRetention, rowVersion]
+                required: [timezone, defaultSpeed, showTranslation, showHints, shortcutEnabled, recordingRetention, recordingEnabled, rowVersion]
                 properties:
                   timezone: {type: string, example: Asia/Shanghai}
                   defaultSpeed: {type: number, enum: [0.75, 1, 1.25, 1.5]}
                   showTranslation: {type: boolean}
                   showHints: {type: boolean}
                   shortcutEnabled: {type: boolean}
+                  recordingEnabled: {type: boolean}
                   recordingRetention: {type: string, const: manual}
                   rowVersion: {type: integer, minimum: 0}
         '403': {$ref: '#/components/responses/LocalOnly'}
@@ -77,6 +78,71 @@ paths:
           content:
             application/problem+json:
               schema: {$ref: '#/components/schemas/Problem'}
+    put:
+      operationId: updateLocalSettings
+      description: Same-origin JSON only. Preserves timezone and manual retention. A stale rowVersion is rejected; successful writes increment it exactly once.
+      parameters: [{$ref: '#/components/parameters/LocalRequest'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [defaultSpeed, showTranslation, showHints, shortcutEnabled, recordingEnabled, rowVersion]
+              properties:
+                defaultSpeed: {type: number, enum: [0.75, 1, 1.25, 1.5]}
+                showTranslation: {type: boolean}
+                showHints: {type: boolean}
+                shortcutEnabled: {type: boolean}
+                recordingEnabled: {type: boolean}
+                rowVersion: {type: integer, minimum: 0}
+      responses:
+        '200': {description: Persisted; returns committed rowVersion}
+        '409': {description: Stale revision; reread and preserve unsaved changes}
+        '422': {description: Unsupported playback speed}
+        '403': {$ref: '#/components/responses/LocalOnly'}
+  /reports:
+    get:
+      operationId: getLearningReport
+      description: Repeatable-read snapshot across all preserved lesson versions. Includes metrics, six paths per version and readingHistory. Browsing is separate from five evidence-based training stages; skip/play/favorite/draft is not an attempt. No language ability scores.
+      responses:
+        '200':
+          description: Actual counts; metrics.dictation includes submitted/exactMatches and independentSubmitted/independentMatches excluding answer_exposed. Reading correct/submitted; recordings recorded/available/deleted; writing versions; quiz correct/total/runs; review due/cards; selfRatings submitted. Zero means no sample, not a fabricated percentage.
+        '503': {description: Database unavailable; no simulated report}
+        '403': {$ref: '#/components/responses/LocalOnly'}
+  /data/export:
+    get:
+      operationId: exportLearningSnapshot
+      description: Private repeatable-read logical DB snapshot; includes original answers and writing. No credentials. Media binaries and unsynced browser buffers are excluded explicitly. All SQL cells are strings or null; tables and columns are fixed to the current schema.
+      responses:
+        '200':
+          description: northstar.snapshot.v1 envelope with raw UTF-8 payloadJson and its SHA-256; owner local, project identity, schemaVersion 008, exportedAt, mediaIncluded false, browserBuffersIncluded false, tables. No-store.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [format, sha256, payloadJson]
+                additionalProperties: false
+                properties:
+                  format: {type: string, const: northstar.snapshot.v1}
+                  sha256: {type: string, pattern: '^[a-f0-9]{64}$'}
+                  payloadJson: {type: string}
+        '503': {description: Export failed; no successful empty substitute}
+        '403': {$ref: '#/components/responses/LocalOnly'}
+  /data/import-preview:
+    post:
+      operationId: previewLearningImport
+      description: Read-only preflight of export envelope. Validates checksum, local ownership, schema 008, exact tables/columns, content and Flyway baseline. Does not apply data or prove row-level business integrity. CLI restore enforces DB constraints in a new isolated schema; refuses existing targets and missing ready-media binaries.
+      parameters: [{$ref: '#/components/parameters/LocalRequest'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [format, sha256, payloadJson]}
+      responses:
+        '200': {description: valid true, sha256, tableCounts, mode new_isolated_database_only, warning and mediaIncluded false; no writes}
+        '422': {description: Invalid or incompatible snapshot; no writes}
+        '403': {$ref: '#/components/responses/LocalOnly'}
   /books:
     get:
       operationId: getBooks
@@ -771,6 +837,12 @@ paths:
         '409': {description: Stale rowVersion, future card or conflicting event payload; no extra history}
         '422': {description: Invalid context, rating or missing flip}
 components:
+  parameters:
+    LocalRequest:
+      name: X-Northstar-Request
+      in: header
+      required: true
+      schema: {type: string, const: local-workspace}
   responses:
     ContentNotFound:
       description: LESSON_NOT_FOUND, AUDIO_NOT_FOUND or LICENSE_NOT_FOUND with normalized Problem JSON

@@ -7,7 +7,7 @@ import type { MediaState } from './AudioController';
 const Context = createContext<{ controller: AudioController | null; media: MediaState; captureBusy: boolean; setCaptureBusy: (busy: boolean) => void } | null>(null);
 export function useMedia() { const value = useContext(Context); if (!value) throw new Error('MediaProvider required'); return value; }
 export function MediaProvider({ children }: { children: ReactNode }) {
-  const { lesson, checkpoint, playback, savePlayback, update } = useLesson();
+  const { preferences, lesson, checkpoint, playback, savePlayback, update } = useLesson();
   const [captureBusy, setCaptureBusy] = useState(false);
   const audio = useRef<HTMLAudioElement>(null);
   const latestMedia = useRef(initialMedia);
@@ -15,6 +15,7 @@ export function MediaProvider({ children }: { children: ReactNode }) {
   const [media, setMedia] = useState(initialMedia);
   useEffect(() => {
     const player = new AudioController(lesson.sentences.map(s => ({ id: s.id, uri: s.audio.uri })), state => { latestMedia.current = state; setMedia(state); }, audio.current!);
+    player.speed(preferences?.defaultSpeed ?? 1);
     setController(player);
     if (playback.playingSentenceId) player.load(playback.playingSentenceId, (playback.positionMs ?? 0) / 1000);
     return () => player.dispose();
@@ -31,7 +32,7 @@ export function MediaProvider({ children }: { children: ReactNode }) {
   }, [media.sentenceId, media.status, media.time, media.duration, savePlayback]);
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
-      if (captureBusy || !controller || ignoreShortcut(event)) return;
+      if (preferences?.shortcutEnabled === false || captureBusy || !controller || ignoreShortcut(event)) return;
       const key = event.key.toLowerCase(); if (![' ', 'j', 'k', 'r'].includes(key)) return;
       event.preventDefault();
       if (key === ' ') { controller.toggle(controller.state.sentenceId ?? checkpoint.sentenceId); }
@@ -43,6 +44,6 @@ export function MediaProvider({ children }: { children: ReactNode }) {
       }
     };
     window.addEventListener('keydown', handler); return () => window.removeEventListener('keydown', handler);
-  }, [controller, media, checkpoint.sentenceId, lesson, update, captureBusy]);
+  }, [controller, media, checkpoint.sentenceId, lesson, update, captureBusy, preferences]);
   return <Context.Provider value={{ controller, media, captureBusy, setCaptureBusy }}><audio ref={audio} hidden preload="metadata" />{children}</Context.Provider>;
 }

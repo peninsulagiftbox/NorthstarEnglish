@@ -16,6 +16,7 @@ def grant(env):
     for schema in ('northstar_english', 'northstar_phase01_test'):
         if sql(f'SELECT project_key FROM {schema}.project_identity;') != local.IDENTITY:
             raise RuntimeError('数据库项目身份不符，拒绝授权')
+        sql(f"GRANT UPDATE ON {schema}.user_setting TO 'northstar_app'@'%';")
         exists = sql(f"SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='{schema}' AND table_name='study_resume';")
         if exists == '0':
             print(f'{schema}: V003 尚未执行，保留现有权限。')
