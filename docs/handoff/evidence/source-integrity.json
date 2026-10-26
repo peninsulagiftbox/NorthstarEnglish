@@ -1,22 +1,22 @@
 {
-  "observedAt": "2026-10-26T19:35:35.712410+08:00",
-  "auditWrites": "docs/handoff plus output archives; no business source edits by audit",
+  "observedAt": "2026-10-26T19:51:57.539099+08:00",
+  "auditWrites": "Phase09-R authorised packaging/test infrastructure/docs; no product logic changes",
   "worktreeDriftDetected": true,
   "changedBaselineFiles": [
     {
       "path": "docs/RELEASE_CHECKLIST.md",
       "before": "153347ff94a083b468f541e6f046cef8c50ca94535ff1aaab62d22233a090fd9",
-      "observed": "be30026d395065f9c085f0343cb3902bf483a5be5e9b999b7c88f0242cae92ec"
+      "observed": "d3f1e1672fb904869b4e9720a9154980435ed4aa890c9272e198b12898d9714e"
     },
     {
       "path": "docs/TEST_REPORT.md",
       "before": "9c6921c224a2af8c263e2fce6550b912a775d317d05513e691f3783ba5e9ac8f",
-      "observed": "feacf4ec384674b88c9642263be30e6f4a022a13e0142c27f688f56303b72d96"
+      "observed": "db42670be38f16e442a9d61a1f8d3e677aaefa1679aaf62a8570bbca119d1102"
     },
     {
       "path": "docs/progress/PHASE_09.md",
       "before": "ff461fac3f3e70640dbc3acdf6adb6a742ca2c63ad8bc4702348be4c1ccec667",
-      "observed": "410725ca3806dcf34e0a20c96d2334195961f5f2f3697e564e2f8e78e2f7ff8b"
+      "observed": "9b4ca48b78263c54bf81487c2255362aa13b8f60f374ca1a058e450429b40555"
     },
     {
       "path": "scripts/full-learning-loop.js",
@@ -61,7 +61,7 @@
     {
       "path": "README.md",
       "before": "edcc6405ac455bca2d09b09c9b16d2a299377894e8a6dfe74e246f8991963f0c",
-      "observed": "2e906dcc00b36af319bfcb640963003254ded42f7504bbd162dd4841da6f014b"
+      "observed": "b6aa97b6422ae7cf8b286533347a4184429d1c580517f41b8d3d68173f190281"
     },
     {
       "path": "docs/BACKUP_RESTORE.md",
@@ -81,7 +81,7 @@
     {
       "path": "docs/IMPLEMENTATION_PLAN.md",
       "before": "33a415e99a5f4baf96dce5887e35e763fc1bdeb335800052debb6b26701fdf49",
-      "observed": "9add6ec486eedca1ee84a45cf64e2a23549fe1bcc1d5f7621334eaa18ea1407f"
+      "observed": "c12353fcd752ed3b9b51b88e560f4482f0a9d5bd388ccbc5a0ddf0461269e702"
     },
     {
       "path": "scripts/data-transfer.py",
@@ -94,5 +94,8 @@
       "observed": "6e9e23da8afe71549a345819587ec71514a9081e12c4fb74e61260f21219ed2c"
     }
   ],
-  "warning": "Concurrent external edits observed; package is a frozen working-tree snapshot, not a wholly retested release."
+  "warning": "Historical baseline differences are intentional Phase09/09-R changes, not a claim of concurrent drift. See phase09r/final-code-integrity.json for fixed-candidate checks.",
+  "comparisonBaseline": "Historical independent audit baseline, not candidate baseline",
+  "candidateCodeDriftDetected": false,
+  "candidateGitSha": "dd9e3f47a1a5c12296532846f676bb1fcbec7569"
 }

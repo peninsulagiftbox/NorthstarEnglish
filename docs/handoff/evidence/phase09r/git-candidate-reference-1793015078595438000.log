@@ -1,0 +1,6 @@
+tag phase-09r-rc1
+Tagger: <GIT_IDENTITY_REDACTED>
+
+Phase 09-R acceptance candidate; acceptance results recorded separately
+dd9e3f47a1a5c12296532846f676bb1fcbec7569
+test: freeze Phase 09-R acceptance candidate with complete Java delivery

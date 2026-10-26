@@ -1,3 +1,5 @@
+> 当前 Phase 09-R 固定候选复验见 [09-R 报告](../handoff/PHASE_09_R_ACCEPTANCE_REPORT.md)。本地已测核心工程 PASS；公开素材授权 FAIL；全平台发布 NOT VERIFIED。以下为历史 Phase09原文，失败记录与当时标签保留。
+
 # Phase 09｜最终工程化、集成回归与本地交付
 
 更新：2026-10-26（Asia/Shanghai）。已按用户授权阅读Prompt09、实施计划、根AGENTS、Phase08报告及Phase1验收规范，并补齐此前未实现/未实测项。本地工程验收 **PASS_WITH_NOTES**，等待最终审核；素材正式发布仍为 **BLOCKED**（文本/声音授权pending_review）。实体Chrome/Safari麦克风、另一台Mac复现与外部模型调用不列为通过。未提交或推送Git。

@@ -1,0 +1,16 @@
+V008 version=008 description=recording preference type=SQL script=V008__recording_preference.sql checksum=-1543956184 success=1
+user_setting owner_key varchar(16) nullable=NO default=null extra=
+user_setting project_key varchar(64) nullable=NO default=null extra=
+user_setting timezone varchar(64) nullable=NO default=Asia/Shanghai extra=
+user_setting default_speed decimal(3,2) nullable=NO default=1.00 extra=
+user_setting show_translation tinyint(1) nullable=NO default=1 extra=
+user_setting show_hints tinyint(1) nullable=NO default=1 extra=
+user_setting shortcut_enabled tinyint(1) nullable=NO default=1 extra=
+user_setting recording_retention varchar(16) nullable=NO default=manual extra=
+user_setting row_version bigint nullable=NO default=0 extra=
+user_setting created_at datetime(3) nullable=NO default=utc_timestamp(3) extra=DEFAULT_GENERATED
+user_setting updated_at datetime(3) nullable=NO default=utc_timestamp(3) extra=DEFAULT_GENERATED
+user_setting recording_enabled tinyint(1) nullable=NO default=1 extra=
+19:37:38.848 [main] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:mysql://127.0.0.1:3311/northstar_phase01_test (MySQL 8.4)
+19:37:38.989 [main] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 9 migrations (execution time 00:00.027s)
+PASS: read-only V008 metadata and Flyway validate; no migrate/repair/history writes

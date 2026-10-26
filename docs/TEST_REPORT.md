@@ -1,3 +1,5 @@
+> 当前 Phase 09-R 固定候选复验见 [09-R 报告](handoff/PHASE_09_R_ACCEPTANCE_REPORT.md)。本地已测核心工程 PASS；公开素材授权 FAIL；全平台发布 NOT VERIFIED。以下为历史 Phase09原文，失败记录与当时标签保留。
+
 # Phase 09 最终测试报告
 
 日期：2026-10-26（Asia/Shanghai）。本地核心工程 **PASS_WITH_NOTES**。完整命令、失败与修正、截图和边界见 `docs/progress/PHASE_09.md`；原始证据在本地忽略目录 `docs/evidence/phase-09/`，trace位于`.playwright-cli/traces/`。

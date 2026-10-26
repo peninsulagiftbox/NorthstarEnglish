@@ -1,0 +1,6 @@
+api URLError
+web URLError
+isolated-api URLError
+isolated-web URLError
+
+exitCode=1

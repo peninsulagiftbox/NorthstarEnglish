@@ -1,0 +1,23 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-26T19:41:29.208+08:00  INFO 13859 --- [northstar-api] [           main] local.northstar.NorthstarApplication     : Starting NorthstarApplication v0.1.0-SNAPSHOT using Java 21.0.12.1 with PID 13859 (<PROJECT_ROOT>/.local/phase09r-rc1/source/workspace/apps/api/target/northstar-api-0.1.0-SNAPSHOT.jar started by <LOCAL_USER> in <PROJECT_ROOT>)
+2026-10-26T19:41:29.212+08:00  INFO 13859 --- [northstar-api] [           main] local.northstar.NorthstarApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-10-26T19:41:31.282+08:00  INFO 13859 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3311/northstar_phase01_test?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T19:41:31.401+08:00  INFO 13859 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.024s)
+2026-10-26T19:41:31.414+08:00  INFO 13859 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_phase01_test`: 008
+2026-10-26T19:41:31.417+08:00  INFO 13859 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_phase01_test` is up to date. No migration necessary.
+2026-10-26T19:41:31.502+08:00  INFO 13859 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-26T19:41:31.526+08:00  INFO 13859 --- [northstar-api] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@31aab981
+2026-10-26T19:41:31.527+08:00  INFO 13859 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-26T19:41:31.542+08:00  INFO 13859 --- [northstar-api] [           main] l.n.practice.RecordingController         : Recording reconciliation: orphan/partial files=0; retained for manual review
+2026-10-26T19:41:31.606+08:00  INFO 13859 --- [northstar-api] [           main] local.northstar.NorthstarApplication     : Started NorthstarApplication in 2.665 seconds (process running for 2.908)
+2026-10-26T19:41:31.759+08:00  INFO 13859 --- [northstar-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-10-26T19:41:31.761+08:00  INFO 13859 --- [northstar-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

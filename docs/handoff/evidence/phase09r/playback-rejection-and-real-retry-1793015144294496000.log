@@ -1,0 +1,12 @@
+{"id": "playback-browser-open", "exitCode": 0, "timedOut": false, "log": "playback-browser-open-1793015144389447000.log"}
+{"id": "playback-browser-snapshot", "exitCode": 0, "timedOut": false, "log": "playback-browser-snapshot-1793015145774641000.log"}
+{"id": "playback-browser-trace-start", "exitCode": 0, "timedOut": false, "log": "playback-browser-trace-start-1793015146036914000.log"}
+{"id": "playback-product-rejection", "exitCode": 1, "timedOut": false, "log": "playback-product-rejection-1793015146393493000.log"}
+{"id": "playback-browser-trace-stop", "exitCode": 0, "timedOut": false, "log": "playback-browser-trace-stop-1793015177000263000.log"}
+{"id": "playback-browser-close", "exitCode": 0, "timedOut": false, "log": "playback-browser-close-1793015177222795000.log"}
+Traceback (most recent call last):
+  File "<PROJECT_ROOT>/docs/handoff/evidence/phase09r/playback_check.py", line 17, in <module>
+    output=phase09r.recorded('playback-product-rejection',cli+['run-code',code],env)
+  File "<PROJECT_ROOT>/scripts/phase09r.py", line 81, in recorded
+    raise RuntimeError('Command failed; evidence retained: '+name)
+RuntimeError: Command failed; evidence retained: playback-product-rejection

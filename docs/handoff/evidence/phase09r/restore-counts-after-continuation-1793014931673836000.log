@@ -1,0 +1,8 @@
+dictation.submitted=2 matches SQL
+reading.submitted=1 matches SQL
+writing.versions=2 matches SQL
+quiz.runs=1 matches SQL
+quiz.correct=1 matches SQL
+recordings.available=1 matches SQL
+selfRatings.submitted=1 matches SQL
+PASS: report counts equal real isolated records; skipped speaking remains separate

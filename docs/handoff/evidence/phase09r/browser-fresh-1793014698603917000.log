@@ -1,0 +1,23 @@
+<HOME>/.npm/_npx/31e32ef8478fbf80/node_modules/playwright-core/lib/tools/cli-client/session.js:172
+    const rejectWithPid = (reject, message) => reject(Object.assign(new Error(`Daemon pid=${child.pid}: ${message}`), { daemonPid: child.pid }));
+                                                                    ^
+
+Error: Daemon pid=12242: Daemon process exited with code 1
+Error: Browser "chromium" is not installed; expected executable at <HOME>/Library/Caches/ms-playwright/chromium_headless_shell-1247/chrome-headless-shell-mac-arm64/chrome-headless-shell. Run `playwright-cli install-browser chromium` to install
+    at throwIfExecutableMissing (<HOME>/.npm/_npx/31e32ef8478fbf80/node_modules/playwright-core/lib/coreBundle.js:75542:9)
+    at <HOME>/.npm/_npx/31e32ef8478fbf80/node_modules/playwright-core/lib/coreBundle.js:75406:5
+    at async createIsolatedBrowser (<HOME>/.npm/_npx/31e32ef8478fbf80/node_modules/playwright-core/lib/coreBundle.js:75400:19)
+    at async createBrowser (<HOME>/.npm/_npx/31e32ef8478fbf80/node_modules/playwright-core/lib/coreBundle.js:75364:15)
+    at async createBrowserWithInfo (<HOME>/.npm/_npx/31e32ef8478fbf80/node_modules/playwright-core/lib/coreBundle.js:75346:16)
+    at async _Command.<anonymous> (<HOME>/.npm/_npx/31e32ef8478fbf80/node_modules/playwright-core/lib/coreBundle.js:76379:76)
+    at async _Command.parseAsync (<HOME>/.npm/_npx/31e32ef8478fbf80/node_modules/playwright-core/lib/utilsBundle.js:54135:5)
+
+    at rejectWithPid (<HOME>/.npm/_npx/31e32ef8478fbf80/node_modules/playwright-core/lib/tools/cli-client/session.js:172:69)
+    at ChildProcess.<anonymous> (<HOME>/.npm/_npx/31e32ef8478fbf80/node_modules/playwright-core/lib/tools/cli-client/session.js:182:11)
+    at ChildProcess.emit (node:events:519:28)
+    at maybeClose (node:internal/child_process:1101:16)
+    at ChildProcess._handle.onexit (node:internal/child_process:304:5) {
+  daemonPid: 12242
+}
+
+Node.js v22.23.2

@@ -1,0 +1,58 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-26T14:43:46.939+08:00  INFO 17039 --- [northstar-api] [           main] local.northstar.NorthstarApplication     : Starting NorthstarApplication v0.1.0-SNAPSHOT using Java 21.0.12.1 with PID=<REDACTED> (<PROJECT_ROOT>/apps/api/target/northstar-api-0.1.0-SNAPSHOT.jar started by <LOCAL_USER> in <PROJECT_ROOT>)
+2026-10-26T14:43:46.941+08:00  INFO 17039 --- [northstar-api] [           main] local.northstar.NorthstarApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-10-26T14:43:47.560+08:00  INFO 17039 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3310/northstar_english?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:43:47.653+08:00  INFO 17039 --- [northstar-api] [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table `northstar_english`.`flyway_schema_history` with baseline ...
+2026-10-26T14:43:47.700+08:00  INFO 17039 --- [northstar-api] [           main] o.f.core.internal.command.DbBaseline     : Successfully baselined schema with version: 0
+2026-10-26T14:43:47.716+08:00  INFO 17039 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3310/northstar_english?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:43:47.740+08:00  INFO 17039 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.012s)
+2026-10-26T14:43:47.748+08:00  INFO 17039 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_english`: 0
+2026-10-26T14:43:47.757+08:00  INFO 17039 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `northstar_english` to version "001 - local settings and environment"
+2026-10-26T14:43:47.786+08:00  INFO 17039 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `northstar_english` to version "002 - catalog content versions"
+2026-10-26T14:43:47.873+08:00  INFO 17039 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `northstar_english` to version "003 - study session resume"
+2026-10-26T14:43:47.896+08:00  INFO 17039 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `northstar_english` to version "004 - attempts evidence drafts review sources"
+2026-10-26T14:43:48.012+08:00  INFO 17039 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `northstar_english` to version "005 - knowledge points and exercise links"
+2026-10-26T14:43:48.084+08:00  INFO 17039 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `northstar_english` to version "006 - recordings and writing revisions"
+2026-10-26T14:43:48.173+08:00  INFO 17039 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `northstar_english` to version "007 - quiz runs and review results"
+2026-10-26T14:43:48.280+08:00  INFO 17039 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `northstar_english` to version "008 - recording preference"
+2026-10-26T14:43:48.300+08:00  INFO 17039 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 8 migrations to schema `northstar_english`, now at version v008 (execution time 00:00.444s)
+2026-10-26T14:43:48.370+08:00  INFO 17039 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-26T14:43:48.383+08:00  INFO 17039 --- [northstar-api] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@69a40b3c
+2026-10-26T14:43:48.384+08:00  INFO 17039 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-26T14:43:48.394+08:00  INFO 17039 --- [northstar-api] [           main] l.n.practice.RecordingController         : Recording reconciliation: orphan/partial files=0; retained for manual review
+2026-10-26T14:43:48.441+08:00  INFO 17039 --- [northstar-api] [           main] local.northstar.NorthstarApplication     : Started NorthstarApplication in 1.683 seconds (process running for 1.902)
+2026-10-26T14:43:48.579+08:00  INFO 17039 --- [northstar-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-10-26T14:43:48.580+08:00  INFO 17039 --- [northstar-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-26T14:43:53.140+08:00  INFO 17149 --- [northstar-api] [           main] local.northstar.NorthstarApplication     : Starting NorthstarApplication v0.1.0-SNAPSHOT using Java 21.0.12.1 with PID=<REDACTED> (<PROJECT_ROOT>/apps/api/target/northstar-api-0.1.0-SNAPSHOT.jar started by <LOCAL_USER> in <PROJECT_ROOT>)
+2026-10-26T14:43:53.142+08:00  INFO 17149 --- [northstar-api] [           main] local.northstar.NorthstarApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-10-26T14:43:53.745+08:00  INFO 17149 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3310/northstar_english?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:43:53.836+08:00  INFO 17149 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.018s)
+2026-10-26T14:43:53.850+08:00  INFO 17149 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_english`: 008
+2026-10-26T14:43:53.852+08:00  INFO 17149 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_english` is up to date. No migration necessary.
+2026-10-26T14:43:53.916+08:00  INFO 17149 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-26T14:43:53.935+08:00  INFO 17149 --- [northstar-api] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@391515c7
+2026-10-26T14:43:53.936+08:00  INFO 17149 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-26T14:43:53.949+08:00  INFO 17149 --- [northstar-api] [           main] l.n.practice.RecordingController         : Recording reconciliation: orphan/partial files=0; retained for manual review
+2026-10-26T14:43:53.995+08:00  INFO 17149 --- [northstar-api] [           main] local.northstar.NorthstarApplication     : Started NorthstarApplication in 1.032 seconds (process running for 1.245)
+2026-10-26T14:43:54.123+08:00  INFO 17149 --- [northstar-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-10-26T14:43:54.124+08:00  INFO 17149 --- [northstar-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+PASS: new independent MySQL schema migrated through008, two frozen versions/20 sentences seeded; second initialization preserves all37 table hashes; zero fabricated learning records

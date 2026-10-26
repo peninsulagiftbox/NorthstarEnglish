@@ -1,0 +1,6 @@
+/northstar-english-phase09r-source exited
+/northstar-english-phase09r-restore exited
+
+Main owned process checks (read-only):
+api True
+web True

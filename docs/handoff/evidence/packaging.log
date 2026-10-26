@@ -1,0 +1,14 @@
+{
+  "command": "python3 docs/handoff/evidence/package_handoff.py <frozen-private-temp-directory>",
+  "checks": [
+    "frozen source hashes match",
+    "exact configured secret scan",
+    "local identity and private path scan",
+    "credential pattern scan",
+    "source ZIP CRC and every extracted byte match",
+    "handoff ZIP CRC and every extracted byte match"
+  ],
+  "sourceFiles": 228,
+  "sourceZipSha256": "e3e99ce1910cad3fd56bb76fa9c36ad7863033ce5a05dc0156f5419fa9518773",
+  "note": "This records packaging validation only, not project acceptance. Handoff manifest excludes itself to avoid recursive hashing."
+}

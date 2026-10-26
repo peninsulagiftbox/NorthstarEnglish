@@ -1,0 +1,239 @@
+docs/handoff/evidence/diff-check.log:2: new blank line at EOF.
+docs/handoff/evidence/historical/api-verify-resume.log:2: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:7: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:11: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:15: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:21: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:24: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:30: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:33: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:36: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:80: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:85: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:89: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:93: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:96: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:99: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:102: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:105: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:498: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:500: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:502: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:503: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/api-verify-resume.log:505: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/historical/recovery-restart-continue.log:2: trailing whitespace.
++ Container northstar-english-phase09-recovery Stopping 
+docs/handoff/evidence/historical/recovery-restart-continue.log:3: trailing whitespace.
++ Container northstar-english-phase09-recovery Stopped 
+docs/handoff/evidence/historical/recovery-restart-continue.log:4: trailing whitespace.
++ Container northstar-english-phase09-recovery Starting 
+docs/handoff/evidence/historical/recovery-restart-continue.log:5: trailing whitespace.
++ Container northstar-english-phase09-recovery Started 
+docs/handoff/evidence/historical/recovery-restart-continue.log:6: trailing whitespace.
++ Container northstar-english-phase09-recovery Waiting 
+docs/handoff/evidence/historical/recovery-restart-continue.log:7: trailing whitespace.
++ Container northstar-english-phase09-recovery Healthy 
+docs/handoff/evidence/historical/recovery-restart-continue.log:28: trailing whitespace.
++urllib.error.HTTPError: HTTP Error 422: 
+docs/handoff/evidence/historical/repeated-init-final.log:2: trailing whitespace.
++ Container northstar-english-mysql-01 Waiting 
+docs/handoff/evidence/historical/repeated-init-final.log:3: trailing whitespace.
++ Container northstar-english-mysql-01 Healthy 
+docs/handoff/evidence/historical/repeated-init.log:2: trailing whitespace.
++ Container northstar-english-mysql-01 Waiting 
+docs/handoff/evidence/historical/repeated-init.log:3: trailing whitespace.
++ Container northstar-english-mysql-01 Healthy 
+docs/handoff/evidence/historical/restore-build-start.log:14: trailing whitespace.
++  Generating static pages using 7 workers (2/9) 
+docs/handoff/evidence/historical/restore-build-start.log:15: trailing whitespace.
++  Generating static pages using 7 workers (4/9) 
+docs/handoff/evidence/historical/restore-build-start.log:16: trailing whitespace.
++  Generating static pages using 7 workers (6/9) 
+docs/handoff/evidence/historical/restore-continued-browser.log:222: new blank line at EOF.
+docs/handoff/evidence/java-compile.log:4: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/java-compile.log:9: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/java-compile.log:13: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/java-compile.log:17: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/java-compile.log:20: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/java-compile.log:23: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/java-compile.log:26: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/java-compile.log:29: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/java-compile.log:31: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/java-pure.log:4: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/java-pure.log:9: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/java-pure.log:13: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/java-pure.log:17: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/java-pure.log:20: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/java-pure.log:23: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/java-pure.log:26: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/java-pure.log:29: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/java-pure.log:39: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/java-pure.log:41: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/java-pure.log:43: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/browser-fresh-chrome-1793014735161958000.log:202: new blank line at EOF.
+docs/handoff/evidence/phase09r/browser-full-loop-1793014786951162000.log:203: new blank line at EOF.
+docs/handoff/evidence/phase09r/browser-ui-audit-1793014838746167000.log:202: new blank line at EOF.
+docs/handoff/evidence/phase09r/java-compile-1793014629254230000.log:2: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-compile-1793014629254230000.log:7: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-compile-1793014629254230000.log:11: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-compile-1793014629254230000.log:15: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-compile-1793014629254230000.log:21: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-compile-1793014629254230000.log:24: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-compile-1793014629254230000.log:30: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-compile-1793014629254230000.log:33: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-compile-1793014629254230000.log:36: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-mysql-integration-1793014752750712000.log:2: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-mysql-integration-1793014752750712000.log:7: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-mysql-integration-1793014752750712000.log:11: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-mysql-integration-1793014752750712000.log:15: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-mysql-integration-1793014752750712000.log:18: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-mysql-integration-1793014752750712000.log:21: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-mysql-integration-1793014752750712000.log:24: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-mysql-integration-1793014752750712000.log:27: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-mysql-integration-1793014752750712000.log:420: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-mysql-integration-1793014752750712000.log:422: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-mysql-integration-1793014752750712000.log:424: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-mysql-integration-1793014752750712000.log:425: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/java-mysql-integration-1793014752750712000.log:427: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/phase09r/playback-browser-close-1793015177222795000.log:2: new blank line at EOF.
+docs/handoff/evidence/phase09r/playback-product-rejection-1793015146393493000.log:5: new blank line at EOF.
+docs/handoff/evidence/phase09r/playback-v2-browser-close-1793015223671812000.log:2: new blank line at EOF.
+docs/handoff/evidence/phase09r/restore-browser-revisit-1793014883584361000.log:202: new blank line at EOF.
+docs/handoff/evidence/phase09r/restore-new-browser-after-reboot-1793015056963518000.log:202: new blank line at EOF.
+docs/handoff/evidence/phase09r/restore-web-build-1793014698393788000.log:18: trailing whitespace.
++  Generating static pages using 7 workers (2/9) 
+docs/handoff/evidence/phase09r/restore-web-build-1793014698393788000.log:19: trailing whitespace.
++  Generating static pages using 7 workers (4/9) 
+docs/handoff/evidence/phase09r/restore-web-build-1793014698393788000.log:20: trailing whitespace.
++  Generating static pages using 7 workers (6/9) 
+docs/handoff/evidence/phase09r/restore-web-build-1793014698393788000.log:39: new blank line at EOF.
+docs/handoff/evidence/phase09r/restored-real-browser-continuation-1793014927077703000.log:203: new blank line at EOF.
+docs/handoff/evidence/phase09r/source-new-browser-after-reinit-1793015052449624000.log:202: new blank line at EOF.
+docs/handoff/evidence/phase09r/web-lint-1793014639578899000.log:8: new blank line at EOF.
+docs/handoff/evidence/phase09r/web-production-build-1793014665605992000.log:18: trailing whitespace.
++  Generating static pages using 7 workers (2/9) 
+docs/handoff/evidence/phase09r/web-production-build-1793014665605992000.log:19: trailing whitespace.
++  Generating static pages using 7 workers (4/9) 
+docs/handoff/evidence/phase09r/web-production-build-1793014665605992000.log:20: trailing whitespace.
++  Generating static pages using 7 workers (6/9) 
+docs/handoff/evidence/phase09r/web-production-build-1793014665605992000.log:39: new blank line at EOF.
+docs/handoff/evidence/phase09r/web-typecheck-1793014637479062000.log:8: new blank line at EOF.
+docs/handoff/evidence/sandbox-java-unit.log:4: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/sandbox-java-unit.log:9: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/sandbox-java-unit.log:13: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/sandbox-java-unit.log:17: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/sandbox-java-unit.log:20: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/sandbox-java-unit.log:23: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/sandbox-java-unit.log:26: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/sandbox-java-unit.log:29: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/sandbox-java-unit.log:66: trailing whitespace.
++Caused by: org.mockito.exceptions.base.MockitoInitializationException: 
+docs/handoff/evidence/sandbox-java-unit.log:123: trailing whitespace.
++Caused by: org.mockito.exceptions.base.MockitoInitializationException: 
+docs/handoff/evidence/sandbox-java-unit.log:180: trailing whitespace.
++Caused by: org.mockito.exceptions.base.MockitoInitializationException: 
+docs/handoff/evidence/sandbox-java-unit.log:237: trailing whitespace.
++Caused by: org.mockito.exceptions.base.MockitoInitializationException: 
+docs/handoff/evidence/sandbox-java-unit.log:291: trailing whitespace.
++Caused by: org.mockito.exceptions.base.MockitoInitializationException: 
+docs/handoff/evidence/sandbox-java-unit.log:345: trailing whitespace.
++Caused by: org.mockito.exceptions.base.MockitoInitializationException: 
+docs/handoff/evidence/sandbox-java-unit.log:377: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/sandbox-java-unit.log:379: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/sandbox-java-unit.log:380: trailing whitespace.
++[ERROR] Errors: 
+docs/handoff/evidence/sandbox-java-unit.log:387: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/sandbox-java-unit.log:389: trailing whitespace.
++[INFO] 
+docs/handoff/evidence/sandbox-java-unit.log:396: trailing whitespace.
++[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.5.6:test (default-test) on project northstar-api: 
+docs/handoff/evidence/sandbox-java-unit.log:397: trailing whitespace.
++[ERROR] 
+docs/handoff/evidence/sandbox-java-unit.log:401: trailing whitespace.
++[ERROR] 
+docs/handoff/evidence/sandbox-java-unit.log:404: trailing whitespace.
++[ERROR] 
+docs/handoff/evidence/web-build.log:20: trailing whitespace.
++  Generating static pages using 7 workers (2/9) 
+docs/handoff/evidence/web-build.log:21: trailing whitespace.
++  Generating static pages using 7 workers (4/9) 
+docs/handoff/evidence/web-build.log:22: trailing whitespace.
++  Generating static pages using 7 workers (6/9) 
+docs/handoff/evidence/web-build.log:41: new blank line at EOF.
+docs/handoff/evidence/web-lint.log:10: new blank line at EOF.
+docs/handoff/evidence/web-typecheck.log:10: new blank line at EOF.

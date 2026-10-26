@@ -1,0 +1,65 @@
+[
+  {
+    "path": ".playwright-cli/traces/trace-1793014738866.trace",
+    "sha256": "c6df2ddaea03880f456a62909c198c52ce27faa7af78ca64d7671788ecbe846c",
+    "bytes": 63995,
+    "packaged": false,
+    "reason": "Local raw browser trace kept; selected sanitized logs/screenshots packaged"
+  },
+  {
+    "path": ".playwright-cli/traces/trace-1793014791118.trace",
+    "sha256": "4e2fb4dd89644ac7d76f0e40e520b57bffa42f7873ed4be4725676d1672e7c5e",
+    "bytes": 771810,
+    "packaged": false,
+    "reason": "Local raw browser trace kept; selected sanitized logs/screenshots packaged"
+  },
+  {
+    "path": ".playwright-cli/traces/trace-1793014841086.trace",
+    "sha256": "88f55c4fe39205448ec9de7dbe5d3170ffa8eb90f1886a588f6727e986e469b6",
+    "bytes": 130319,
+    "packaged": false,
+    "reason": "Local raw browser trace kept; selected sanitized logs/screenshots packaged"
+  },
+  {
+    "path": ".playwright-cli/traces/trace-1793014885320.trace",
+    "sha256": "cfd5548949faadc3c15f50de26b38548083a623448b0edcb132d6fc38fd89591",
+    "bytes": 113957,
+    "packaged": false,
+    "reason": "Local raw browser trace kept; selected sanitized logs/screenshots packaged"
+  },
+  {
+    "path": ".playwright-cli/traces/trace-1793014929204.trace",
+    "sha256": "42e0b104c3305c52b9f5017924c915e0778926e39373c3ba447be2fd0c0f95ed",
+    "bytes": 71101,
+    "packaged": false,
+    "reason": "Local raw browser trace kept; selected sanitized logs/screenshots packaged"
+  },
+  {
+    "path": ".playwright-cli/traces/trace-1793015054403.trace",
+    "sha256": "77dfd4c048126670badec4339420abe897f1ea1e165036a1cf43f202562983c3",
+    "bytes": 113266,
+    "packaged": false,
+    "reason": "Local raw browser trace kept; selected sanitized logs/screenshots packaged"
+  },
+  {
+    "path": ".playwright-cli/traces/trace-1793015058466.trace",
+    "sha256": "dabd2938dcdd497530ce75fefa4c726028ce36672005ad0aa6bceb1762331539",
+    "bytes": 116719,
+    "packaged": false,
+    "reason": "Local raw browser trace kept; selected sanitized logs/screenshots packaged"
+  },
+  {
+    "path": ".playwright-cli/traces/trace-1793015146363.trace",
+    "sha256": "2af3afb949cd030e47a32cd017842d1ea26270bb3ac84926c62258f17ec96a81",
+    "bytes": 38380,
+    "packaged": false,
+    "reason": "Local raw browser trace kept; selected sanitized logs/screenshots packaged"
+  },
+  {
+    "path": ".playwright-cli/traces/trace-1793015222125.trace",
+    "sha256": "11671d11fa0ba0764d02e3c6b33f1009e23b216bfdca5805d9656e04ebc06634",
+    "bytes": 59055,
+    "packaged": false,
+    "reason": "Local raw browser trace kept; selected sanitized logs/screenshots packaged"
+  }
+]

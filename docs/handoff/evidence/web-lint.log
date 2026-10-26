@@ -1,0 +1,10 @@
+{"id": "web-lint", "command": ["npm", "run", "lint"], "cwd": ".", "startedAt": "2026-10-26T14:36:58.822522+08:00", "exitCode": 0, "seconds": 3.483, "log": "web-lint.log"}
+
+
+> northstar-english@0.1.0 lint
+> npm run lint --workspace apps/web
+
+
+> @northstar/web@0.1.0 lint
+> eslint .
+

@@ -1,0 +1,1 @@
+PASS: actual health/capabilities/settings; cache headers; 404/405/403 Problem contract; Host/Origin rejection; no CORS wildcard

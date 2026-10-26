@@ -1,0 +1,55 @@
+{"id": "python-unit", "command": ["python3", "-m", "unittest", "discover", "-s", "scripts/tests", "-v"], "cwd": ".", "startedAt": "2026-10-26T14:36:56.771008+08:00", "exitCode": 1, "seconds": 0.398, "log": "python-unit.log"}
+
+test_frozen_write_refuses_changed_existing_version (test_content.ContentSafetyTest.test_frozen_write_refuses_changed_existing_version) ... ok
+test_literal_parser_rejects_executable_expressions (test_content.ContentSafetyTest.test_literal_parser_rejects_executable_expressions) ... ok
+test_snapshot_hash_version_and_owner_are_checked (test_data_transfer.DataTransferTests.test_snapshot_hash_version_and_owner_are_checked) ... ok
+test_sql_values_are_hex_encoded_including_quotes_and_unicode (test_data_transfer.DataTransferTests.test_sql_values_are_hex_encoded_including_quotes_and_unicode) ... ok
+test_duplicate_or_unrecognized_keys_are_rejected (test_local.LocalTests.test_duplicate_or_unrecognized_keys_are_rejected) ... ok
+test_env_is_data_and_never_shell_evaluated (test_local.LocalTests.test_env_is_data_and_never_shell_evaluated) ... ok
+test_foreign_process_is_never_owned (test_local.LocalTests.test_foreign_process_is_never_owned) ... ERROR
+test_init_selects_free_ports_and_never_rewrites_existing_env (test_local.LocalTests.test_init_selects_free_ports_and_never_rewrites_existing_env) ... ok
+test_stopped_listener_time_wait_does_not_look_like_a_port_conflict (test_local.LocalTests.test_stopped_listener_time_wait_does_not_look_like_a_port_conflict) ... ERROR
+test_sigterm_stops_and_reaps_its_child_without_deadlock (test_service_runner.RunnerTests.test_sigterm_stops_and_reaps_its_child_without_deadlock) ... ok
+
+======================================================================
+ERROR: test_foreign_process_is_never_owned (test_local.LocalTests.test_foreign_process_is_never_owned)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<PROJECT_ROOT>/scripts/tests/test_local.py", line 30, in test_foreign_process_is_never_owned
+    self.assertFalse(local.owns_process({"pid": os.getpid(), "cwd": str(local.ROOT), "token": "unrelated-northstar-java-process"}))
+                     ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<PROJECT_ROOT>/scripts/local.py", line 147, in owns_process
+    cmd = subprocess.run(["ps", "-p", str(pid), "-o", "command="], capture_output=True, text=True).stdout
+          ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.8/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 555, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.8/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.8/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 1990, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+PermissionError: [Errno 1] Operation not permitted: 'ps'
+
+======================================================================
+ERROR: test_stopped_listener_time_wait_does_not_look_like_a_port_conflict (test_local.LocalTests.test_stopped_listener_time_wait_does_not_look_like_a_port_conflict)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<PROJECT_ROOT>/scripts/tests/test_local.py", line 46, in test_stopped_listener_time_wait_does_not_look_like_a_port_conflict
+    server.bind(("127.0.0.1", 0))
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 1] Operation not permitted
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.286s
+
+FAILED (errors=2)
+已生成 .env（权限 0600）；Web/API/MySQL 端口：3101/8085/3309
+保留已有 .env；未改写任何凭据或端口。

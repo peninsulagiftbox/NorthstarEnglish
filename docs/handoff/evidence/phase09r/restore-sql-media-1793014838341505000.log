@@ -1,0 +1,2 @@
+PASS: 逐表行数与媒体哈希通过，恢复到全新隔离库 northstar_restore_20261026194500；没有修改当前库。
+启动此恢复副本需项目级 DB_NAME=northstar_restore_20261026194500 NORTHSTAR_ALLOW_RESTORE_DB=true，并选择空闲 API/Web 端口；不要改主 .env。

@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "git",
+    "diff",
+    "--cached",
+    "--check"
+  ],
+  "cwd": "<PROJECT_ROOT>",
+  "exitCode": 2,
+  "status": "FAIL",
+  "log": "git-evidence-whitespace.log",
+  "resolution": "Raw logs intentionally retain whitespace. Check code/docs excluding captured *.log separately; nested evidence .gitattributes disables line-ending normalization. No old failure log edited."
+}

@@ -1,0 +1,10 @@
+{"id": "web-typecheck", "command": ["npm", "run", "typecheck"], "cwd": ".", "startedAt": "2026-10-26T14:36:57.792419+08:00", "exitCode": 0, "seconds": 1.03, "log": "web-typecheck.log"}
+
+
+> northstar-english@0.1.0 typecheck
+> npm run typecheck --workspace apps/web
+
+
+> @northstar/web@0.1.0 typecheck
+> tsc --noEmit
+

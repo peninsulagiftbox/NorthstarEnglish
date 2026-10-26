@@ -1,0 +1,45 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------< local.northstar:northstar-api >--------------------
+[INFO] Building northstar-api 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.6.2:enforce (runtime) @ northstar-api ---
+[INFO] Rule 0: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[INFO] Rule 1: org.apache.maven.enforcer.rules.version.RequireMavenVersion passed
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ northstar-api ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 8 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ northstar-api ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 19 source files with javac [debug parameters release 21] to target/classes
+[INFO] <PROJECT_ROOT>/.local/phase09r-rc1/source/workspace/apps/api/src/main/java/local/northstar/catalog/CatalogController.java: Some input files use or override a deprecated API.
+[INFO] <PROJECT_ROOT>/.local/phase09r-rc1/source/workspace/apps/api/src/main/java/local/northstar/catalog/CatalogController.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ northstar-api ---
+[INFO] skip non existing resourceDirectory <PROJECT_ROOT>/.local/phase09r-rc1/source/workspace/apps/api/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ northstar-api ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 13 source files with javac [debug parameters release 21] to target/test-classes
+[INFO] <PROJECT_ROOT>/.local/phase09r-rc1/source/workspace/apps/api/src/test/java/local/northstar/catalog/CatalogIntegrationTest.java: Some input files use or override a deprecated API.
+[INFO] <PROJECT_ROOT>/.local/phase09r-rc1/source/workspace/apps/api/src/test/java/local/northstar/catalog/CatalogIntegrationTest.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- surefire:3.5.6:test (default-test) @ northstar-api ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ northstar-api ---
+[INFO] Building jar: <PROJECT_ROOT>/.local/phase09r-rc1/source/workspace/apps/api/target/northstar-api-0.1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- spring-boot:4.1.1:repackage (repackage) @ northstar-api ---
+[INFO] Replacing main artifact <PROJECT_ROOT>/.local/phase09r-rc1/source/workspace/apps/api/target/northstar-api-0.1.0-SNAPSHOT.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to <PROJECT_ROOT>/.local/phase09r-rc1/source/workspace/apps/api/target/northstar-api-0.1.0-SNAPSHOT.jar.original
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.429 s
+[INFO] Finished at: 2026-10-26T19:37:14+08:00
+[INFO] ------------------------------------------------------------------------

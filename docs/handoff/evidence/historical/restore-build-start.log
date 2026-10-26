@@ -1,0 +1,38 @@
+
+> @northstar/web@0.1.0 build
+> next build --webpack
+
+▲ Next.js 16.4.2 (webpack)
+✓ Running next.config.ts took 15ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 3.0s
+  Running TypeScript ...
+  Finished TypeScript in 1698ms ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/9) ...
+  Generating static pages using 7 workers (2/9) 
+  Generating static pages using 7 workers (4/9) 
+  Generating static pages using 7 workers (6/9) 
+✓ Generating static pages using 7 workers (9/9) in 308ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /courses
+├ ○ /dashboard
+├ ○ /icon.svg
+├ ƒ /lesson/[lessonId]
+├ ○ /reports
+├ ○ /review
+└ ○ /settings
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+phase09-restore-api PID=13512，日志：<PROJECT_ROOT>/.local/phase09-restore-api.log
+phase09-restore-web PID=13520，日志：<PROJECT_ROOT>/.local/phase09-restore-web.log
+Isolated regression: http://127.0.0.1:3102

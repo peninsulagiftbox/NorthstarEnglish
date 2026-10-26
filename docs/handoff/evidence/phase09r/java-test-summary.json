@@ -1,0 +1,106 @@
+[
+  {
+    "name": "local.northstar.DatabaseIntegrationTest",
+    "tests": "1",
+    "errors": "0",
+    "skipped": "0",
+    "failures": "0",
+    "time": "0.367"
+  },
+  {
+    "name": "local.northstar.catalog.CatalogIntegrationTest",
+    "tests": "1",
+    "errors": "0",
+    "skipped": "0",
+    "failures": "0",
+    "time": "3.024"
+  },
+  {
+    "name": "local.northstar.catalog.ContentPackageTest",
+    "tests": "2",
+    "errors": "0",
+    "skipped": "0",
+    "failures": "0",
+    "time": "0.014"
+  },
+  {
+    "name": "local.northstar.config.DatabaseGuardTest",
+    "tests": "3",
+    "errors": "0",
+    "skipped": "0",
+    "failures": "0",
+    "time": "0.771"
+  },
+  {
+    "name": "local.northstar.exercise.ExerciseIntegrationTest",
+    "tests": "1",
+    "errors": "0",
+    "skipped": "0",
+    "failures": "0",
+    "time": "0.552"
+  },
+  {
+    "name": "local.northstar.exercise.QuizReviewIntegrationTest",
+    "tests": "1",
+    "errors": "0",
+    "skipped": "0",
+    "failures": "0",
+    "time": "1.521"
+  },
+  {
+    "name": "local.northstar.exercise.ReadingIntegrationTest",
+    "tests": "1",
+    "errors": "0",
+    "skipped": "0",
+    "failures": "0",
+    "time": "0.584"
+  },
+  {
+    "name": "local.northstar.exercise.SimpleSchedulerTest",
+    "tests": "1",
+    "errors": "0",
+    "skipped": "0",
+    "failures": "0",
+    "time": "0.002"
+  },
+  {
+    "name": "local.northstar.exercise.TokenAlignerTest",
+    "tests": "3",
+    "errors": "0",
+    "skipped": "0",
+    "failures": "0",
+    "time": "0.004"
+  },
+  {
+    "name": "local.northstar.health.HealthControllerTest",
+    "tests": "3",
+    "errors": "0",
+    "skipped": "0",
+    "failures": "0",
+    "time": "0.067"
+  },
+  {
+    "name": "local.northstar.practice.PracticeIntegrationTest",
+    "tests": "1",
+    "errors": "0",
+    "skipped": "0",
+    "failures": "0",
+    "time": "1.033"
+  },
+  {
+    "name": "local.northstar.report.ReportExportIntegrationTest",
+    "tests": "1",
+    "errors": "0",
+    "skipped": "0",
+    "failures": "0",
+    "time": "0.544"
+  },
+  {
+    "name": "local.northstar.study.StudyIntegrationTest",
+    "tests": "1",
+    "errors": "0",
+    "skipped": "0",
+    "failures": "0",
+    "time": "2.022"
+  }
+]

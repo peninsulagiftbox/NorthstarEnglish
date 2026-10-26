@@ -1,10 +1,10 @@
 # 压缩包实际内容清单
 
-源码冻结：2026-10-26T19:35:35.712410+08:00。压缩包位置为项目根目录。
+源码冻结：2026-10-26T19:51:57.539099+08:00。压缩包位置为项目根目录。
 
 ## northstar-source.zip
 
-顶层目录 `northstar-source/`，共 **227 文件**。
+顶层目录 `northstar-source/`，共 **228 文件**。
 
 | 路径组 | 文件数 |
 |---|---:|
@@ -19,7 +19,7 @@
 | `SOURCE_PACKAGE_README.md` | 1 |
 | `apps` | 107 |
 | `content` | 5 |
-| `docs` | 11 |
+| `docs` | 12 |
 | `infra` | 3 |
 | `package-lock.json` | 1 |
 | `package.json` | 1 |

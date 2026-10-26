@@ -1,0 +1,8 @@
+test_environment_rejects_main_port_collision (test_phase09r_guards.AcceptanceGuardTests.test_environment_rejects_main_port_collision) ... ok
+test_grant_rejects_private_schema_before_sql (test_phase09r_guards.AcceptanceGuardTests.test_grant_rejects_private_schema_before_sql) ... ok
+test_refuses_wrong_container_identity_binding_and_volume (test_phase09r_guards.AcceptanceGuardTests.test_refuses_wrong_container_identity_binding_and_volume) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.001s
+
+OK

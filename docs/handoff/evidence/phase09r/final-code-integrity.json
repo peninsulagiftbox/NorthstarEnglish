@@ -1,0 +1,8 @@
+{
+  "candidate": "phase-09r-rc1",
+  "gitSha": "dd9e3f47a1a5c12296532846f676bb1fcbec7569",
+  "checkedFiles": 195,
+  "changedFiles": [],
+  "status": "PASS",
+  "scope": "Product, test/lifecycle/package scripts, configuration, content and locks; final documents/evidence are additions."
+}

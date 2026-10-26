@@ -1,0 +1,49 @@
+Docker Server 29.6.1
+ Container northstar-english-mysql-01 Waiting 
+ Container northstar-english-mysql-01 Healthy 
+
+> northstar-english@0.1.0 build
+> npm run build --workspace apps/web
+
+
+> @northstar/web@0.1.0 build
+> next build --webpack
+
+▲ Next.js 16.4.2 (webpack)
+✓ Running next.config.ts took 14ms
+⨯ Another next build process is already running.
+
+  This could be:
+  - A next build still in progress
+  - A previous build that didn't exit cleanly
+
+  Suggestion: Wait for the build to complete.
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path <PROJECT_ROOT>/apps/web
+npm error workspace @northstar/web@0.1.0
+npm error location <PROJECT_ROOT>/apps/web
+npm error command failed
+npm error command sh -c next build --webpack
+保留已有 .env；未改写任何凭据或端口。
+保留已有 .env；未改写任何凭据或端口。
+项目：<PROJECT_ROOT>
+Node v22.23.2 / npm 10.9.8
+openjdk version "21.0.12.1" 2026-08-18 LTS
+WEB_PORT=3100：已监听（启动前核对项目身份）
+API_PORT=8085：已监听（启动前核对项目身份）
+MYSQL_PORT=3308：已监听（启动前核对项目身份）
+MySQL 容器/卷/端口/数据库项目标记一致。
+配置格式通过；密码未输出。
+Traceback (most recent call last):
+  File "<stdin>", line 7, in <module>
+  File "<PROJECT_ROOT>/scripts/local.py", line 208, in up
+    run(["npm", "run", "build"], env)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<PROJECT_ROOT>/scripts/local.py", line 103, in run
+    return subprocess.run(args, cwd=ROOT, env=env, check=True, **kwargs)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.8/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['npm', 'run', 'build']' returned non-zero exit status 1.

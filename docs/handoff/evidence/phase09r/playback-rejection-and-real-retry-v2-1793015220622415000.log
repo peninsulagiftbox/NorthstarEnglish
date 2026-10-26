@@ -1,0 +1,6 @@
+{"id": "playback-v2-browser-open", "exitCode": 0, "timedOut": false, "log": "playback-v2-browser-open-1793015220706090000.log"}
+{"id": "playback-v2-browser-snapshot", "exitCode": 0, "timedOut": false, "log": "playback-v2-browser-snapshot-1793015221713337000.log"}
+{"id": "playback-v2-browser-trace-start", "exitCode": 0, "timedOut": false, "log": "playback-v2-browser-trace-start-1793015221933634000.log"}
+{"id": "playback-v2-product-rejection", "exitCode": 0, "timedOut": false, "log": "playback-v2-product-rejection-1793015222144384000.log"}
+{"id": "playback-v2-browser-trace-stop", "exitCode": 0, "timedOut": false, "log": "playback-v2-browser-trace-stop-1793015223454099000.log"}
+{"id": "playback-v2-browser-close", "exitCode": 0, "timedOut": false, "log": "playback-v2-browser-close-1793015223671812000.log"}

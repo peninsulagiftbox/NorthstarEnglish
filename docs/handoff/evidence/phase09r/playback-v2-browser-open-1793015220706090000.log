@@ -1,0 +1,10 @@
+### Browser `northstar-phase09r-rejection` opened with pid 16064.
+### Ran Playwright code
+```js
+await page.goto('http://127.0.0.1:3101/dashboard');
+```
+### Page
+- Page URL: http://127.0.0.1:3101/dashboard
+- Page Title: Northstar English · 本地工作台
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-26T11-47-01-688Z.yml)

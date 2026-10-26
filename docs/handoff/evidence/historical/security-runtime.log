@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "<PROJECT_ROOT>/scripts/release-safety.py", line 59, in <module>
+    main()
+    ~~~~^^
+  File "<PROJECT_ROOT>/scripts/release-safety.py", line 43, in main
+    assert assets, 'Build assets missing'
+           ^^^^^^
+AssertionError: Build assets missing

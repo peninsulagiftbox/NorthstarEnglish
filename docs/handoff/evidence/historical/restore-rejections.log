@@ -1,0 +1,4 @@
+PASS: restore rejected; FAIL: 目标媒体目录已存在，拒绝覆盖
+PASS: restore rejected; FAIL: 校验和不匹配
+PASS: restore rejected; FAIL: 可用录音缺失或校验失败；请使用完整备份目录恢复。未创建目标。
+PASS: broken/missing-media rejection creates no schema

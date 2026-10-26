@@ -1,3 +1,5 @@
+> 当前 Phase 09-R（2026-10-26）已完成固定候选隔离复验，见 [09-R 报告](PHASE_09_R_ACCEPTANCE_REPORT.md) 与 [矩阵](ACCEPTANCE_MATRIX.md)。下文为此前交接审计原文，保留当时结论与证据边界，不能替代本次结果。
+
 # Phase 09 独立验收报告
 
 日期：2026-10-26。结论：**NOT VERIFIED；不签整体 PASS，不批准素材发布**。

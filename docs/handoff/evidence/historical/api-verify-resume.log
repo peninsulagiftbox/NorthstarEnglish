@@ -1,0 +1,514 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------< local.northstar:northstar-api >--------------------
+[INFO] Building northstar-api 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.6.2:enforce (runtime) @ northstar-api ---
+[INFO] Rule 0: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[INFO] Rule 1: org.apache.maven.enforcer.rules.version.RequireMavenVersion passed
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ northstar-api ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 8 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ northstar-api ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 19 source files with javac [debug parameters release 21] to target/classes
+[INFO] <PROJECT_ROOT>/apps/api/src/main/java/local/northstar/catalog/CatalogController.java: Some input files use or override a deprecated API.
+[INFO] <PROJECT_ROOT>/apps/api/src/main/java/local/northstar/catalog/CatalogController.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ northstar-api ---
+[INFO] skip non existing resourceDirectory <PROJECT_ROOT>/apps/api/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ northstar-api ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 13 source files with javac [debug parameters release 21] to target/test-classes
+[INFO] <PROJECT_ROOT>/apps/api/src/test/java/local/northstar/catalog/CatalogIntegrationTest.java: Some input files use or override a deprecated API.
+[INFO] <PROJECT_ROOT>/apps/api/src/test/java/local/northstar/catalog/CatalogIntegrationTest.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- surefire:3.5.6:test (default-test) @ northstar-api ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ northstar-api ---
+[INFO] Building jar: <PROJECT_ROOT>/apps/api/target/northstar-api-0.1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- spring-boot:4.1.1:repackage (repackage) @ northstar-api ---
+[INFO] Replacing main artifact <PROJECT_ROOT>/apps/api/target/northstar-api-0.1.0-SNAPSHOT.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to <PROJECT_ROOT>/apps/api/target/northstar-api-0.1.0-SNAPSHOT.jar.original
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.019 s
+[INFO] Finished at: 2026-10-26T14:27:21+08:00
+[INFO] ------------------------------------------------------------------------
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-26T14:27:22.266+08:00  INFO 8790 --- [northstar-api] [           main] local.northstar.NorthstarApplication     : Starting NorthstarApplication v0.1.0-SNAPSHOT using Java 21.0.12.1 with PID 8790 (<PROJECT_ROOT>/apps/api/target/northstar-api-0.1.0-SNAPSHOT.jar started by <LOCAL_USER> in <PROJECT_ROOT>)
+2026-10-26T14:27:22.268+08:00  INFO 8790 --- [northstar-api] [           main] local.northstar.NorthstarApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-10-26T14:27:22.991+08:00  INFO 8790 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3308/northstar_phase01_test?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:27:23.124+08:00  INFO 8790 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.024s)
+2026-10-26T14:27:23.134+08:00  INFO 8790 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_phase01_test`: 008
+2026-10-26T14:27:23.136+08:00  INFO 8790 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_phase01_test` is up to date. No migration necessary.
+2026-10-26T14:27:23.209+08:00  INFO 8790 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-26T14:27:23.224+08:00  INFO 8790 --- [northstar-api] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@391515c7
+2026-10-26T14:27:23.225+08:00  INFO 8790 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-26T14:27:23.283+08:00  INFO 8790 --- [northstar-api] [           main] l.n.practice.RecordingController         : Recording reconciliation: orphan/partial files=0; retained for manual review
+2026-10-26T14:27:23.341+08:00  INFO 8790 --- [northstar-api] [           main] local.northstar.NorthstarApplication     : Started NorthstarApplication in 1.268 seconds (process running for 1.476)
+2026-10-26T14:27:23.446+08:00  INFO 8790 --- [northstar-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-10-26T14:27:23.447+08:00  INFO 8790 --- [northstar-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+northstar_english: PASS，study_resume INSERT/UPDATE；未修改数据。
+northstar_english: PASS，V004 最小写权限；内容与历史证据保持只读。
+northstar_english: PASS，V005 收藏/阅读最小写权限；不授权改写历史。
+northstar_english: PASS，V006 录音/写作最小写权限；不可变版本不可改写。
+northstar_english: PASS，V007 测验/复习最小写权限；历史只追加。
+northstar_phase01_test: PASS，study_resume INSERT/UPDATE；未修改数据。
+northstar_phase01_test: PASS，V004 最小写权限；内容与历史证据保持只读。
+northstar_phase01_test: PASS，V005 收藏/阅读最小写权限；不授权改写历史。
+northstar_phase01_test: PASS，V006 录音/写作最小写权限；不可变版本不可改写。
+northstar_phase01_test: PASS，V007 测验/复习最小写权限；历史只追加。
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------< local.northstar:northstar-api >--------------------
+[INFO] Building northstar-api 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.6.2:enforce (runtime) @ northstar-api ---
+[INFO] Rule 0: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[INFO] Rule 1: org.apache.maven.enforcer.rules.version.RequireMavenVersion passed
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ northstar-api ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 8 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ northstar-api ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ northstar-api ---
+[INFO] skip non existing resourceDirectory <PROJECT_ROOT>/apps/api/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ northstar-api ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.6:test (default-test) @ northstar-api ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running local.northstar.study.StudyIntegrationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-26T14:27:28.315+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Starting ForkedBooter v3.5.6 using Java 21.0.12.1 with PID 9011 (started by <LOCAL_USER> in <PROJECT_ROOT>/apps/api)
+2026-10-26T14:27:28.316+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : No active profile set, falling back to 1 default profile: "default"
+2026-10-26T14:27:28.681+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-10-26T14:27:28.691+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-26T14:27:28.691+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-10-26T14:27:28.707+08:00  INFO 9011 --- [northstar-api] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 376 ms
+2026-10-26T14:27:29.003+08:00  INFO 9011 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3308/northstar_phase01_test?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:27:29.129+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.015s)
+2026-10-26T14:27:29.138+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_phase01_test`: 008
+2026-10-26T14:27:29.139+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_phase01_test` is up to date. No migration necessary.
+2026-10-26T14:27:29.176+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-26T14:27:29.191+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7fd2a67a
+2026-10-26T14:27:29.192+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-26T14:27:29.204+08:00  INFO 9011 --- [northstar-api] [           main] l.n.practice.RecordingController         : Recording reconciliation: orphan/partial files=0; retained for manual review
+2026-10-26T14:27:29.319+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 64060 (http) with context path '/'
+2026-10-26T14:27:29.321+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Started ForkedBooter in 1.142 seconds (process running for 1.45)
+2026-10-26T14:27:29.502+08:00  INFO 9011 --- [northstar-api] [1-auto-1-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-26T14:27:29.503+08:00  INFO 9011 --- [northstar-api] [1-auto-1-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-26T14:27:29.503+08:00  INFO 9011 --- [northstar-api] [1-auto-1-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-10-26T14:27:29.596+08:00  INFO 9011 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3308/northstar_phase01_test?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:27:29.617+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.006s)
+2026-10-26T14:27:29.625+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_phase01_test`: 008
+2026-10-26T14:27:29.626+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_phase01_test` is up to date. No migration necessary.
+2026-10-26T14:27:29.644+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-26T14:27:29.645+08:00  INFO 9011 --- [northstar-api] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-10-26T14:27:29.646+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-10-26T14:27:29.648+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.549 s -- in local.northstar.study.StudyIntegrationTest
+[INFO] Running local.northstar.DatabaseIntegrationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-26T14:27:29.687+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Starting ForkedBooter v3.5.6 using Java 21.0.12.1 with PID 9011 (started by <LOCAL_USER> in <PROJECT_ROOT>/apps/api)
+2026-10-26T14:27:29.687+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : No active profile set, falling back to 1 default profile: "default"
+2026-10-26T14:27:29.785+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-10-26T14:27:29.785+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-26T14:27:29.785+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-10-26T14:27:29.790+08:00  INFO 9011 --- [northstar-api] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 102 ms
+2026-10-26T14:27:29.831+08:00  INFO 9011 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3308/northstar_phase01_test?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:27:29.849+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.007s)
+2026-10-26T14:27:29.855+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_phase01_test`: 008
+2026-10-26T14:27:29.856+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_phase01_test` is up to date. No migration necessary.
+2026-10-26T14:27:29.864+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2026-10-26T14:27:29.871+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection com.mysql.cj.jdbc.ConnectionImpl@411933
+2026-10-26T14:27:29.872+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2026-10-26T14:27:29.874+08:00  INFO 9011 --- [northstar-api] [           main] l.n.practice.RecordingController         : Recording reconciliation: orphan/partial files=0; retained for manual review
+2026-10-26T14:27:29.907+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 64071 (http) with context path '/'
+2026-10-26T14:27:29.908+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Started ForkedBooter in 0.24 seconds (process running for 2.037)
+2026-10-26T14:27:29.978+08:00  INFO 9011 --- [northstar-api] [1-auto-2-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-26T14:27:29.978+08:00  INFO 9011 --- [northstar-api] [1-auto-2-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-26T14:27:29.979+08:00  INFO 9011 --- [northstar-api] [1-auto-2-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-10-26T14:27:30.012+08:00  INFO 9011 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3308/northstar_phase01_test?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:27:30.023+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.004s)
+2026-10-26T14:27:30.026+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_phase01_test`: 008
+2026-10-26T14:27:30.027+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_phase01_test` is up to date. No migration necessary.
+2026-10-26T14:27:30.032+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-26T14:27:30.032+08:00  INFO 9011 --- [northstar-api] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-10-26T14:27:30.033+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2026-10-26T14:27:30.034+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.369 s -- in local.northstar.DatabaseIntegrationTest
+[INFO] Running local.northstar.config.DatabaseGuardTest
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (<HOME>/.m2/repository/net/bytebuddy/byte-buddy-agent/1.18.11/byte-buddy-agent-1.18.11.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.692 s -- in local.northstar.config.DatabaseGuardTest
+[INFO] Running local.northstar.health.HealthControllerTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.052 s -- in local.northstar.health.HealthControllerTest
+[INFO] Running local.northstar.catalog.CatalogIntegrationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-26T14:27:30.809+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Starting ForkedBooter v3.5.6 using Java 21.0.12.1 with PID 9011 (started by <LOCAL_USER> in <PROJECT_ROOT>/apps/api)
+2026-10-26T14:27:30.809+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : No active profile set, falling back to 1 default profile: "default"
+2026-10-26T14:27:30.925+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-10-26T14:27:30.926+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-26T14:27:30.926+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-10-26T14:27:30.932+08:00  INFO 9011 --- [northstar-api] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 121 ms
+2026-10-26T14:27:31.017+08:00  INFO 9011 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3308/northstar_phase01_test?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:27:31.038+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.008s)
+2026-10-26T14:27:31.049+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_phase01_test`: 008
+2026-10-26T14:27:31.049+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_phase01_test` is up to date. No migration necessary.
+2026-10-26T14:27:31.062+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Starting...
+2026-10-26T14:27:31.083+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-3 - Added connection com.mysql.cj.jdbc.ConnectionImpl@b65cc8b
+2026-10-26T14:27:31.083+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Start completed.
+2026-10-26T14:27:31.086+08:00  INFO 9011 --- [northstar-api] [           main] l.n.practice.RecordingController         : Recording reconciliation: orphan/partial files=0; retained for manual review
+2026-10-26T14:27:31.137+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 64083 (http) with context path '/'
+2026-10-26T14:27:31.138+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Started ForkedBooter in 0.351 seconds (process running for 3.267)
+2026-10-26T14:27:31.396+08:00  INFO 9011 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3308/northstar_phase01_test?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:27:31.407+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.004s)
+2026-10-26T14:27:31.422+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_phase01_test`: 008
+2026-10-26T14:27:31.423+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_phase01_test` is up to date. No migration necessary.
+2026-10-26T14:27:31.468+08:00  INFO 9011 --- [northstar-api] [1-auto-3-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-26T14:27:31.468+08:00  INFO 9011 --- [northstar-api] [1-auto-3-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-26T14:27:31.469+08:00  INFO 9011 --- [northstar-api] [1-auto-3-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-10-26T14:27:31.734+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-26T14:27:31.735+08:00  INFO 9011 --- [northstar-api] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-10-26T14:27:31.736+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown initiated...
+2026-10-26T14:27:31.737+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown completed.
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.954 s -- in local.northstar.catalog.CatalogIntegrationTest
+[INFO] Running local.northstar.catalog.ContentPackageTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -- in local.northstar.catalog.ContentPackageTest
+[INFO] Running local.northstar.exercise.QuizReviewIntegrationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-26T14:27:31.769+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Starting ForkedBooter v3.5.6 using Java 21.0.12.1 with PID 9011 (started by <LOCAL_USER> in <PROJECT_ROOT>/apps/api)
+2026-10-26T14:27:31.769+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : No active profile set, falling back to 1 default profile: "default"
+2026-10-26T14:27:31.828+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-10-26T14:27:31.829+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-26T14:27:31.829+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-10-26T14:27:31.833+08:00  INFO 9011 --- [northstar-api] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 63 ms
+2026-10-26T14:27:31.865+08:00  INFO 9011 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3308/northstar_phase01_test?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:27:31.878+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.004s)
+2026-10-26T14:27:31.882+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_phase01_test`: 008
+2026-10-26T14:27:31.882+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_phase01_test` is up to date. No migration necessary.
+2026-10-26T14:27:31.888+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Starting...
+2026-10-26T14:27:31.895+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-4 - Added connection com.mysql.cj.jdbc.ConnectionImpl@72216f0b
+2026-10-26T14:27:31.895+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Start completed.
+2026-10-26T14:27:31.898+08:00  INFO 9011 --- [northstar-api] [           main] l.n.practice.RecordingController         : Recording reconciliation: orphan/partial files=0; retained for manual review
+2026-10-26T14:27:31.925+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 64108 (http) with context path '/'
+2026-10-26T14:27:31.925+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Started ForkedBooter in 0.165 seconds (process running for 4.054)
+2026-10-26T14:27:31.993+08:00  INFO 9011 --- [northstar-api] [1-auto-4-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-26T14:27:31.993+08:00  INFO 9011 --- [northstar-api] [1-auto-4-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-26T14:27:31.994+08:00  INFO 9011 --- [northstar-api] [1-auto-4-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-10-26T14:27:32.248+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-26T14:27:32.248+08:00  INFO 9011 --- [northstar-api] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-10-26T14:27:32.249+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown initiated...
+2026-10-26T14:27:32.250+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-26T14:27:32.259+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Starting ForkedBooter v3.5.6 using Java 21.0.12.1 with PID 9011 (started by <LOCAL_USER> in <PROJECT_ROOT>/apps/api)
+2026-10-26T14:27:32.259+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : No active profile set, falling back to 1 default profile: "default"
+2026-10-26T14:27:32.311+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-10-26T14:27:32.311+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-26T14:27:32.311+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-10-26T14:27:32.315+08:00  INFO 9011 --- [northstar-api] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 55 ms
+2026-10-26T14:27:32.345+08:00  INFO 9011 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3308/northstar_phase01_test?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:27:32.364+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.003s)
+2026-10-26T14:27:32.369+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_phase01_test`: 008
+2026-10-26T14:27:32.369+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_phase01_test` is up to date. No migration necessary.
+2026-10-26T14:27:32.376+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Starting...
+2026-10-26T14:27:32.383+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-5 - Added connection com.mysql.cj.jdbc.ConnectionImpl@47d0c2e0
+2026-10-26T14:27:32.383+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Start completed.
+2026-10-26T14:27:32.385+08:00  INFO 9011 --- [northstar-api] [           main] l.n.practice.RecordingController         : Recording reconciliation: orphan/partial files=0; retained for manual review
+2026-10-26T14:27:32.407+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 64127 (http) with context path '/'
+2026-10-26T14:27:32.407+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Started ForkedBooter in 0.155 seconds (process running for 4.536)
+2026-10-26T14:27:32.469+08:00  INFO 9011 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3308/northstar_phase01_test?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:27:32.479+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.003s)
+2026-10-26T14:27:32.483+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_phase01_test`: 008
+2026-10-26T14:27:32.483+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_phase01_test` is up to date. No migration necessary.
+2026-10-26T14:27:32.485+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-26T14:27:32.486+08:00  INFO 9011 --- [northstar-api] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-10-26T14:27:32.486+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Shutdown initiated...
+2026-10-26T14:27:32.487+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Shutdown completed.
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.091 s -- in local.northstar.exercise.QuizReviewIntegrationTest
+[INFO] Running local.northstar.exercise.ReadingIntegrationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-26T14:27:32.860+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Starting ForkedBooter v3.5.6 using Java 21.0.12.1 with PID 9011 (started by <LOCAL_USER> in <PROJECT_ROOT>/apps/api)
+2026-10-26T14:27:32.860+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : No active profile set, falling back to 1 default profile: "default"
+2026-10-26T14:27:32.908+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-10-26T14:27:32.909+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-26T14:27:32.909+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-10-26T14:27:32.912+08:00  INFO 9011 --- [northstar-api] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 51 ms
+2026-10-26T14:27:32.941+08:00  INFO 9011 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3308/northstar_phase01_test?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:27:32.952+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.003s)
+2026-10-26T14:27:32.956+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_phase01_test`: 008
+2026-10-26T14:27:32.957+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_phase01_test` is up to date. No migration necessary.
+2026-10-26T14:27:32.963+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Starting...
+2026-10-26T14:27:32.970+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-6 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5b751bab
+2026-10-26T14:27:32.970+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Start completed.
+2026-10-26T14:27:32.972+08:00  INFO 9011 --- [northstar-api] [           main] l.n.practice.RecordingController         : Recording reconciliation: orphan/partial files=0; retained for manual review
+2026-10-26T14:27:32.994+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 64180 (http) with context path '/'
+2026-10-26T14:27:32.995+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Started ForkedBooter in 0.144 seconds (process running for 5.124)
+2026-10-26T14:27:33.060+08:00  INFO 9011 --- [northstar-api] [1-auto-6-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-26T14:27:33.060+08:00  INFO 9011 --- [northstar-api] [1-auto-6-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-26T14:27:33.061+08:00  INFO 9011 --- [northstar-api] [1-auto-6-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-10-26T14:27:33.163+08:00  INFO 9011 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3308/northstar_phase01_test?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:27:33.173+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.003s)
+2026-10-26T14:27:33.177+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_phase01_test`: 008
+2026-10-26T14:27:33.177+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_phase01_test` is up to date. No migration necessary.
+2026-10-26T14:27:33.421+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-26T14:27:33.421+08:00  INFO 9011 --- [northstar-api] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-10-26T14:27:33.422+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Shutdown initiated...
+2026-10-26T14:27:33.423+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Shutdown completed.
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.576 s -- in local.northstar.exercise.ReadingIntegrationTest
+[INFO] Running local.northstar.exercise.TokenAlignerTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in local.northstar.exercise.TokenAlignerTest
+[INFO] Running local.northstar.exercise.ExerciseIntegrationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-26T14:27:33.437+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Starting ForkedBooter v3.5.6 using Java 21.0.12.1 with PID 9011 (started by <LOCAL_USER> in <PROJECT_ROOT>/apps/api)
+2026-10-26T14:27:33.437+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : No active profile set, falling back to 1 default profile: "default"
+2026-10-26T14:27:33.487+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-10-26T14:27:33.487+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-26T14:27:33.487+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-10-26T14:27:33.491+08:00  INFO 9011 --- [northstar-api] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 53 ms
+2026-10-26T14:27:33.524+08:00  INFO 9011 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3308/northstar_phase01_test?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:27:33.535+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.003s)
+2026-10-26T14:27:33.539+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_phase01_test`: 008
+2026-10-26T14:27:33.539+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_phase01_test` is up to date. No migration necessary.
+2026-10-26T14:27:33.545+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-7 - Starting...
+2026-10-26T14:27:33.552+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-7 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5f016147
+2026-10-26T14:27:33.552+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-7 - Start completed.
+2026-10-26T14:27:33.554+08:00  INFO 9011 --- [northstar-api] [           main] l.n.practice.RecordingController         : Recording reconciliation: orphan/partial files=0; retained for manual review
+2026-10-26T14:27:33.574+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 64220 (http) with context path '/'
+2026-10-26T14:27:33.575+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Started ForkedBooter in 0.145 seconds (process running for 5.704)
+2026-10-26T14:27:33.633+08:00  INFO 9011 --- [northstar-api] [1-auto-7-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-26T14:27:33.633+08:00  INFO 9011 --- [northstar-api] [1-auto-7-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-26T14:27:33.634+08:00  INFO 9011 --- [northstar-api] [1-auto-7-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-10-26T14:27:33.753+08:00  INFO 9011 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3308/northstar_phase01_test?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:27:33.763+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.003s)
+2026-10-26T14:27:33.767+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_phase01_test`: 008
+2026-10-26T14:27:33.768+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_phase01_test` is up to date. No migration necessary.
+2026-10-26T14:27:33.987+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-26T14:27:33.988+08:00  INFO 9011 --- [northstar-api] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-10-26T14:27:33.988+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-7 - Shutdown initiated...
+2026-10-26T14:27:33.989+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-7 - Shutdown completed.
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.562 s -- in local.northstar.exercise.ExerciseIntegrationTest
+[INFO] Running local.northstar.exercise.SimpleSchedulerTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in local.northstar.exercise.SimpleSchedulerTest
+[INFO] Running local.northstar.report.ReportExportIntegrationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-26T14:27:34.002+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Starting ForkedBooter v3.5.6 using Java 21.0.12.1 with PID 9011 (started by <LOCAL_USER> in <PROJECT_ROOT>/apps/api)
+2026-10-26T14:27:34.002+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : No active profile set, falling back to 1 default profile: "default"
+2026-10-26T14:27:34.062+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-10-26T14:27:34.062+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-26T14:27:34.062+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-10-26T14:27:34.066+08:00  INFO 9011 --- [northstar-api] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 63 ms
+2026-10-26T14:27:34.097+08:00  INFO 9011 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3308/northstar_phase01_test?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:27:34.108+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.003s)
+2026-10-26T14:27:34.112+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_phase01_test`: 008
+2026-10-26T14:27:34.113+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_phase01_test` is up to date. No migration necessary.
+2026-10-26T14:27:34.119+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-8 - Starting...
+2026-10-26T14:27:34.126+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-8 - Added connection com.mysql.cj.jdbc.ConnectionImpl@6430f63e
+2026-10-26T14:27:34.126+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-8 - Start completed.
+2026-10-26T14:27:34.127+08:00  INFO 9011 --- [northstar-api] [           main] l.n.practice.RecordingController         : Recording reconciliation: orphan/partial files=0; retained for manual review
+2026-10-26T14:27:34.151+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 64271 (http) with context path '/'
+2026-10-26T14:27:34.152+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Started ForkedBooter in 0.158 seconds (process running for 6.281)
+2026-10-26T14:27:34.220+08:00  INFO 9011 --- [northstar-api] [1-auto-8-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-26T14:27:34.221+08:00  INFO 9011 --- [northstar-api] [1-auto-8-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-26T14:27:34.221+08:00  INFO 9011 --- [northstar-api] [1-auto-8-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-10-26T14:27:34.670+08:00  INFO 9011 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3308/northstar_phase01_test?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:27:34.679+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.003s)
+2026-10-26T14:27:34.684+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_phase01_test`: 008
+2026-10-26T14:27:34.685+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_phase01_test` is up to date. No migration necessary.
+2026-10-26T14:27:34.696+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-26T14:27:34.697+08:00  INFO 9011 --- [northstar-api] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-10-26T14:27:34.697+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-8 - Shutdown initiated...
+2026-10-26T14:27:34.698+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-8 - Shutdown completed.
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.706 s -- in local.northstar.report.ReportExportIntegrationTest
+[INFO] Running local.northstar.practice.PracticeIntegrationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-26T14:27:34.710+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Starting ForkedBooter v3.5.6 using Java 21.0.12.1 with PID 9011 (started by <LOCAL_USER> in <PROJECT_ROOT>/apps/api)
+2026-10-26T14:27:34.710+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : No active profile set, falling back to 1 default profile: "default"
+2026-10-26T14:27:34.756+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-10-26T14:27:34.756+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-26T14:27:34.756+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-10-26T14:27:34.760+08:00  INFO 9011 --- [northstar-api] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 49 ms
+2026-10-26T14:27:34.789+08:00  INFO 9011 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3308/northstar_phase01_test?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:27:34.801+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.004s)
+2026-10-26T14:27:34.804+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_phase01_test`: 008
+2026-10-26T14:27:34.805+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_phase01_test` is up to date. No migration necessary.
+2026-10-26T14:27:34.811+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-9 - Starting...
+2026-10-26T14:27:34.817+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-9 - Added connection com.mysql.cj.jdbc.ConnectionImpl@3468198d
+2026-10-26T14:27:34.817+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-9 - Start completed.
+2026-10-26T14:27:34.834+08:00  INFO 9011 --- [northstar-api] [           main] l.n.practice.RecordingController         : Recording reconciliation: orphan/partial files=0; retained for manual review
+2026-10-26T14:27:34.855+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 64285 (http) with context path '/'
+2026-10-26T14:27:34.856+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Started ForkedBooter in 0.154 seconds (process running for 6.985)
+2026-10-26T14:27:34.918+08:00  INFO 9011 --- [northstar-api] [1-auto-9-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-26T14:27:34.918+08:00  INFO 9011 --- [northstar-api] [1-auto-9-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-26T14:27:34.918+08:00  INFO 9011 --- [northstar-api] [1-auto-9-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-10-26T14:27:35.043+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-26T14:27:35.043+08:00  INFO 9011 --- [northstar-api] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-10-26T14:27:35.044+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-9 - Shutdown initiated...
+2026-10-26T14:27:35.045+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-9 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-26T14:27:35.061+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Starting ForkedBooter v3.5.6 using Java 21.0.12.1 with PID 9011 (started by <LOCAL_USER> in <PROJECT_ROOT>/apps/api)
+2026-10-26T14:27:35.061+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : No active profile set, falling back to 1 default profile: "default"
+2026-10-26T14:27:35.099+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-10-26T14:27:35.099+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-26T14:27:35.099+08:00  INFO 9011 --- [northstar-api] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-10-26T14:27:35.103+08:00  INFO 9011 --- [northstar-api] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 42 ms
+2026-10-26T14:27:35.132+08:00  INFO 9011 --- [northstar-api] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3308/northstar_phase01_test?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8&connectTimeout=3000&socketTimeout=3000 (MySQL 8.4)
+2026-10-26T14:27:35.143+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.003s)
+2026-10-26T14:27:35.146+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `northstar_phase01_test`: 008
+2026-10-26T14:27:35.147+08:00  INFO 9011 --- [northstar-api] [           main] o.f.core.internal.command.DbMigrate      : Schema `northstar_phase01_test` is up to date. No migration necessary.
+2026-10-26T14:27:35.154+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-10 - Starting...
+2026-10-26T14:27:35.161+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-10 - Added connection com.mysql.cj.jdbc.ConnectionImpl@73a28617
+2026-10-26T14:27:35.161+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-10 - Start completed.
+2026-10-26T14:27:35.164+08:00  INFO 9011 --- [northstar-api] [           main] l.n.practice.RecordingController         : Recording reconciliation: orphan/partial files=0; retained for manual review
+2026-10-26T14:27:35.183+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 64297 (http) with context path '/'
+2026-10-26T14:27:35.184+08:00  INFO 9011 --- [northstar-api] [           main] o.a.maven.surefire.booter.ForkedBooter   : Started ForkedBooter in 0.131 seconds (process running for 7.313)
+2026-10-26T14:27:35.236+08:00  INFO 9011 --- [northstar-api] [           main] l.n.practice.RecordingController         : Recording reconciliation: orphan/partial files=0; retained for manual review
+2026-10-26T14:27:35.242+08:00  INFO 9011 --- [northstar-api] [-auto-10-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-26T14:27:35.242+08:00  INFO 9011 --- [northstar-api] [-auto-10-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-26T14:27:35.243+08:00  INFO 9011 --- [northstar-api] [-auto-10-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-10-26T14:27:35.248+08:00  INFO 9011 --- [northstar-api] [           main] l.n.practice.RecordingController         : Recording reconciliation: orphan/partial files=1; retained for manual review
+2026-10-26T14:27:35.281+08:00  INFO 9011 --- [northstar-api] [           main] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-10-26T14:27:35.281+08:00  INFO 9011 --- [northstar-api] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-10-26T14:27:35.282+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-10 - Shutdown initiated...
+2026-10-26T14:27:35.304+08:00  INFO 9011 --- [northstar-api] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-10 - Shutdown completed.
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.907 s -- in local.northstar.practice.PracticeIntegrationTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jar:3.5.1:jar (default-jar) @ northstar-api ---
+[INFO] 
+[INFO] --- spring-boot:4.1.1:repackage (repackage) @ northstar-api ---
+[INFO] Replacing main artifact <PROJECT_ROOT>/apps/api/target/northstar-api-0.1.0-SNAPSHOT.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to <PROJECT_ROOT>/apps/api/target/northstar-api-0.1.0-SNAPSHOT.jar.original
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  8.872 s
+[INFO] Finished at: 2026-10-26T14:27:36+08:00
+[INFO] ------------------------------------------------------------------------

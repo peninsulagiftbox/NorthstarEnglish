@@ -1,30 +1,38 @@
- M .env.example
  M README.md
- M apps/web/src/app/globals.css
- M docs/BACKUP_RESTORE.md
- M docs/DEPENDENCIES.md
- M docs/DESIGN_DEVIATIONS.md
  M docs/IMPLEMENTATION_PLAN.md
- M scripts/data-transfer.py
- M scripts/local.py
-?? docs/RELEASE_CHECKLIST.md
-?? docs/TEST_REPORT.md
-?? docs/handoff/
-?? docs/progress/PHASE_09.md
-?? infra/compose.recovery.yml
-?? northstar-packages.sha256
-?? scripts/check-snapshot.py
-?? scripts/full-learning-loop.js
-?? scripts/phase09r.py
-?? scripts/phase09r/
-?? scripts/recovery_mysql.py
-?? scripts/regression-runtime.py
-?? scripts/release-accessibility.js
-?? scripts/release-boundaries.js
-?? scripts/release-browser.sh
-?? scripts/release-continue.js
-?? scripts/release-fresh.js
-?? scripts/release-revisit.js
-?? scripts/release-safety.py
-?? scripts/tests/test_phase09r_guards.py
-?? scripts/tests/test_recovery_guards.py
+ M docs/RELEASE_CHECKLIST.md
+ M docs/TEST_REPORT.md
+ M docs/handoff/GIT_CHANGE_SUMMARY.md
+ M docs/handoff/KNOWN_ISSUES.md
+ M docs/handoff/PHASE_09_ACCEPTANCE_REPORT.md
+ M docs/handoff/README.md
+ M docs/handoff/TEST_EVIDENCE.md
+ M docs/handoff/evidence/phase09r/commands.jsonl
+ M docs/handoff/evidence/source-snapshot.json
+ M docs/progress/PHASE_09.md
+?? docs/ACCEPTANCE_MATRIX.md
+?? docs/handoff/ACCEPTANCE_MATRIX.md
+?? docs/handoff/PHASE_09_R_ACCEPTANCE_REPORT.md
+?? docs/handoff/evidence/phase09r/COMMANDS.md
+?? docs/handoff/evidence/phase09r/candidate.json
+?? docs/handoff/evidence/phase09r/environment.json
+?? docs/handoff/evidence/phase09r/final-code-integrity.json
+?? docs/handoff/evidence/phase09r/full-learning-loop-20261026193951.txt
+?? docs/handoff/evidence/phase09r/java-test-summary.json
+?? docs/handoff/evidence/phase09r/playback_check.py
+?? docs/handoff/evidence/phase09r/playback_check_v2.py
+?? docs/handoff/evidence/phase09r/playback_rejection.js
+?? docs/handoff/evidence/phase09r/playback_rejection_v2.js
+?? docs/handoff/evidence/phase09r/redactions.json
+?? docs/handoff/evidence/phase09r/rejection_checks.py
+?? docs/handoff/evidence/phase09r/release-accessibility-20261026194041.txt
+?? docs/handoff/evidence/phase09r/release-boundaries-20261026194000.txt
+?? docs/handoff/evidence/phase09r/release-continue-20261026194209.txt
+?? docs/handoff/evidence/phase09r/release-fresh-20261026193858.txt
+?? docs/handoff/evidence/phase09r/release-revisit-20261026194125.txt
+?? docs/handoff/evidence/phase09r/release-revisit-20261026194414.txt
+?? docs/handoff/evidence/phase09r/release-revisit-20261026194418.txt
+?? docs/handoff/evidence/phase09r/screenshots/
+?? docs/handoff/evidence/phase09r/supplemental-scripts.json
+?? docs/handoff/evidence/phase09r/trace-index.json
+?? docs/progress/PHASE_09_R.md

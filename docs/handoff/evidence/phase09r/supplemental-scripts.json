@@ -1,0 +1,26 @@
+{
+  "candidate": "phase-09r-rc1",
+  "note": "Supplemental acceptance command sources; candidate product/scripts unchanged. Both failing v1 and locator-only corrected v2 retained. Actual JavaScript source is embedded in run-code argv. First inline rejection command retained; reproducible file-based rejection checks separately rerun.",
+  "files": [
+    {
+      "path": "docs/handoff/evidence/phase09r/playback_check.py",
+      "sha256": "f6aa60483477b47f5f2cecedaa74a92a930005176207e7ecc5ff774db732f520"
+    },
+    {
+      "path": "docs/handoff/evidence/phase09r/playback_check_v2.py",
+      "sha256": "c9058aed618f9bb5369b99927a8cc79cd4a49e8e6cd5e75618e133d5225521e1"
+    },
+    {
+      "path": "docs/handoff/evidence/phase09r/playback_rejection.js",
+      "sha256": "f7cbcd9ca0c1ac7210a1d85f901d9e882f09060595876fac5b683eac01dcfc7a"
+    },
+    {
+      "path": "docs/handoff/evidence/phase09r/playback_rejection_v2.js",
+      "sha256": "c35c81e5a75ddc6542c3c7af77f82e6886989a85943be7bbfc18fe169aa841dd"
+    },
+    {
+      "path": "docs/handoff/evidence/phase09r/rejection_checks.py",
+      "sha256": "a2ebe61ae75e8f847558c0e834868434507748259d77a226f5134fd676b0118d"
+    }
+  ]
+}

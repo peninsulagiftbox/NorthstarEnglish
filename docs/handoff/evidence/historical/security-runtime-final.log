@@ -1,0 +1,1 @@
+{"passed": true, "checks": ["Host/Origin/write-header/content-type/CORS rejection", "no-store/nosniff and redacted errors", "API/Web bind only to 127.0.0.1", "browser JS/HTML contain no configured DB secrets", "application logs contain no DB secrets or synthetic private input"], "javascriptAssetsChecked": 27}

@@ -1,3 +1,5 @@
+> 当前 Phase 09-R（2026-10-26）已完成固定候选隔离复验，见 [09-R 报告](PHASE_09_R_ACCEPTANCE_REPORT.md) 与 [矩阵](ACCEPTANCE_MATRIX.md)。下文为此前交接审计原文，保留当时结论与证据边界，不能替代本次结果。
+
 # 实际测试与证据
 
 2026-10-26。本次命令通过 `python3 docs/handoff/evidence/run_checks.py` 编排，使用 `scripts/local.py.environment()` 选择已有项目级 Node/Java；不输出环境变量值、不连接数据库。版本、命令参数、cwd、开始时间、耗时、退出码见 `evidence/commands.json`，日志保留原始 stdout+stderr，仅作隐私路径/实际凭据脱敏。

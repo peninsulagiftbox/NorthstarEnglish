@@ -1,0 +1,31 @@
+### Result
+{"passed":true,"productHandledPlayRejection":true,"realAudioRetry":true,"noAttemptFromPlayback":true}
+### Ran Playwright code
+```js
+await (async page => {
+ const base=new URL(page.url()).origin, assert=(ok,m)=>{if(!ok)throw Error(m);};
+ assert(base==='http://127.0.0.1:3101','Exact isolated origin');
+ assert((await page.request.get(base+'/api/v1/health')).headers()['x-northstar-test-database']==='true','Test DB required');
+ const report=async()=>(await(await page.request.get(base+'/api/v1/reports')).json());
+ const before=(await report()).metrics.dictation.submitted;
+ await page.goto(base+'/lesson/demo-01?version=demo-01-v2&tab=dictation&sentence=demo-01-v2-s09&english=0');
+ await page.getByLabel('本句听写草稿',{exact:true}).waitFor();
+ await page.evaluate(()=>{window.__nativePlay=HTMLMediaElement.prototype.play;HTMLMediaElement.prototype.play=function(){return Promise.reject(new DOMException('acceptance autoplay rejection','NotAllowedError'));};});
+ try {
+  await page.getByRole('button',{name:'播放本句',exact:true}).click();
+  await page.locator('.media-error').filter({hasText:'播放被浏览器拒绝或音源不可用，请点击播放重试。'}).waitFor();
+  assert(await page.locator('audio[hidden]').evaluate(a=>a.paused&&a.currentTime===0),'Failed playback remains paused');
+  assert((await report()).metrics.dictation.submitted===before,'Failed playback creates no real attempt');
+ } finally {await page.evaluate(()=>{HTMLMediaElement.prototype.play=window.__nativePlay;});}
+ await page.getByRole('button',{name:'重试播放',exact:true}).click();
+ await page.waitForFunction(()=>{const a=document.querySelector('audio[hidden]');return a?.src.includes('a09')&&!a.paused&&a.currentTime>.1;});
+ await page.getByRole('button',{name:'暂停播放',exact:true}).click();
+ assert((await report()).metrics.dictation.submitted===before,'Successful replay alone is not a submission');
+ await page.screenshot({path:'docs/evidence/phase-09r/screenshots/playback-rejection-recovered.png'});
+ return {passed:true,productHandledPlayRejection:true,realAudioRetry:true,noAttemptFromPlayback:true};
+}
+)(page);
+```
+### Page
+- Page URL: http://127.0.0.1:3101/lesson/demo-01?version=demo-01-v2&tab=dictation&sentence=demo-01-v2-s09&english=0&translation=1
+- Page Title: Northstar English · 本地工作台

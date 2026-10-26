@@ -1,0 +1,34 @@
+{
+  "rules": [
+    "Exact configured secrets",
+    "Project/home machine paths",
+    "Git tagger identity in success reference log",
+    "Exact local username in Spring boot metadata"
+  ],
+  "files": [
+    {
+      "path": "git-candidate-reference-1793015078595438000.log",
+      "originalSha256": "1e2f9a8ed59eb2cc84cdb7e66883e89822dc8d9777ba505c24b484fb4733cd65",
+      "sha256": "f2ac7935286603b89810b79df0aabcc723343a9265e77dba74cc35e68d513c83",
+      "redaction": "Git tagger identity line only; original retained privately. No exit code or failure log edited."
+    },
+    {
+      "path": "source-migrate-1793014653077761000.log",
+      "originalSha256": "b98badd23e54bfa0cefbc3ebf2c41c78dd841289d6c6667623f4a7232e336b4d",
+      "sha256": "9077295fd17b896775a751a2c552f7e66543a4ebc2a3e8b9a08e96a34b1165d8",
+      "redaction": "Exact local username in Spring startup metadata; original retained privately. No exit code or test assertion changed."
+    },
+    {
+      "path": "java-mysql-integration-1793014752750712000.log",
+      "originalSha256": "bf63eda937a9a85ec806e0b3dfa3337f3ae39e93e2af3843e331212b0a22a11f",
+      "sha256": "4647ce443e25af60599812ac481aa66d64164d980eb9e88fbb2b9000ff2952b6",
+      "redaction": "Exact local username in Spring startup metadata; original retained privately. No exit code or test assertion changed."
+    },
+    {
+      "path": "source-migrate-1793014888687532000.log",
+      "originalSha256": "6c6ce334c393c5274b6a4745253a20ca46864a9f111ad89c2d625e9e06106df6",
+      "sha256": "fbc9510c6389cb7b3989855f187880004da26b89e36dae5aa33a6c25bd134e5d",
+      "redaction": "Exact local username in Spring startup metadata; original retained privately. No exit code or test assertion changed."
+    }
+  ]
+}

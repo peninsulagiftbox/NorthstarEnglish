@@ -1,0 +1,2 @@
+{"id": "diff-check", "command": ["git", "diff", "--check"], "cwd": ".", "startedAt": "2026-10-26T14:37:37.537310+08:00", "exitCode": 0, "seconds": 0.019, "log": "diff-check.log"}
+

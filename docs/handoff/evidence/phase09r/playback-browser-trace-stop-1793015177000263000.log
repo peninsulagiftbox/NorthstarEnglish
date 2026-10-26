@@ -1,0 +1,8 @@
+### Result
+Trace recording stopped.
+- [Trace](.playwright-cli/traces/trace-1793015146363.trace)
+- [Network log](.playwright-cli/traces/trace-1793015146363.network)
+- [Resources](.playwright-cli/traces/resources)
+### Page
+- Page URL: http://127.0.0.1:3101/lesson/demo-01?version=demo-01-v2&tab=dictation&sentence=demo-01-v2-s09&english=0&translation=1
+- Page Title: Northstar English · 本地工作台

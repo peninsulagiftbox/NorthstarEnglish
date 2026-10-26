@@ -1,0 +1,27 @@
+Docker Server 29.6.1
+ Container northstar-english-mysql-01 Waiting 
+ Container northstar-english-mysql-01 Healthy 
+northstar_english: PASS，study_resume INSERT/UPDATE；未修改数据。
+northstar_english: PASS，V004 最小写权限；内容与历史证据保持只读。
+northstar_english: PASS，V005 收藏/阅读最小写权限；不授权改写历史。
+northstar_english: PASS，V006 录音/写作最小写权限；不可变版本不可改写。
+northstar_english: PASS，V007 测验/复习最小写权限；历史只追加。
+northstar_phase01_test: PASS，study_resume INSERT/UPDATE；未修改数据。
+northstar_phase01_test: PASS，V004 最小写权限；内容与历史证据保持只读。
+northstar_phase01_test: PASS，V005 收藏/阅读最小写权限；不授权改写历史。
+northstar_phase01_test: PASS，V006 录音/写作最小写权限；不可变版本不可改写。
+northstar_phase01_test: PASS，V007 测验/复习最小写权限；历史只追加。
+保留已有 .env；未改写任何凭据或端口。
+保留已有 .env；未改写任何凭据或端口。
+项目：<PROJECT_ROOT>
+Node v22.23.2 / npm 10.9.8
+openjdk version "21.0.12.1" 2026-08-18 LTS
+WEB_PORT=3100：已监听（启动前核对项目身份）
+API_PORT=8085：已监听（启动前核对项目身份）
+MYSQL_PORT=3308：已监听（启动前核对项目身份）
+MySQL 容器/卷/端口/数据库项目标记一致。
+配置格式通过；密码未输出。
+api 已由本项目启动
+web 已由本项目启动
+打开 http://127.0.0.1:3100
+PASS: repeated init preserves .env; up reuses existing owned API/Web and MySQL container/volume

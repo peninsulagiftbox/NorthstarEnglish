@@ -39,6 +39,8 @@
 - release-boundaries.js：补充播放拒绝和回放前后人工自评边界；六个JS脚本截图改到phase-09r目录，旧截图不覆盖。
 - evidence/phase09r/previous/：旧交付清单与包哈希；旧ZIP保留在本地忽略目录。旧日志不编辑或删除。
 
+- 收尾 evidence/.gitattributes：仅对原始日志禁用Git换行转换，保留CRLF/尾空格；不改业务或候选测试脚本。
+
 ## 冻结与证据边界
 
 候选commit包含原Phase09范围与09-R测试/打包修复；Java业务源码、迁移SQL和产品交互逻辑本轮不改。候选后仅新增证据和更新验收文档/包元数据。候选源码变动必须另建候选并重跑受影响测试。

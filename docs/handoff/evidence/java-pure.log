@@ -1,0 +1,49 @@
+{"id": "java-pure", "command": ["./mvnw", "-o", "-Dtest=TokenAlignerTest,SimpleSchedulerTest,ContentPackageTest", "test"], "cwd": "apps/api", "startedAt": "2026-10-26T14:38:33.080610+08:00", "exitCode": 0, "seconds": 2.9, "log": "java-pure.log"}
+
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------< local.northstar:northstar-api >--------------------
+[INFO] Building northstar-api 0.1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.6.2:enforce (runtime) @ northstar-api ---
+[INFO] Rule 0: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[INFO] Rule 1: org.apache.maven.enforcer.rules.version.RequireMavenVersion passed
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ northstar-api ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 8 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ northstar-api ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ northstar-api ---
+[INFO] skip non existing resourceDirectory <PROJECT_ROOT>/apps/api/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ northstar-api ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.6:test (default-test) @ northstar-api ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running local.northstar.catalog.ContentPackageTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.209 s -- in local.northstar.catalog.ContentPackageTest
+[INFO] Running local.northstar.exercise.TokenAlignerTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in local.northstar.exercise.TokenAlignerTest
+[INFO] Running local.northstar.exercise.SimpleSchedulerTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s -- in local.northstar.exercise.SimpleSchedulerTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.807 s
+[INFO] Finished at: 2026-10-26T14:38:35+08:00
+[INFO] ------------------------------------------------------------------------

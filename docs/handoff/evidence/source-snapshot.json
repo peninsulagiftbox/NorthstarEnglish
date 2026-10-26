@@ -1,6 +1,6 @@
 {
-  "frozenAt": "2026-10-26T19:35:35.712410+08:00",
-  "gitHead": "21b56510820972920bc2efff63cb1c2100d2780c",
+  "frozenAt": "2026-10-26T19:51:57.539099+08:00",
+  "gitHead": "dd9e3f47a1a5c12296532846f676bb1fcbec7569",
   "javaInventory": {
     "apps/api/src/main/java": {
       "count": 19,
@@ -188,9 +188,9 @@
     },
     {
       "path": "README.md",
-      "workspaceSha256": "2e906dcc00b36af319bfcb640963003254ded42f7504bbd162dd4841da6f014b",
-      "sha256": "2e906dcc00b36af319bfcb640963003254ded42f7504bbd162dd4841da6f014b",
-      "bytes": 29126,
+      "workspaceSha256": "b6aa97b6422ae7cf8b286533347a4184429d1c580517f41b8d3d68173f190281",
+      "sha256": "b6aa97b6422ae7cf8b286533347a4184429d1c580517f41b8d3d68173f190281",
+      "bytes": 29434,
       "machinePathRedacted": false
     },
     {
@@ -978,6 +978,13 @@
       "machinePathRedacted": false
     },
     {
+      "path": "docs/ACCEPTANCE_MATRIX.md",
+      "workspaceSha256": "d1ac233c2b114f0fe55faad2245c0775faab4977dee448a14d7b60287c9d9c5f",
+      "sha256": "d1ac233c2b114f0fe55faad2245c0775faab4977dee448a14d7b60287c9d9c5f",
+      "bytes": 5604,
+      "machinePathRedacted": false
+    },
+    {
       "path": "docs/BACKUP_RESTORE.md",
       "workspaceSha256": "7acdc517798a0a38142758a57f9a7810aeb530db31f0c4388b7fb8f517edd458",
       "sha256": "7acdc517798a0a38142758a57f9a7810aeb530db31f0c4388b7fb8f517edd458",
@@ -1007,9 +1014,9 @@
     },
     {
       "path": "docs/IMPLEMENTATION_PLAN.md",
-      "workspaceSha256": "9add6ec486eedca1ee84a45cf64e2a23549fe1bcc1d5f7621334eaa18ea1407f",
-      "sha256": "9add6ec486eedca1ee84a45cf64e2a23549fe1bcc1d5f7621334eaa18ea1407f",
-      "bytes": 65175,
+      "workspaceSha256": "c12353fcd752ed3b9b51b88e560f4482f0a9d5bd388ccbc5a0ddf0461269e702",
+      "sha256": "c12353fcd752ed3b9b51b88e560f4482f0a9d5bd388ccbc5a0ddf0461269e702",
+      "bytes": 65474,
       "machinePathRedacted": false
     },
     {
@@ -1028,16 +1035,16 @@
     },
     {
       "path": "docs/RELEASE_CHECKLIST.md",
-      "workspaceSha256": "be30026d395065f9c085f0343cb3902bf483a5be5e9b999b7c88f0242cae92ec",
-      "sha256": "be30026d395065f9c085f0343cb3902bf483a5be5e9b999b7c88f0242cae92ec",
-      "bytes": 1916,
+      "workspaceSha256": "d3f1e1672fb904869b4e9720a9154980435ed4aa890c9272e198b12898d9714e",
+      "sha256": "d3f1e1672fb904869b4e9720a9154980435ed4aa890c9272e198b12898d9714e",
+      "bytes": 2174,
       "machinePathRedacted": false
     },
     {
       "path": "docs/TEST_REPORT.md",
-      "workspaceSha256": "feacf4ec384674b88c9642263be30e6f4a022a13e0142c27f688f56303b72d96",
-      "sha256": "feacf4ec384674b88c9642263be30e6f4a022a13e0142c27f688f56303b72d96",
-      "bytes": 3071,
+      "workspaceSha256": "db42670be38f16e442a9d61a1f8d3e677aaefa1679aaf62a8570bbca119d1102",
+      "sha256": "db42670be38f16e442a9d61a1f8d3e677aaefa1679aaf62a8570bbca119d1102",
+      "bytes": 3329,
       "machinePathRedacted": false
     },
     {
@@ -1661,6 +1668,10 @@
     },
     {
       "path": "docs/progress/PHASE_09.md",
+      "reason": "original historical reports/evidence may contain personal activity; curated audit evidence supplied instead"
+    },
+    {
+      "path": "docs/progress/PHASE_09_R.md",
       "reason": "original historical reports/evidence may contain personal activity; curated audit evidence supplied instead"
     },
     {

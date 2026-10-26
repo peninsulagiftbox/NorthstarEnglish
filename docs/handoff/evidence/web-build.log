@@ -1,0 +1,41 @@
+{"id": "web-build", "command": ["npm", "run", "build"], "cwd": ".", "startedAt": "2026-10-26T14:37:02.618122+08:00", "exitCode": 0, "seconds": 11.464, "log": "web-build.log"}
+
+
+> northstar-english@0.1.0 build
+> npm run build --workspace apps/web
+
+
+> @northstar/web@0.1.0 build
+> next build --webpack
+
+▲ Next.js 16.4.2 (webpack)
+✓ Running next.config.ts took 15ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 3.9s
+  Running TypeScript ...
+  Finished TypeScript in 788ms ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/9) ...
+  Generating static pages using 7 workers (2/9) 
+  Generating static pages using 7 workers (4/9) 
+  Generating static pages using 7 workers (6/9) 
+✓ Generating static pages using 7 workers (9/9) in 271ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /courses
+├ ○ /dashboard
+├ ○ /icon.svg
+├ ƒ /lesson/[lessonId]
+├ ○ /reports
+├ ○ /review
+└ ○ /settings
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

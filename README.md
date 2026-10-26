@@ -2,7 +2,7 @@
 
 一个面向个人自学、在本地运行的英语学习工作台。目标是把逐句听读、听写、精读、录音回放、写作和复习串成一条可追溯的学习路径，让进度来自真实练习记录。
 
-**当前状态：Phase 01–09 本地工程与核心闭环已完成验收（PASS_WITH_NOTES），等待最终审核；课程素材正式发布仍受授权审查阻塞。** 本地提供原创 10 句实播、听写、5 个源句词条、阅读提交与可追溯错误来源，以及私人录音、自动回放计次、不可变写作版本、三题测验历史与到期翻卡自评。当前默认配音为英式 Edge（Mia/Sonia、Leo/Ryan）v2，v1与历史记录保留；[评测与更换报告](docs/TTS_EDGE_EVALUATION.md)。素材来源审查为 `pending_review`，正式发布受阻。第九阶段结果与未完成验收见[阶段报告](docs/progress/PHASE_09.md)。
+**当前状态：Phase 09-R 固定候选的本地核心工程复验 PASS；公开素材授权门禁 FAIL，实体设备及另机验收 NOT VERIFIED。** 本地提供原创 10 句实播、听写、5 个源句词条、阅读提交与可追溯错误来源，以及私人录音、自动回放计次、不可变写作版本、三题测验历史与到期翻卡自评。当前默认配音为英式 Edge（Mia/Sonia、Leo/Ryan）v2，v1与历史记录保留；[评测与更换报告](docs/TTS_EDGE_EVALUATION.md)。素材来源审查为 `pending_review`，正式发布受阻。第九阶段结果与未完成验收见[阶段报告](docs/progress/PHASE_09.md)。
 
 [快速开始](#快速开始) · [当前功能](#当前功能) · [开发与验证](#开发与验证) · [开发路线](#开发路线) · [隐私与内容来源](#隐私与内容来源)
 
@@ -377,3 +377,5 @@ python3 scripts/local.py db-test
 人工操作流程：首次打开首页→课程中心→仅进入 Demo 01→第6句播放→精听提交错误文本并检查对照/回听→精读答错并沿证据句回到第6句→录音权限允许时录制并真实回放，或明确跳过→写作保存V1、修改后保存V2→测验错答→复习翻卡并自评→刷新和关闭后重开，检查草稿、版本、事件和到期复习。实体麦克风需分别手工记录Chrome/Safari允许与拒绝路径；虚拟设备结果不能替代。发布前还必须按 [备份恢复说明](docs/BACKUP_RESTORE.md) 将SQL和媒体恢复到全新隔离目标，校验后继续提交一次真实练习。
 
 发布状态、设计偏差、测试结果和下一步见 [RELEASE_CHECKLIST](docs/RELEASE_CHECKLIST.md)、[TEST_REPORT](docs/TEST_REPORT.md) 和 [PHASE_09](docs/progress/PHASE_09.md)。
+
+Phase 09-R 唯一候选为 `phase-09r-rc1`，完整结果见 [09-R报告](docs/handoff/PHASE_09_R_ACCEPTANCE_REPORT.md) 和 [验收矩阵](docs/ACCEPTANCE_MATRIX.md)。上文Phase09命令和结果为历史记录；本轮使用专用实例、构建与媒体目录，未执行主库写命令，不将包校验当业务验收。

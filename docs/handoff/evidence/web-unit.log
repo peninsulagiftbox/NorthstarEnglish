@@ -1,0 +1,170 @@
+{"id": "web-unit", "command": ["npm", "test"], "cwd": ".", "startedAt": "2026-10-26T14:36:57.170060+08:00", "exitCode": 0, "seconds": 0.622, "log": "web-unit.log"}
+
+
+> northstar-english@0.1.0 test
+> npm run test --workspace apps/web
+
+
+> @northstar/web@0.1.0 test
+> node --experimental-strip-types --test tests/*.test.ts
+
+TAP version 13
+# Subtest: accepts actual health response
+ok 1 - accepts actual health response
+  ---
+  duration_ms: 26.466417
+  type: 'test'
+  ...
+# Subtest: database outage remains an error and hides server details
+ok 2 - database outage remains an error and hides server details
+  ---
+  duration_ms: 0.358209
+  type: 'test'
+  ...
+# Subtest: rejects malformed or different-project UP responses
+ok 3 - rejects malformed or different-project UP responses
+  ---
+  duration_ms: 0.555125
+  type: 'test'
+  ...
+# Subtest: timeout produces a recoverable connection error
+ok 4 - timeout produces a recoverable connection error
+  ---
+  duration_ms: 6.35675
+  type: 'test'
+  ...
+# Subtest: restores same-version resume; explicit URL wins and round-trips
+ok 5 - restores same-version resume; explicit URL wins and round-trips
+  ---
+  duration_ms: 3.606125
+  type: 'test'
+  ...
+# Subtest: rejects stale or foreign context and normalizes invalid URL values
+ok 6 - rejects stale or foreign context and normalizes invalid URL values
+  ---
+  duration_ms: 0.240666
+  type: 'test'
+  ...
+# Subtest: dictation and blind mode hide target regardless of translation preference
+ok 7 - dictation and blind mode hide target regardless of translation preference
+  ---
+  duration_ms: 0.185667
+  type: 'test'
+  ...
+# Subtest: drafts are isolated by version, task and sentence; writing stays lesson-wide
+ok 8 - drafts are isolated by version, task and sentence; writing stays lesson-wide
+  ---
+  duration_ms: 0.158042
+  type: 'test'
+  ...
+# Subtest: lesson links pin the immutable version for historical reviews
+ok 9 - lesson links pin the immutable version for historical reviews
+  ---
+  duration_ms: 0.1935
+  type: 'test'
+  ...
+# Subtest: voice version links preserve task, sentence suffix and visibility in both directions
+ok 10 - voice version links preserve task, sentence suffix and visibility in both directions
+  ---
+  duration_ms: 2.244792
+  type: 'test'
+  ...
+# Subtest: UTC database timestamps display Beijing time without milliseconds
+ok 11 - UTC database timestamps display Beijing time without milliseconds
+  ---
+  duration_ms: 1.577875
+  type: 'test'
+  ...
+# Subtest: Beijing day/year rollover and midnight use zero-padded 24-hour time
+ok 12 - Beijing day/year rollover and midnight use zero-padded 24-hour time
+  ---
+  duration_ms: 0.105167
+  type: 'test'
+  ...
+# Subtest: AB validates finite local bounds
+ok 13 - AB validates finite local bounds
+  ---
+  duration_ms: 0.819667
+  type: 'test'
+  ...
+# Subtest: selection, real seek, speed, AB priority and source cleanup
+ok 14 - selection, real seek, speed, AB priority and source cleanup
+  ---
+  duration_ms: 0.838208
+  type: 'test'
+  ...
+# Subtest: late promise rejection cannot corrupt a newer source; failed playback is not evidence
+ok 15 - late promise rejection cannot corrupt a newer source; failed playback is not evidence
+  ---
+  duration_ms: 0.982
+  type: 'test'
+  ...
+# Subtest: toggle during a pending source uses actual paused state
+ok 16 - toggle during a pending source uses actual paused state
+  ---
+  duration_ms: 0.117834
+  type: 'test'
+  ...
+# Subtest: cross-file seek restores offsets on metadata, preserves pause intent, and cancels AB
+ok 17 - cross-file seek restores offsets on metadata, preserves pause intent, and cancels AB
+  ---
+  duration_ms: 0.236542
+  type: 'test'
+  ...
+# Subtest: late microphone permission after unmount releases every track and never saves
+ok 18 - late microphone permission after unmount releases every track and never saves
+  ---
+  duration_ms: 2.857917
+  type: 'test'
+  ...
+# Subtest: permission denial and absent browser APIs are explicit, never practice evidence
+ok 19 - permission denial and absent browser APIs are explicit, never practice evidence
+  ---
+  duration_ms: 0.206042
+  type: 'test'
+  ...
+# Subtest: all six three-option permutations are reachable without favoring a correct position
+ok 20 - all six three-option permutations are reachable without favoring a correct position
+  ---
+  duration_ms: 1.456459
+  type: 'test'
+  ...
+# Subtest: fresh shuffles use fresh draws; empty and single-choice inputs stay valid
+ok 21 - fresh shuffles use fresh draws; empty and single-choice inputs stay valid
+  ---
+  duration_ms: 0.191292
+  type: 'test'
+  ...
+# Subtest: sentence clock formats short durations and invalid input
+ok 22 - sentence clock formats short durations and invalid input
+  ---
+  duration_ms: 0.608708
+  type: 'test'
+  ...
+# Subtest: published word boundaries match all ten original audio hashes and refuse stale versions
+ok 23 - published word boundaries match all ten original audio hashes and refuse stale versions
+  ---
+  duration_ms: 4.619375
+  type: 'test'
+  ...
+# Subtest: punctuation endpoints use the last word duration and skip commas and unmatched words
+ok 24 - punctuation endpoints use the last word duration and skip commas and unmatched words
+  ---
+  duration_ms: 0.5695
+  type: 'test'
+  ...
+# Subtest: all original sentence terminators map to word endings, including question and exclamation marks
+ok 25 - all original sentence terminators map to word endings, including question and exclamation marks
+  ---
+  duration_ms: 0.426625
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 283.454916

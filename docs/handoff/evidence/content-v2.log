@@ -1,0 +1,3 @@
+{"id": "content-v2", "command": ["python3", "scripts/validate-content.py", "content/demo-01/v2"], "cwd": ".", "startedAt": "2026-10-26T14:37:02.479901+08:00", "exitCode": 0, "seconds": 0.138, "log": "content-v2.log"}
+
+PASS: package IDs, source links, 4 catalog-only books, 10 audio hashes/MIME/sizes/decoded durations

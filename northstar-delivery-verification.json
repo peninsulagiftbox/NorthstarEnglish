@@ -1,0 +1,52 @@
+{
+  "candidate": "phase-09r-rc1",
+  "candidateGitSha": "dd9e3f47a1a5c12296532846f676bb1fcbec7569",
+  "scope": "Packaging only, not business acceptance; external receipt avoids recursive ZIP/log hashing",
+  "status": "PASS",
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "docs/handoff/evidence/package_handoff.py",
+        "/private/tmp/northstar-source-audit-n7vqo8xc"
+      ],
+      "cwd": "<PROJECT_ROOT>",
+      "startedAt": "2026-10-26T19:57:24.207687+08:00",
+      "exitCode": 0,
+      "stdoutAndStderr": "{\"exitCode\": 0, \"sourceFiles\": 228, \"handoffFiles\": 203, \"sourceBytes\": 572919, \"handoffBytes\": 909289, \"archives\": [\"northstar-handoff.zip\", \"northstar-source.zip\"], \"privacyScan\": \"PASS within explicit scan rules; no runtime personal datasets included\", \"CRCAndBytes\": \"PASS\"}\n"
+    },
+    {
+      "argv": [
+        "python3",
+        "docs/handoff/evidence/verify_packages.py"
+      ],
+      "cwd": "<PROJECT_ROOT>",
+      "startedAt": "2026-10-26T19:57:24.415420+08:00",
+      "exitCode": 0,
+      "stdoutAndStderr": "{\"exitCode\": 0, \"requiredReports\": 8, \"localMarkdownLinks\": \"PASS\", \"zipCRC\": \"PASS\", \"allManifestHashes\": \"PASS\", \"handoffMatchesLocalDirectory\": \"PASS\", \"archiveChecksums\": \"PASS\", \"note\": \"Packaging verification only; not project acceptance.\"}\n"
+    },
+    {
+      "argv": [
+        "shasum",
+        "-a",
+        "256",
+        "-c",
+        "northstar-packages.sha256"
+      ],
+      "cwd": "<PROJECT_ROOT>",
+      "startedAt": "2026-10-26T19:57:24.482044+08:00",
+      "exitCode": 0,
+      "stdoutAndStderr": "northstar-handoff.zip: OK\nnorthstar-source.zip: OK\n"
+    }
+  ],
+  "archives": {
+    "northstar-source.zip": {
+      "sha256": "e3e99ce1910cad3fd56bb76fa9c36ad7863033ce5a05dc0156f5419fa9518773",
+      "bytes": 572919
+    },
+    "northstar-handoff.zip": {
+      "sha256": "20d49465e29fa30f8875fd494255872cc6c626032afe23be779650ff424e89c9",
+      "bytes": 909289
+    }
+  }
+}

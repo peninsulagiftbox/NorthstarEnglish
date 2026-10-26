@@ -101,8 +101,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 29126,
-    "sha256": "2e906dcc00b36af319bfcb640963003254ded42f7504bbd162dd4841da6f014b"
+    "bytes": 29434,
+    "sha256": "b6aa97b6422ae7cf8b286533347a4184429d1c580517f41b8d3d68173f190281"
   },
   {
     "path": "apps/api/.mvn/wrapper/maven-wrapper.properties",
@@ -665,6 +665,11 @@
     "sha256": "33f7a8ed163a1a458113fc5cb5e1e3acb952d85fdd9c96ec5a3909fcc6b6a392"
   },
   {
+    "path": "docs/ACCEPTANCE_MATRIX.md",
+    "bytes": 5604,
+    "sha256": "d1ac233c2b114f0fe55faad2245c0775faab4977dee448a14d7b60287c9d9c5f"
+  },
+  {
     "path": "docs/BACKUP_RESTORE.md",
     "bytes": 9079,
     "sha256": "7acdc517798a0a38142758a57f9a7810aeb530db31f0c4388b7fb8f517edd458"
@@ -686,8 +691,8 @@
   },
   {
     "path": "docs/IMPLEMENTATION_PLAN.md",
-    "bytes": 65175,
-    "sha256": "9add6ec486eedca1ee84a45cf64e2a23549fe1bcc1d5f7621334eaa18ea1407f"
+    "bytes": 65474,
+    "sha256": "c12353fcd752ed3b9b51b88e560f4482f0a9d5bd388ccbc5a0ddf0461269e702"
   },
   {
     "path": "docs/PROTOTYPE_README.md",
@@ -701,13 +706,13 @@
   },
   {
     "path": "docs/RELEASE_CHECKLIST.md",
-    "bytes": 1916,
-    "sha256": "be30026d395065f9c085f0343cb3902bf483a5be5e9b999b7c88f0242cae92ec"
+    "bytes": 2174,
+    "sha256": "d3f1e1672fb904869b4e9720a9154980435ed4aa890c9272e198b12898d9714e"
   },
   {
     "path": "docs/TEST_REPORT.md",
-    "bytes": 3071,
-    "sha256": "feacf4ec384674b88c9642263be30e6f4a022a13e0142c27f688f56303b72d96"
+    "bytes": 3329,
+    "sha256": "db42670be38f16e442a9d61a1f8d3e677aaefa1679aaf62a8570bbca119d1102"
   },
   {
     "path": "docs/TTS_EDGE_EVALUATION.md",
@@ -1126,12 +1131,12 @@
   },
   {
     "path": "SOURCE_PACKAGE_README.md",
-    "bytes": 1078,
-    "sha256": "49c3f4a19dd7a06c0be2385fee6c776a30bdd02dd4132a91a3d9f3804e4c4781"
+    "bytes": 1283,
+    "sha256": "356e6fe7f9c5f3c69a6af676f7839963859be4c544d1c4f7d1495aa16bcbbfa5"
   },
   {
     "path": "SOURCE_FILES.json",
-    "bytes": 39660,
-    "sha256": "0d26b7a364a22c40720dbba9b63e8f977b87f16d18a55f7e8d1a48598eef1ed7"
+    "bytes": 39820,
+    "sha256": "34986be9ed573bada739cd9ec1d406e08f4c94ef216931283810b2b9dbfd92b1"
   }
 ]

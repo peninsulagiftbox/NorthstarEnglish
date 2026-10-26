@@ -1,0 +1,5 @@
+Command: python3 docs/handoff/evidence/package_handoff.py /private/tmp/northstar-source-audit-n7vqo8xc
+cwd: <PROJECT_ROOT>
+Raw exitCode: 1
+AssertionError: Local identity found in evidence/phase09r/java-mysql-integration-1793014752750712000.log
+Existing privacy guard correctly rejected Spring startup username metadata. Raw original success logs retained privately; curated public copies redact exact local identity, see redactions.json. Test outputs/exit codes unchanged.
