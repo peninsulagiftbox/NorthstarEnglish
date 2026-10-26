@@ -1,0 +1,10 @@
+21b5651 2026-10-24 feat: implement Phase 08 reports preferences and isolated backups
+e58fc5a 2026-10-24 feat: implement Phase 07 quiz and scheduled review workflows
+aff9a29 2026-10-24 fix: refine dictation and writing interaction states
+606efed 2026-10-24 feat: implement Phase 06 recording and writing workflows
+82c5b55 2026-10-24 feat: implement Phase 05 vocabulary and evidence-based reading
+a357e20 2026-10-22 feat: implement Phase 04 audio and dictation workflow
+eef3c95 2026-10-21 feat: add resumable desktop learning workspace (Phase 03)
+21beab1 2026-10-21 feat: import versioned demo content and media API (Phase 02)
+e4cf6af 2026-10-21 docs: write project overview and local setup guide
+7042554 2026-10-21 feat: initialize Phase 01 local application skeleton

@@ -1,6 +1,6 @@
 # Northstar English 实施计划
 
-日期：2026-10-22（Asia/Shanghai）。执行更新（2026-10-24）：**Phase 01–08 已按用户逐阶段授权实施。Phase 08 已完成真实首页/报告、偏好设置、JSON 导出预检与隔离备份恢复，结果见 `docs/progress/PHASE_08.md`，等待本阶段审核。既有成果和学习数据保留，素材正式发布仍受来源/声音授权审查阻塞；Phase 09 未开始。**
+日期：2026-10-22（Asia/Shanghai）。执行更新（2026-10-26）：**Phase 01–09 已按用户逐阶段授权实施。Phase09 已补齐隔离全学习闭环、独立MySQL/录音恢复、重启续学和安全/UI核验；最终结果见 `docs/progress/PHASE_09.md`，等待本阶段审核。既有学习数据保留；素材/声音授权与实体麦克风验收仍单列，正式素材发布受阻。**
 
 以下规划正文保留实施前的只读快照，原“本轮未初始化/未启动”等描述指规划轮次；当前执行事实以上述阶段报告为准。
 
@@ -509,7 +509,7 @@ HTTP：400格式、404未知资源、409事件内容冲突/内容版本不匹配
 ### Phase 09｜集成回归、本地发布与完整恢复演练
 
 - 依赖：08审核通过；不新增未经评审业务模块。
-- 文件：完善`README.md/.env.example/scripts/{doctor,dev-up,dev-down,backup,restore}.sh`；`apps/web/e2e/full-learning-loop.spec.ts`及故障恢复用例；`docs/RELEASE_CHECKLIST.md/TEST_REPORT.md/DESIGN_DEVIATIONS.md/progress/PHASE_09.md`；证据logs/screenshots/traces。
+- 文件：完善`README.md/.env.example/scripts/{doctor,dev-up,dev-down,backup,restore}.sh`；`scripts/{full-learning-loop,release-boundaries,release-revisit,release-accessibility}.js`及Playwright CLI回归入口（沿用既有工具，不引入新测试框架）；`docs/RELEASE_CHECKLIST.md/TEST_REPORT.md/DESIGN_DEVIATIONS.md/progress/PHASE_09.md`；证据logs/screenshots/traces。
 - 可运行交付：按文档从前置运行时到启动/停止/升级/备份/恢复的本地一期产品，原创单课完整闭环与发布阻塞清单。
 - 验证/验收：Java21生产构建/后端测试/目标MySQL集成；npm ci/typecheck/lint/test/build；Playwright全闭环；1440×900对照；只重启自有服务；SQL+媒体恢复到独立实例并校验原文/事件/来源/音频；手工Chrome/Safari麦克风结果单列；XSS/Origin/隐私/资源释放检查。
 - 风险：首次全新复现、镜像/依赖变化、真设备覆盖不全；结果逐项PASS/PASS_WITH_NOTES/FAIL/BLOCKED，未完成核心数据恢复或持久化不能签完整发布通过。AC17及波形部分AC18明确延期。
@@ -544,4 +544,4 @@ HTTP：400格式、404未知资源、409事件内容冲突/内容版本不匹配
 
 主要未解决项：JDK21定位/取得方式；Docker daemon权限和可用资源；合成音频具体来源证明；实际框架精确补丁构建验证；真实Chrome/Safari麦克风与恢复演练。均已安排到相应阶段，不模拟通过。
 
-Phase01 结果见 `docs/progress/PHASE_01.md`。Phase02 已按提示词实施，结果见 `docs/progress/PHASE_02.md`；后续用户授权实施 Phase03，结果见 `docs/progress/PHASE_03.md`。用户已授权将 Phase02、Phase03 按阶段分别提交并推送 GitHub；第四阶段已由用户单独授权实施，结果见 `docs/progress/PHASE_04.md`；用户随后单独授权实施 Phase05，结果见 `docs/progress/PHASE_05.md`；随后用户明确授权实施 Phase06，结果见 `docs/progress/PHASE_06.md`；用户随后明确授权实施 Phase07，结果见 `docs/progress/PHASE_07.md`；用户随后明确授权实施 Phase08，结果见 `docs/progress/PHASE_08.md`；不自动进入 Phase09，素材来源和声音授权仍待补齐。
+Phase01 结果见 `docs/progress/PHASE_01.md`。Phase02 已按提示词实施，结果见 `docs/progress/PHASE_02.md`；后续用户授权实施 Phase03，结果见 `docs/progress/PHASE_03.md`。用户已授权将 Phase02、Phase03 按阶段分别提交并推送 GitHub；第四阶段已由用户单独授权实施，结果见 `docs/progress/PHASE_04.md`；用户随后单独授权实施 Phase05，结果见 `docs/progress/PHASE_05.md`；随后用户明确授权实施 Phase06，结果见 `docs/progress/PHASE_06.md`；用户随后明确授权实施 Phase07，结果见 `docs/progress/PHASE_07.md`；用户随后明确授权实施 Phase08，结果见 `docs/progress/PHASE_08.md`；用户随后授权实施 Phase09 并要求补齐，见 `docs/progress/PHASE_09.md`；素材来源和声音授权仍待补齐。

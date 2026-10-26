@@ -1,0 +1,38 @@
+[
+  {
+    "command": "python3 scripts/local.py db-test",
+    "status": "NOT VERIFIED",
+    "exitCode": null,
+    "reason": "Migrates database and writes test records; excluded by read-only instruction."
+  },
+  {
+    "command": "sh scripts/release-browser.sh",
+    "status": "NOT VERIFIED",
+    "exitCode": null,
+    "reason": "Writes real attempts/drafts/reviews to isolated database; existing artifacts separately indexed."
+  },
+  {
+    "command": "sh scripts/dev-up.sh; sh scripts/dev-down.sh",
+    "status": "NOT VERIFIED",
+    "exitCode": null,
+    "reason": "Startup migrates/seeds DB; restart would change service state."
+  },
+  {
+    "command": "sh scripts/backup.sh <new-private-directory>; sh scripts/restore.sh ...",
+    "status": "NOT VERIFIED",
+    "exitCode": null,
+    "reason": "Export includes personal data; restore creates/writes database and media."
+  },
+  {
+    "command": "npm ci",
+    "status": "NOT VERIFIED",
+    "exitCode": null,
+    "reason": "No dependency reinstallation; existing dependencies used."
+  },
+  {
+    "command": "Physical Chrome/Safari microphone acceptance",
+    "status": "NOT VERIFIED",
+    "exitCode": null,
+    "reason": "No real device/manual operator test."
+  }
+]

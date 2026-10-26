@@ -48,18 +48,35 @@ def main():
     parser.add_argument('--recording-root', type=Path, default=Path.home() / 'Library/Application Support/NorthstarEnglish/recordings', help='private media parent, same as API recording-root')
     parser.add_argument('--target', help='new schema: northstar_restore_YYYYMMDDhhmmss')
     parser.add_argument('--confirm-new-isolated', action='store_true')
+    parser.add_argument('--separate-mysql', action='store_true', help='restore only: verified dedicated recovery MySQL instance')
+    parser.add_argument('--phase09r', action='store_true', help='use ONLY identity-checked Phase09-R source and restore containers')
     args = parser.parse_args()
+    if args.action == 'backup' and args.separate_mysql:
+        raise ValueError('--separate-mysql 仅用于恢复目标，不更改备份来源')
     url = urllib.parse.urlparse(args.api)
     if url.scheme != 'http' or url.hostname not in ('localhost', '127.0.0.1') or url.path not in ('', '/') or url.username or url.query or url.fragment:
         raise ValueError('仅支持本地回环 API')
     env = local.environment()
-    local.verify_container(env)
+    source_container = 'northstar-english-mysql-01'
+    if args.phase09r:
+        import phase09r
+        env = phase09r.verify('source')
+        if args.api != env['NORTHSTAR_BASE_URL'].replace(':'+env['WEB_PORT'], ':'+env['API_PORT']):
+            raise ValueError('Phase09-R requires its exact isolated source API')
+        source_container = phase09r.CONTAINERS['source']
+        if args.separate_mysql:
+            raise ValueError('Phase09-R selects its own dedicated target; do not combine modes')
+        if not args.recording_root.resolve().is_relative_to(phase09r.STATE):
+            raise ValueError('Phase09-R media must remain under its private test directory')
+    else:
+        local.verify_container(env)
     def api(path, body=None):
         request = urllib.request.Request(args.api.rstrip('/') + '/api/v1' + path, data=None if body is None else json.dumps(body).encode(), headers={'Origin': 'http://127.0.0.1:' + str(args.web_port or env['WEB_PORT']), 'X-Northstar-Request': 'local-workspace', 'Content-Type': 'application/json'})
         with urllib.request.urlopen(request, timeout=60) as response:
             return json.load(response)
-    def sql(query, schema=None):
-        command = ['docker', 'exec', '-i', 'northstar-english-mysql-01', 'sh', '-c', 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysql -uroot --default-character-set=utf8mb4 -N --batch --raw' + (' ' + schema if schema else '')]
+    def sql(query, schema=None, container=None):
+        container = container or source_container
+        command = ['docker', 'exec', '-i', container, 'sh', '-c', 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysql -uroot --default-character-set=utf8mb4 -N --batch --raw' + (' ' + schema if schema else '')]
         result = subprocess.run(command, input=query, text=True, capture_output=True, env=env)
         if result.returncode:
             raise RuntimeError('隔离数据库操作失败；没有覆盖现库，失败目标保留供排查。未输出私人数据。')
@@ -95,6 +112,16 @@ def main():
         print('PASS: JSON + 媒体清单 + 可用录音已校验；不含浏览器未同步缓冲。目录：' + str(args.path))
         return
     envelope, payload = load_snapshot(args.path)
+    destination = 'northstar-english-mysql-01'
+    if args.phase09r:
+        phase09r.verify('restore')
+        destination = phase09r.CONTAINERS['restore']
+    if args.separate_mysql:
+        import recovery_mysql
+        recovery_mysql.verify(env)
+        destination = recovery_mysql.CONTAINER
+    def target_sql(query, schema=None):
+        return sql(query, schema, destination)
     preview = api('/data/import-preview', envelope)
     if not preview['valid'] or preview['sha256'] != envelope['sha256']:
         raise ValueError('服务器预检失败')
@@ -104,7 +131,7 @@ def main():
     if media_target.exists() or media_target.is_symlink():
         raise ValueError('目标媒体目录已存在，拒绝覆盖')
     # Refuse an existing target, including a previous restore, before creating files or SQL.
-    if sql('SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name=' + literal(args.target)).strip() != '0':
+    if target_sql('SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name=' + literal(args.target)).strip() != '0':
         raise ValueError('目标已存在，拒绝覆盖或重复合并；请使用新目标。')
     health_request = urllib.request.Request(args.api + '/api/v1/health')
     with urllib.request.urlopen(health_request, timeout=8) as response:
@@ -123,7 +150,7 @@ def main():
             if path.is_symlink() or not path.is_file() or path.stat().st_size != int(row['byte_size']) or digest(path.read_bytes()) != row['sha256']:
                 raise ValueError('可用录音缺失或校验失败；请使用完整备份目录恢复。未创建目标。')
             copies.append(path)
-    dump = subprocess.run(['docker', 'exec', 'northstar-english-mysql-01', 'sh', '-c', 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysqldump -uroot --no-data --skip-add-drop-table --no-tablespaces --set-gtid-purged=OFF ' + source], capture_output=True, env=env)
+    dump = subprocess.run(['docker', 'exec', source_container, 'sh', '-c', 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysqldump -uroot --no-data --skip-add-drop-table --no-tablespaces --set-gtid-purged=OFF ' + source], capture_output=True, env=env)
     if dump.returncode:
         raise RuntimeError('无法读取当前版本表结构')
     # Get dependencies from verified source metadata; never execute SQL supplied by a JSON file.
@@ -145,8 +172,8 @@ def main():
             raise ValueError('无效表结构')
     target = args.target
     # CREATE DATABASE deliberately has no IF NOT EXISTS, so a race cannot reuse another schema.
-    sql('CREATE DATABASE `' + target + '` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;')
-    sql(dump.stdout.decode(), target)
+    target_sql('CREATE DATABASE `' + target + '` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;')
+    target_sql(dump.stdout.decode(), target)
     commands = ['SET NAMES utf8mb4;', 'SET FOREIGN_KEY_CHECKS=1;', 'START TRANSACTION;']
     lesson_links = []
     for table in order:
@@ -166,9 +193,9 @@ def main():
     for lesson, version in lesson_links:
         commands.append('UPDATE lesson SET current_version_id=' + literal(version) + ' WHERE id=' + literal(lesson) + ';')
     commands.append('COMMIT;')
-    sql('\n'.join(commands), target)
+    target_sql('\n'.join(commands), target)
     counts_sql = ' UNION ALL '.join("SELECT '" + table + "',COUNT(*) FROM `" + table + "`" for table in payload['tables'])
-    counts = dict(line.split('\t') for line in sql(counts_sql, target).splitlines())
+    counts = dict(line.split('\t') for line in target_sql(counts_sql, target).splitlines())
     for table, data in payload['tables'].items():
         if int(counts[table]) != len(data['rows']):
             raise ValueError('恢复行数核对失败；保留隔离目标')
@@ -182,7 +209,7 @@ def main():
         grants.append(f"GRANT INSERT,UPDATE ON `{target}`.`{table}` TO 'northstar_app'@'%';")
     for table in ('exercise_attempt','learning_evidence','study_event','review_source','reading_answer','writing_revision','recording_observation','quiz_run','quiz_answer','review_result'):
         grants.append(f"GRANT INSERT ON `{target}`.`{table}` TO 'northstar_app'@'%';")
-    sql('\n'.join(grants))
+    target_sql('\n'.join(grants))
     print('PASS: 逐表行数与媒体哈希通过，恢复到全新隔离库 ' + target + '；没有修改当前库。')
     print('启动此恢复副本需项目级 DB_NAME=' + target + ' NORTHSTAR_ALLOW_RESTORE_DB=true，并选择空闲 API/Web 端口；不要改主 .env。')
 

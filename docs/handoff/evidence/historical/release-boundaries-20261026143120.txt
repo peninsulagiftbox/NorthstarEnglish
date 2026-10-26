@@ -1,0 +1,18 @@
+### Error
+Error: missing audio: locator.click: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: '播放本句', exact: true })[22m
+
+### Result
+Trace recording stopped.
+- [Trace](.playwright-cli/traces/trace-1792996273467.trace)
+- [Network log](.playwright-cli/traces/trace-1792996273467.network)
+- [Resources](.playwright-cli/traces/resources)
+### Page
+- Page URL: http://127.0.0.1:3101/lesson/demo-01?version=demo-01-v2&tab=text&sentence=demo-01-v2-s10&english=1&translation=1
+- Page Title: Northstar English · 本地工作台
+- Console: 1 errors, 0 warnings
+### Events
+- New console entries: .playwright-cli/console-2026-10-26T06-31-12-835Z.log#L1
+Browser 'northstar-phase09' closed
+

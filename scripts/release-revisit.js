@@ -1,0 +1,37 @@
+// Reopen after browser/API/DB restart. Abort every mutation before it reaches the API.
+async page => {
+ const base=new URL(page.url()).origin,errors=[],checks=[];let blockedWrites=0;
+ const assert=(ok,message)=>{if(!ok)throw Error(message);};
+ const get=async path=>{const r=await page.request.get(base+'/api/v1'+path);assert(r.ok(),'GET '+path);return r.json();};
+ page.setDefaultTimeout(15000);page.on('pageerror',e=>errors.push(e.message));
+ await page.route('**/api/v1/**',route=>{if(!['GET','HEAD','OPTIONS'].includes(route.request().method())){blockedWrites++;return route.abort('blockedbyclient');}return route.continue();});
+ try {
+ const resume=await get('/study/resume');assert(resume?.lessonId,'Saved resume required');
+ const ctx='lessonId='+resume.lessonId+'&versionId='+resume.versionId;
+ const writing=await get('/writing?'+ctx),quiz=await get('/quiz?'+ctx),cards=await get('/reviews/due?all=true');
+ await page.setViewportSize({width:1440,height:900});await page.goto(base+'/lesson/'+resume.lessonId);
+ await page.getByRole('tab',{name:{text:'课文',dictation:'精听听写',vocabulary:'精读词汇',speaking:'口语跟读',writing:'写作',quiz:'课时测验'}[resume.tab],exact:true,selected:true}).waitFor();
+ assert(new URL(page.url()).searchParams.get('sentence')===resume.sentenceId,'Server sentence restored in new browser');
+ assert(await page.locator('audio[hidden]').evaluate(a=>a.paused),'Reopening never autoplays');
+ await page.getByRole('tab',{name:'写作',exact:true}).click();await page.locator('#writing-text').waitFor();
+ await page.waitForFunction(t=>document.querySelector('#writing-text')?.value===t,writing.draft.text);
+ assert(await page.locator('.revision-list li').count()===writing.revisions.length,'Writing history rendered after restart');
+ await page.screenshot({path:'docs/evidence/phase-09r/screenshots/revisit-writing-'+new URL(base).port+'.png'});
+ await page.getByRole('tab',{name:'课时测验',exact:true}).click();await page.locator('.quiz-history').waitFor();
+ assert(await page.locator('.quiz-history summary').innerText()===`交卷历史（${quiz.history.length} 轮）`,'Real quiz history restored');
+ await page.goto(base+'/review');await page.getByRole('button',{name:'全部复习计划',exact:true}).click();
+ await page.waitForFunction(n=>document.querySelectorAll('.review-card').length===n,cards.length);
+ assert(cards.some(c=>c.history.length>0),'Persisted review scheduling history');
+ await page.screenshot({path:'docs/evidence/phase-09r/screenshots/revisit-review-'+new URL(base).port+'.png'});
+ checks.push('New browser restores server version/tab/sentence and paused player','Draft and immutable revisions match real server','Quiz and review sources/schedules remain visible after restart');
+ const recordings=await get('/recordings?'+ctx+'&sentenceId='+resume.versionId+'-s10');
+ const recording=recordings.recordings.find(r=>r.status==='ready');
+ if(recording){
+  await page.goto(base+'/lesson/'+resume.lessonId+'?version='+resume.versionId+'&tab=speaking&sentence='+resume.versionId+'-s10');
+  const audio=page.locator(`audio[src="/api/v1/recordings/${recording.id}/audio"]`);await audio.waitFor();await audio.evaluate(a=>a.play());
+  await page.waitForFunction(id=>{const a=document.querySelector(`audio[src="/api/v1/recordings/${id}/audio"]`);return a?.currentTime>.25&&a.readyState>=2;},recording.id);
+  await audio.evaluate(a=>a.pause());checks.push('Ready restored recording actually decoded in browser; playback writes intentionally blocked');
+ }
+ assert(errors.length===0,'Page errors');return {passed:true,checks,pageErrors:errors,blockedWrites,readyRecordingDecoded:!!recording};
+ }finally{ /* Keep write interception active until the CLI closes this browser. */ }
+}

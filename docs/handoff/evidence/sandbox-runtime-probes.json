@@ -1,0 +1,38 @@
+{
+  "at": "2026-10-26T14:37:40.332232+08:00",
+  "command": "python3 docs/handoff/evidence/probe_readonly.py",
+  "records": [
+    {
+      "service": "api",
+      "url": "http://127.0.0.1:8085/api/v1/health",
+      "method": "GET",
+      "result": "NOT VERIFIED",
+      "errorType": "URLError",
+      "error": "<urlopen error [Errno 1] Operation not permitted>"
+    },
+    {
+      "service": "web",
+      "url": "http://127.0.0.1:3100/api/v1/health",
+      "method": "GET",
+      "result": "NOT VERIFIED",
+      "errorType": "URLError",
+      "error": "<urlopen error [Errno 1] Operation not permitted>"
+    },
+    {
+      "service": "isolated-api",
+      "url": "http://127.0.0.1:8086/api/v1/health",
+      "method": "GET",
+      "result": "NOT VERIFIED",
+      "errorType": "URLError",
+      "error": "<urlopen error [Errno 1] Operation not permitted>"
+    },
+    {
+      "service": "isolated-web",
+      "url": "http://127.0.0.1:3101/api/v1/health",
+      "method": "GET",
+      "result": "NOT VERIFIED",
+      "errorType": "URLError",
+      "error": "<urlopen error [Errno 1] Operation not permitted>"
+    }
+  ]
+}

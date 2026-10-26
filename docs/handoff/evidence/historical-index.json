@@ -1,0 +1,331 @@
+[
+  {
+    "source": "docs/evidence/phase-09/logs/api-verify-resume.log",
+    "originalSha256": "26531544f3f949fd9eab493afbfe563f831fa2fdd34edd720316cc96683b943a",
+    "copy": "historical/api-verify-resume.log",
+    "transportRedactions": [
+      "absolute home/project paths",
+      "test UUIDs"
+    ],
+    "exitCode": null,
+    "note": "Existing artifact, not executed in this audit; original exit code unavailable."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/full-learning-loop-20261026142905.txt",
+    "originalSha256": "7e87bc718dbeea07fcd04870ed953f1c756b4af801b65da08a6b1e6d04611e79",
+    "copy": "historical/full-learning-loop-20261026142905.txt",
+    "transportRedactions": [
+      "absolute home/project paths",
+      "test UUIDs"
+    ],
+    "exitCode": null,
+    "note": "Existing artifact, not executed in this audit; original exit code unavailable."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/full-learning-loop-20261026142951.txt",
+    "originalSha256": "679cb79739c0fc7d86f7bc38aca39444452421eb5c9a1710c0348d4cdaa490e5",
+    "copy": "historical/full-learning-loop-20261026142951.txt",
+    "transportRedactions": [
+      "absolute home/project paths",
+      "test UUIDs"
+    ],
+    "exitCode": null,
+    "note": "Existing artifact, not executed in this audit; original exit code unavailable."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/full-learning-loop-20261026143113.txt",
+    "originalSha256": "2ffc62feca2fc71416981c6b94d7f94bbed8f4ce2f2b9832fd050d8e3eca7297",
+    "copy": "historical/full-learning-loop-20261026143113.txt",
+    "transportRedactions": [
+      "absolute home/project paths",
+      "test UUIDs"
+    ],
+    "exitCode": null,
+    "note": "Existing artifact, not executed in this audit; original exit code unavailable."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/release-boundaries-20261026143120.txt",
+    "originalSha256": "9dec51450972bf4966802b495433a07ca725d5eeb58385c97b559ad945376e7b",
+    "copy": "historical/release-boundaries-20261026143120.txt",
+    "transportRedactions": [
+      "absolute home/project paths",
+      "test UUIDs"
+    ],
+    "exitCode": null,
+    "note": "Existing artifact, not executed in this audit; original exit code unavailable."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/release-boundaries-20261026143219.txt",
+    "originalSha256": "e12419592e378102fff0d19836ae27bb3a4edbe96b1a5ce24cb9639e8b70cd37",
+    "copy": "historical/release-boundaries-20261026143219.txt",
+    "transportRedactions": [
+      "absolute home/project paths",
+      "test UUIDs"
+    ],
+    "exitCode": null,
+    "note": "Existing artifact, not executed in this audit; original exit code unavailable."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/python-tests-final-host.log",
+    "originalSha256": "394f26670c415282f6d1ea54ceba401ab8b8a35914a9002a2bd153be4ec4fb1e",
+    "copy": "historical/python-tests-final-host.log",
+    "transportRedactions": [
+      "absolute home/project paths",
+      "test UUIDs"
+    ],
+    "exitCode": null,
+    "note": "Existing artifact, not executed in this audit; original exit code unavailable."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/security-runtime.log",
+    "originalSha256": "9f7e2498296e1140381cda4524ed041d6728ea6fd2eb4bed1331671935d33978",
+    "copy": "historical/security-runtime.log",
+    "transportRedactions": [
+      "absolute home/project paths",
+      "test UUIDs"
+    ],
+    "exitCode": null,
+    "note": "Existing artifact, not executed in this audit; original exit code unavailable."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/repeated-init.log",
+    "originalSha256": "c1f1126494a0ae5c3ccf60e41b080426edf61b7dc7176667ea196c5a7af2347e",
+    "copy": "historical/repeated-init.log",
+    "transportRedactions": [
+      "absolute home/project paths",
+      "test UUIDs"
+    ],
+    "exitCode": null,
+    "note": "Existing artifact, not executed in this audit; original exit code unavailable."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/restore-build-start.log",
+    "originalSha256": "2b4b0a05c40ccd2362f148b3c44c54a49348ba29b6cf5b7f5a9d2b5a638aefc4",
+    "copy": "historical/restore-build-start.log",
+    "transportRedactions": [
+      "absolute home/project paths",
+      "test UUIDs"
+    ],
+    "exitCode": null,
+    "note": "Existing artifact, not executed in this audit; original exit code unavailable."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/main-snapshot-resume.log",
+    "originalSha256": "2e08b089ca0774ec777f77b226551756dcc4350457488161bd29f9b946b3cee8",
+    "copy": "historical/main-snapshot-resume.log",
+    "transportRedactions": [
+      "absolute home/project paths",
+      "test UUIDs"
+    ],
+    "exitCode": null,
+    "note": "Existing artifact, not executed in this audit; original exit code unavailable."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/release-revisit-20261026143833.txt",
+    "originalSha256": "93e3fe15a8f093b3b798fa52a6b0f39c35a5085970056b2dc46b69fd6282dee7",
+    "copy": "historical/release-revisit-20261026143833.txt",
+    "transportRedactions": [
+      "machine paths",
+      "local username",
+      "test UUIDs",
+      "explicit PID labels"
+    ],
+    "exitCode": null,
+    "note": "Existing parallel execution artifact; not run by this read-only audit. Original exit code unknown."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/release-revisit-20261026143840.txt",
+    "originalSha256": "23bfe4d17bbd65a3787a322ef9d656b10629f71dd965ec0c1e5be60964b5bb78",
+    "copy": "historical/release-revisit-20261026143840.txt",
+    "transportRedactions": [
+      "machine paths",
+      "local username",
+      "test UUIDs",
+      "explicit PID labels"
+    ],
+    "exitCode": null,
+    "note": "Existing parallel execution artifact; not run by this read-only audit. Original exit code unknown."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/release-accessibility-20261026144251.txt",
+    "originalSha256": "1e23273ba49a0406b6b0d9812ad2145cd4992731bcfaa95ace63b95dc534b56a",
+    "copy": "historical/release-accessibility-20261026144251.txt",
+    "transportRedactions": [
+      "machine paths",
+      "local username",
+      "test UUIDs",
+      "explicit PID labels"
+    ],
+    "exitCode": null,
+    "note": "Existing parallel execution artifact; not run by this read-only audit. Original exit code unknown."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/release-fresh-20261026144542.txt",
+    "originalSha256": "7e64e040a4dbee08f290ab40ab176a802aad5f24f03c2aef5a2bb36962a91d17",
+    "copy": "historical/release-fresh-20261026144542.txt",
+    "transportRedactions": [
+      "machine paths",
+      "local username",
+      "test UUIDs",
+      "explicit PID labels"
+    ],
+    "exitCode": null,
+    "note": "Existing parallel execution artifact; not run by this read-only audit. Original exit code unknown."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/security-runtime-final.log",
+    "originalSha256": "fefcffabea3ffe8b211a0262bfeffc38432ffa9fcfc5784b45fa7fe50c9eed22",
+    "copy": "historical/security-runtime-final.log",
+    "transportRedactions": [
+      "machine paths",
+      "local username",
+      "test UUIDs",
+      "explicit PID labels"
+    ],
+    "exitCode": null,
+    "note": "Existing parallel execution artifact; not run by this read-only audit. Original exit code unknown."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/security-delivery.log",
+    "originalSha256": "fefcffabea3ffe8b211a0262bfeffc38432ffa9fcfc5784b45fa7fe50c9eed22",
+    "copy": "historical/security-delivery.log",
+    "transportRedactions": [
+      "machine paths",
+      "local username",
+      "test UUIDs",
+      "explicit PID labels"
+    ],
+    "exitCode": null,
+    "note": "Existing parallel execution artifact; not run by this read-only audit. Original exit code unknown."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/repeated-init-final.log",
+    "originalSha256": "1c0fd0ced789406ef493047f2eb1128d6d173fd55efd9fffc33f67f5ba8d3aef",
+    "copy": "historical/repeated-init-final.log",
+    "transportRedactions": [
+      "machine paths",
+      "local username",
+      "test UUIDs",
+      "explicit PID labels"
+    ],
+    "exitCode": null,
+    "note": "Existing parallel execution artifact; not run by this read-only audit. Original exit code unknown."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/restore-values.log",
+    "originalSha256": "b90f72006af8265ad66a6d9e5c0e200ee7900b0f671cb3906309ab98ceb8cb9d",
+    "copy": "historical/restore-values.log",
+    "transportRedactions": [
+      "machine paths",
+      "local username",
+      "test UUIDs",
+      "explicit PID labels"
+    ],
+    "exitCode": null,
+    "note": "Existing parallel execution artifact; not run by this read-only audit. Original exit code unknown."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/restored-after-continue-restart.log",
+    "originalSha256": "41832d942cfacea6d515397ca00cd06e24953c83fdeb3ed9d39748e0f200d6b1",
+    "copy": "historical/restored-after-continue-restart.log",
+    "transportRedactions": [
+      "machine paths",
+      "local username",
+      "test UUIDs",
+      "explicit PID labels"
+    ],
+    "exitCode": null,
+    "note": "Existing parallel execution artifact; not run by this read-only audit. Original exit code unknown."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/restore-continued-browser.log",
+    "originalSha256": "85a20268fd10db0603bdb33985370f4ad6103f4b10f90783e1a3715b52eb661c",
+    "copy": "historical/restore-continued-browser.log",
+    "transportRedactions": [
+      "machine paths",
+      "local username",
+      "test UUIDs",
+      "explicit PID labels"
+    ],
+    "exitCode": null,
+    "note": "Existing parallel execution artifact; not run by this read-only audit. Original exit code unknown."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/restore-rejections.log",
+    "originalSha256": "8418321ebc144b75b25a44143e413738f4f501ee800d7e9d275d26ef3b30b1b4",
+    "copy": "historical/restore-rejections.log",
+    "transportRedactions": [
+      "machine paths",
+      "local username",
+      "test UUIDs",
+      "explicit PID labels"
+    ],
+    "exitCode": null,
+    "note": "Existing parallel execution artifact; not run by this read-only audit. Original exit code unknown."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/recovery-restart-continue.log",
+    "originalSha256": "0dfdabf5b15e76379f356131ab629e1932c1e676380839aaba691e58376657e5",
+    "copy": "historical/recovery-restart-continue.log",
+    "transportRedactions": [
+      "machine paths",
+      "local username",
+      "test UUIDs",
+      "explicit PID labels"
+    ],
+    "exitCode": null,
+    "note": "Existing parallel execution artifact; not run by this read-only audit. Original exit code unknown."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/fresh-mysql-init.log",
+    "originalSha256": "7044a8fef5979c541130c84a3a0ef6189da757f928eab70320acd6f68d886cf4",
+    "copy": "historical/fresh-mysql-init.log",
+    "transportRedactions": [
+      "machine paths",
+      "local username",
+      "test UUIDs",
+      "explicit PID labels"
+    ],
+    "exitCode": null,
+    "note": "Existing parallel execution artifact; not run by this read-only audit. Original exit code unknown."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/main-snapshot-delivery.log",
+    "originalSha256": "2e08b089ca0774ec777f77b226551756dcc4350457488161bd29f9b946b3cee8",
+    "copy": "historical/main-snapshot-delivery.log",
+    "transportRedactions": [
+      "machine paths",
+      "local username",
+      "test UUIDs",
+      "explicit PID labels"
+    ],
+    "exitCode": null,
+    "note": "Existing parallel execution artifact; not run by this read-only audit. Original exit code unknown."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/api-smoke-delivery.log",
+    "originalSha256": "63baefa1a144a537ff0cf574572e83f85acb862b6b3fdadaff2647813451388e",
+    "copy": "historical/api-smoke-delivery.log",
+    "transportRedactions": [
+      "machine paths",
+      "local username",
+      "test UUIDs",
+      "explicit PID labels"
+    ],
+    "exitCode": null,
+    "note": "Existing parallel execution artifact; not run by this read-only audit. Original exit code unknown."
+  },
+  {
+    "source": "docs/evidence/phase-09/logs/python-delivery.log",
+    "originalSha256": "8150042b4cb2f69f1fc09287bc399a97108847543c9e4c173606d24e9e5243b7",
+    "copy": "historical/python-delivery.log",
+    "transportRedactions": [
+      "machine paths",
+      "local username",
+      "test UUIDs",
+      "explicit PID labels"
+    ],
+    "exitCode": null,
+    "note": "Existing parallel execution artifact; not run by this read-only audit. Original exit code unknown."
+  }
+]

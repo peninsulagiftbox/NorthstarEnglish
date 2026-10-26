@@ -1,0 +1,98 @@
+{
+  "observedAt": "2026-10-26T19:35:35.712410+08:00",
+  "auditWrites": "docs/handoff plus output archives; no business source edits by audit",
+  "worktreeDriftDetected": true,
+  "changedBaselineFiles": [
+    {
+      "path": "docs/RELEASE_CHECKLIST.md",
+      "before": "153347ff94a083b468f541e6f046cef8c50ca94535ff1aaab62d22233a090fd9",
+      "observed": "be30026d395065f9c085f0343cb3902bf483a5be5e9b999b7c88f0242cae92ec"
+    },
+    {
+      "path": "docs/TEST_REPORT.md",
+      "before": "9c6921c224a2af8c263e2fce6550b912a775d317d05513e691f3783ba5e9ac8f",
+      "observed": "feacf4ec384674b88c9642263be30e6f4a022a13e0142c27f688f56303b72d96"
+    },
+    {
+      "path": "docs/progress/PHASE_09.md",
+      "before": "ff461fac3f3e70640dbc3acdf6adb6a742ca2c63ad8bc4702348be4c1ccec667",
+      "observed": "410725ca3806dcf34e0a20c96d2334195961f5f2f3697e564e2f8e78e2f7ff8b"
+    },
+    {
+      "path": "scripts/full-learning-loop.js",
+      "before": "8f58b57640a5360a6c6c43bc351f467a9040cbf05c4763ec4a67b05b63069eea",
+      "observed": "358112791dc8d533f63cfb783766e093166c3fa343efc71f4e287aab79a1d030"
+    },
+    {
+      "path": "scripts/regression-runtime.py",
+      "before": "7bf57248bf1a30fc9153b3ccd924b0a04f6f70c72dc5d1fa943e0f21218968d2",
+      "observed": "89dce3be4163e36636b7d792a53ba76642c24cee8763868e5635c77bdf097648"
+    },
+    {
+      "path": "scripts/release-accessibility.js",
+      "before": "77f9ab317a2c42ad39a073fc2dbc2fe2c325e95592c411fb21edffa73db9e55b",
+      "observed": "32b17bec88b7ae7ab11353f27240837f68ac27ffcbfa3c12bceb6ee5dfd057bc"
+    },
+    {
+      "path": "scripts/release-boundaries.js",
+      "before": "ce1ae7f63761178afe861780e7662de3a8829a0b37fd341b73eb6f22cf922e17",
+      "observed": "4cef8cd9b4d719b2f1a592cc822c86cb6fe872dd01193045752148a3c6b35abb"
+    },
+    {
+      "path": "scripts/release-browser.sh",
+      "before": "4555588bc6a3dcf944f28169f8c718eb8469a03ba9f6fbe242b7997b601cdae9",
+      "observed": "392a45d28d89f7a768b74ff5330aee137a171e0432513e22a141d32e1b9a0577"
+    },
+    {
+      "path": "scripts/release-revisit.js",
+      "before": "37fafc17ace5d6622d7d238bfb8c8e91bd4dc6123318bde5ecccc74e7bd7c2e9",
+      "observed": "50b8a1e96502bb20ea85995af809081a4e49d6033da39a940d9cd5a9872ec19c"
+    },
+    {
+      "path": "scripts/release-safety.py",
+      "before": "05af922eabd8a3a1c466b785596b7d6b4d0ab9fb57aa438ab15b627ec98cb9aa",
+      "observed": "218b32ee9b05d8db5ca4f16fe2e67b10a4156fd9d21962d532824ad5104a5648"
+    },
+    {
+      "path": ".env.example",
+      "before": "a8a8386dd8512682101b71026f6d9d8744eb730da0d14890c81bb5a56a55a4ad",
+      "observed": "64c66851cf4359e2d3bbd7e7ed3a549295da3ee1b79ff0a1d101adfda291c66e"
+    },
+    {
+      "path": "README.md",
+      "before": "edcc6405ac455bca2d09b09c9b16d2a299377894e8a6dfe74e246f8991963f0c",
+      "observed": "2e906dcc00b36af319bfcb640963003254ded42f7504bbd162dd4841da6f014b"
+    },
+    {
+      "path": "docs/BACKUP_RESTORE.md",
+      "before": "cc7970767d43c12526e630dd94fb4c148220d9673fc26e057756db4488764b33",
+      "observed": "7acdc517798a0a38142758a57f9a7810aeb530db31f0c4388b7fb8f517edd458"
+    },
+    {
+      "path": "docs/DEPENDENCIES.md",
+      "before": "3079c7428f7dcb499cc5a4680fc9ecdd0885cc33540c33a674f4163620f8b467",
+      "observed": "e47bb33e977c29bc9f67d08bd988fa4fa8658947701eab1631f444f8eed2d32c"
+    },
+    {
+      "path": "docs/DESIGN_DEVIATIONS.md",
+      "before": "7d7adf760fca61feddd5c4d4ee49f103da320ba62e73d007ab4c7bbd57f6378c",
+      "observed": "adcb9573f4717ee495c5e4df21eb445b55f18486d6245d03bd22b95af7b06fc4"
+    },
+    {
+      "path": "docs/IMPLEMENTATION_PLAN.md",
+      "before": "33a415e99a5f4baf96dce5887e35e763fc1bdeb335800052debb6b26701fdf49",
+      "observed": "9add6ec486eedca1ee84a45cf64e2a23549fe1bcc1d5f7621334eaa18ea1407f"
+    },
+    {
+      "path": "scripts/data-transfer.py",
+      "before": "bf850206261967ab9d08930d03fd6fcf81817c164e1a506abc3c5e21d0c7a2a5",
+      "observed": "a4f62cc23c2b2ebb6731b97934d3378cd42fc81373bb576b4e4fae534492ffea"
+    },
+    {
+      "path": "scripts/local.py",
+      "before": "35b65d3ebed8348f74fc4f5352bcfd52686b9556c2d0923ecfdc010796678625",
+      "observed": "6e9e23da8afe71549a345819587ec71514a9081e12c4fb74e61260f21219ed2c"
+    }
+  ],
+  "warning": "Concurrent external edits observed; package is a frozen working-tree snapshot, not a wholly retested release."
+}

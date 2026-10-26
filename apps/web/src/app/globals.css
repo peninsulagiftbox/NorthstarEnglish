@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-:root { --background:#f5f7fa; --surface:#fff; --text:#192740; --muted:#687b96; --line:#e2e8f0; --accent:#087f70; --sidebar:#101f35; --error:#a32d2d; --radius:18px; }
+:root { --background:#f5f7fa; --surface:#fff; --text:#192740; --muted:#5f7088; --line:#e2e8f0; --accent:#087f70; --sidebar:#101f35; --error:#a32d2d; --radius:18px; }
 * { box-sizing:border-box; }
 html,body { height:100%; overflow:hidden; }
 body { margin:0; background:var(--background); color:var(--text); font-family:Arial,"PingFang SC","Microsoft YaHei",sans-serif; font-size:14px; line-height:1.7; }

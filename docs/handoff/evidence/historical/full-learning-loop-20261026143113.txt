@@ -1,0 +1,102 @@
+### Result
+{"passed":true,"checks":["Dashboard → catalog → Demo, unavailable books, real sentence6 playback, desktop geometry","Blind wrong submission, actual token diff and audio replay; same event retry returns original attempt","Wrong reading answer → source sentence6 in original context","Explicit speaking skip (real/fake microphone covered separately), no fake completion","Two writing revisions, exact unicode/quotes/HTML roundtrip and escaped DOM","Real wrong quiz → due review, flip, self-rating and future schedule","Keyboard tab focus, saved draft refresh, paused audio, no AI"],"pageErrors":[],"writingIds":["<TEST_UUID>","<TEST_UUID>"],"quizRunId":"<TEST_UUID>","reviewItemId":"demo-01-v2-kp-beside-quiz","browser":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36"}
+### Ran Playwright code
+```js
+await (// Playwright CLI run-code. All mutations require the verified isolated database.
+async page => {
+ const base=new URL(page.url()).origin, checks=[], errors=[];
+ const assert=(ok,message)=>{if(!ok)throw Error(message);};
+ const get=async path=>{const r=await page.request.get(base+'/api/v1'+path);assert(r.ok(),'GET '+path+': '+r.status());return r.json();};
+ const context='lessonId=demo-01&versionId=demo-01-v2';
+ const lesson=tab=>base+'/lesson/demo-01?version=demo-01-v2&tab='+tab+'&sentence=demo-01-v2-s06&english=1&translation=1';
+ const shot=name=>page.screenshot({path:'docs/evidence/phase-09/screenshots/'+name+'.png'});
+ page.setDefaultTimeout(15000);page.on('pageerror',e=>errors.push(e.message));
+ assert((await page.request.get(base+'/api/v1/health')).headers()['x-northstar-test-database']==='true','Isolated database required');
+ let stage='catalog';
+ try {
+ await page.setViewportSize({width:1440,height:900});await page.goto(base+'/dashboard');
+ await page.getByRole('heading',{name:/The Neighborhood Garden/}).waitFor();await shot('dashboard-1440');
+ await page.getByRole('navigation',{name:'主导航'}).getByRole('link',{name:'课程中心',exact:true}).click();
+ await page.getByText('仅目录 · 暂不可学习',{exact:true}).first().waitFor();
+ assert(await page.locator('.book-card').count()===4,'Four catalog-only books');
+ assert(await page.locator('.book-card a,.book-card button').count()===0,'Unavailable books have no entry');
+ await page.getByRole('link',{name:/开始浏览原创课|继续学习/}).first().click();await page.getByRole('tab',{name:'课文',exact:true}).waitFor();
+ await page.goto(lesson('text'));await page.getByRole('button',{name:'选择并播放句子 6',exact:true}).click();
+ await page.waitForFunction(()=>{const a=document.querySelector('audio[hidden]');return a&&!a.paused&&a.currentTime>.1;});
+ assert(await page.locator('audio[hidden]').evaluate(a=>a.src.includes('a06')),'Real sentence6 audio');
+ await page.getByRole('button',{name:'暂停播放',exact:true}).click();await shot('workbench-1440');
+ assert(await page.locator('.sidebar').evaluate(e=>e.getBoundingClientRect().width)===224,'224 sidebar');
+ assert(await page.locator('.player-bar').evaluate(e=>e.getBoundingClientRect().height)===76,'76 player');
+ checks.push('Dashboard → catalog → Demo, unavailable books, real sentence6 playback, desktop geometry');
+ stage='dictation';await page.getByRole('tab',{name:'精听听写',exact:true}).click();
+ const editor=page.getByLabel('本句听写草稿',{exact:true});await editor.waitFor();
+ await page.waitForFunction(()=>{const t=document.querySelector('#dictation-text');return t&&!t.readOnly&&!t.disabled;});
+ assert(!(await page.locator('body').innerText()).includes('Please put them beside the blue bench.'),'Blind answer hidden');
+ await page.getByRole('button',{name:'播放本句',exact:true}).click();await page.waitForFunction(()=>document.querySelector('audio[hidden]')?.currentTime>.1);
+ await page.getByRole('button',{name:'暂停播放',exact:true}).click();
+ await editor.fill('Please put them behind the blue bench.');
+ const accepted=page.waitForResponse(r=>r.url().endsWith('/attempts')&&r.request().method()==='POST');
+ await page.getByRole('button',{name:'检查听写',exact:true}).click();const attempt=await (await accepted).json();
+ const submitted=(await accepted).request().postDataJSON();
+ const replay=await page.request.post(base+'/api/v1/exercises/demo-01-v2-s06-dictation/attempts',{headers:{Origin:base,'X-Northstar-Request':'local-workspace'},data:submitted});
+ assert(replay.ok()&&(await replay.json()).attemptId===attempt.attemptId,'Repeated event returns original attempt');
+ await page.getByRole('region',{name:'听写对照'}).waitFor();
+ assert(attempt.result.edits.some(e=>e.actual==='behind'&&e.expected==='beside'),'Wrong token diff');
+ assert(await editor.inputValue()==='Please put them behind the blue bench.','Input preserved');
+ await page.getByRole('button',{name:'播放本句',exact:true}).click();await page.waitForFunction(()=>!document.querySelector('audio[hidden]')?.paused);await page.getByRole('button',{name:'暂停播放',exact:true}).click();await shot('dictation-diff-1440');
+ checks.push('Blind wrong submission, actual token diff and audio replay; same event retry returns original attempt');
+ stage='reading';await page.getByRole('tab',{name:'精读词汇',exact:true}).click();
+ await page.getByRole('radio',{name:'Inside the classroom.',exact:true}).check();
+ await page.getByRole('button',{name:'提交阅读答案',exact:true}).click();
+ await page.getByRole('heading',{name:'本次答错 · 已加入复习来源',exact:true}).waitFor();
+ await page.locator('.reading-feedback').getByRole('button',{name:'在全文中查看上下文 →'}).click();
+ await page.getByRole('button',{name:'选择并播放句子 6',exact:true,pressed:true}).waitFor();
+ checks.push('Wrong reading answer → source sentence6 in original context');
+ stage='speaking skip';await page.getByRole('tab',{name:'口语跟读',exact:true}).click();
+ await page.getByRole('button',{name:'暂时跳过跟读',exact:true}).click();await page.waitForFunction(()=>document.querySelector('.recorder-panel')?.textContent.includes('本轮已跳过'));
+ checks.push('Explicit speaking skip (real/fake microphone covered separately), no fake completion');
+ stage='writing';await page.getByRole('tab',{name:'写作',exact:true}).click();await page.locator('#writing-text').waitFor();
+ const before=(await get('/writing?'+context)).revisions.length;
+ const marker='phase09-'+Date.now();const texts=[`Please put the plants beside the bench. I can help. ${marker} <img src=x onerror="window.__xss=1"> & ' 花园`, `I can bring water. Please put the can beside the bench. ${marker}`];
+ for(let i=0;i<texts.length;i++){
+  await page.locator('#writing-text').fill(texts[i]);await page.waitForFunction(()=>document.querySelector('.writing-editor')?.textContent.includes('草稿已同步本地服务'));
+  await page.getByRole('button',{name:'保存新版本',exact:true}).click();await page.waitForFunction(n=>document.querySelectorAll('.revision-list li').length===n,before+i+1);
+ }
+ const draft=`Unsubmitted draft for restart ${marker}. I can bring water.`;
+ await page.locator('#writing-text').fill(draft);await page.waitForFunction(()=>document.querySelector('.writing-editor')?.textContent.includes('草稿已同步本地服务'));
+ let history=(await get('/writing?'+context)).revisions;assert(history.at(-2).text===texts[0]&&history.at(-1).text===texts[1],'Two immutable versions with exact special chars');
+ assert(await page.evaluate(()=>!window.__xss&&!document.querySelector('.revision-list img')),'Stored XSS escaped');await shot('writing-1440');
+ checks.push('Two writing revisions, exact unicode/quotes/HTML roundtrip and escaped DOM');
+ stage='quiz';await page.getByRole('tab',{name:'课时测验',exact:true}).click();await page.getByRole('radio').first().waitFor();
+ const quizBefore=(await get('/quiz?'+context)).history.length;
+ for(const name of ['community garden','On the roof','Them please here.'])await page.getByRole('radio',{name,exact:true}).check();
+ await page.getByRole('button',{name:'提交本轮三题',exact:true}).click();await page.getByRole('heading',{name:'本轮结果：1 / 3 题正确',exact:true}).waitFor();
+ const quiz=(await get('/quiz?'+context)).history;assert(quiz.length===quizBefore+1,'One real quiz run');
+ const wrong=quiz[0].answers.find(a=>!a.correct);assert(wrong,'Wrong quiz answer exists');
+ stage='review';await page.goto(base+'/review');await page.locator('.review-card').first().waitFor();
+ const cards=await get('/reviews/due?all=true');const card=cards.find(c=>c.sources.some(s=>s.attemptId===wrong.attemptId));assert(card,'Review source linked to wrong attempt');
+ const target=()=>page.locator('.review-card').filter({has:page.locator(`a[href*="attempt=${wrong.attemptId}"]`)});
+ await target().waitFor();assert(await target().locator('.review-answer').count()===0,'Answer hidden before flip');
+ await target().getByRole('button',{name:'翻开答案',exact:true}).click();await target().locator('.review-answer').waitFor();
+ await target().getByRole('button',{name:'还不会 · 1 分钟后',exact:true}).click();
+ await page.waitForFunction(id=>!Array.from(document.querySelectorAll('.review-card')).some(e=>e.querySelector(`a[href*="attempt=${id}"]`)),wrong.attemptId);
+ const scheduled=(await get('/reviews/due?all=true')).find(c=>c.id===card.id);assert(scheduled.history.length>card.history.length,'Real rating saved');
+ await page.getByRole('button',{name:'全部复习计划',exact:true}).click();await target().waitFor();
+ assert(await target().getByRole('button',{name:'翻开答案',exact:true}).isDisabled(),'Future review cannot rate');await shot('review-scheduled-1440');
+ checks.push('Real wrong quiz → due review, flip, self-rating and future schedule');
+ stage='keyboard';await page.goto(lesson('text'));await page.getByRole('tab',{name:'课文',exact:true}).focus();await page.keyboard.press('ArrowRight');await page.getByRole('tab',{name:'精听听写',exact:true,selected:true}).waitFor();
+ assert(await page.getByRole('tab',{name:'精听听写',exact:true}).evaluate(e=>e===document.activeElement),'Tab keyboard focus follows selection');
+ await page.goto(lesson('writing'));await page.locator('#writing-text').waitFor();await page.waitForFunction(t=>document.querySelector('#writing-text')?.value===t,draft);
+ await page.getByText('浏览位置已保存 · 不计练习完成',{exact:true}).waitFor();await page.reload();await page.waitForFunction(t=>document.querySelector('#writing-text')?.value===t,draft);
+ assert(await page.locator('audio[hidden]').evaluate(a=>a.paused),'Refresh never autoplays');
+ assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No desktop overflow');
+ assert((await get('/capabilities')).aiEnabled===false,'No AI configured');
+ checks.push('Keyboard tab focus, saved draft refresh, paused audio, no AI');
+ assert(errors.length===0,'pageerrors: '+errors.join(';'));
+ return {passed:true,checks,pageErrors:errors,writingIds:history.slice(-2).map(r=>r.id),quizRunId:quiz[0].id,reviewItemId:card.id,browser:await page.evaluate(()=>navigator.userAgent)};
+ }catch(e){await shot('failure');throw Error(stage+': '+e.message);}finally{await page.unrouteAll({behavior:'wait'});}
+})(page);
+```
+### Page
+- Page URL: http://127.0.0.1:3101/lesson/demo-01?version=demo-01-v2&tab=writing&sentence=demo-01-v2-s06&english=1&translation=1
+- Page Title: Northstar English · 本地工作台

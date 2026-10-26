@@ -1,0 +1,32 @@
+name: northstar-english-phase09-recovery
+services:
+  mysql:
+    image: mysql:8.4.9@sha256:c36050afdca850f23cef85703f84c7531a5ae155a11b5ee1c60acb09937c4084
+    container_name: northstar-english-phase09-recovery
+    restart: "no"
+    ports:
+      - "127.0.0.1:${RECOVERY_MYSQL_PORT:?use recovery_mysql.py}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?run init-local}
+      DB_PASSWORD: ${DB_PASSWORD:?run init-local}
+      DB_MIGRATION_PASSWORD: ${DB_MIGRATION_PASSWORD:?run init-local}
+      TZ: UTC
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_0900_ai_ci", "--default-time-zone=+00:00"]
+    volumes:
+      - recovery_data:/var/lib/mysql
+      - ./mysql-init.sh:/docker-entrypoint-initdb.d/01-northstar.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=$$MYSQL_ROOT_PASSWORD mysql --protocol=TCP -h127.0.0.1 -uroot -Nse 'SELECT 1' >/dev/null"]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+      start_period: 30s
+    labels:
+      local.northstar.project: northstar-english-local-v1
+      local.northstar.role: phase09-recovery
+volumes:
+  recovery_data:
+    name: northstar_english_phase09_recovery_data
+    labels:
+      local.northstar.project: northstar-english-local-v1
+      local.northstar.role: phase09-recovery

@@ -1,0 +1,84 @@
+[
+  {
+    "path": "apps/api/src/main/resources/db/migration/V001__local_settings_and_environment.sql",
+    "sha256": "f1291a4607e23e745b7b892770d270b3ac895982db991867997db3a631b81441",
+    "tables": [
+      "user_setting"
+    ]
+  },
+  {
+    "path": "apps/api/src/main/resources/db/migration/V002__catalog_content_versions.sql",
+    "sha256": "1368dd578ad76f6ad4aca82b67fed40536c7622e2dcad3a32a0ae812d4cf1819",
+    "tables": [
+      "content_license",
+      "book",
+      "lesson",
+      "lesson_version",
+      "audio_asset",
+      "sentence"
+    ]
+  },
+  {
+    "path": "apps/api/src/main/resources/db/migration/V003__study_session_resume.sql",
+    "sha256": "4c79354b485d894f64f9e9a9fc0905dab70a44c74fc8dbc4f1a229bcb4626b54",
+    "tables": [
+      "study_resume"
+    ]
+  },
+  {
+    "path": "apps/api/src/main/resources/db/migration/V004__attempts_evidence_drafts_review_sources.sql",
+    "sha256": "d3f3da71424d34019bccdb44126c4f501545fb321dea042bc5ff6d4efbae6c8f",
+    "tables": [
+      "exercise",
+      "command_receipt",
+      "exercise_attempt",
+      "learning_evidence",
+      "study_event",
+      "study_stage",
+      "exercise_draft",
+      "review_item",
+      "review_source"
+    ]
+  },
+  {
+    "path": "apps/api/src/main/resources/db/migration/V005__knowledge_points_and_exercise_links.sql",
+    "sha256": "b149048e7ce13e3c63c9beac9b05d73ba0604da8795f20a8c39e40b37365fa4d",
+    "tables": [
+      "knowledge_point",
+      "vocabulary_favorite",
+      "reading_question",
+      "reading_option",
+      "reading_answer",
+      "reading_progress"
+    ]
+  },
+  {
+    "path": "apps/api/src/main/resources/db/migration/V006__recordings_and_writing_revisions.sql",
+    "sha256": "5783b41c32d56cac63854af9905887c64a0b98467ecaf82d9f59442e7c08a8b3",
+    "tables": [
+      "writing_task",
+      "writing_source",
+      "writing_draft",
+      "writing_revision",
+      "personal_recording",
+      "practice_progress",
+      "recording_observation"
+    ]
+  },
+  {
+    "path": "apps/api/src/main/resources/db/migration/V007__quiz_runs_and_review_results.sql",
+    "sha256": "0a2e3b98b4443d29d029dd0e2d427e9c11089399cfeef6d3f37a794742592d59",
+    "tables": [
+      "quiz_question",
+      "quiz_run",
+      "quiz_answer",
+      "quiz_progress",
+      "review_result"
+    ]
+  },
+  {
+    "path": "apps/api/src/main/resources/db/migration/V008__recording_preference.sql",
+    "sha256": "cd5818104f70f3e2a6c699aa4355d87e9bdc70908b24f88cf8ebbac92c7cd9f1",
+    "tables": []
+  }
+]

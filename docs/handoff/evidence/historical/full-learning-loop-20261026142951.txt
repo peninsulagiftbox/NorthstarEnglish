@@ -1,0 +1,12 @@
+### Error
+Error: keyboard: page.waitForFunction: Timeout 15000ms exceeded.
+### Result
+Trace recording stopped.
+- [Trace](.playwright-cli/traces/trace-1792996191327.trace)
+- [Network log](.playwright-cli/traces/trace-1792996191327.network)
+- [Resources](.playwright-cli/traces/resources)
+### Page
+- Page URL: http://127.0.0.1:3101/lesson/demo-01?version=demo-01-v2&tab=writing&sentence=demo-01-v2-s06&english=1&translation=1
+- Page Title: Northstar English · 本地工作台
+Browser 'northstar-phase09' closed
+

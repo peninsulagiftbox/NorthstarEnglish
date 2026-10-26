@@ -42,3 +42,7 @@
 沿用现有 Node22 / Java21 与全部锁定依赖，未添加产品或测试依赖。词条、阅读题来自冻结内容包，经 Flyway V005 和内容播种建立关联；收藏存 MySQL，待确认阅读命令复用既有 IndexedDB outbox。浏览器继续使用固定 Playwright CLI 0.1.22，验证范围及环境失败记录见 `docs/progress/PHASE_05.md`。
 
 Phase06没有新增依赖；使用浏览器原生 MediaRecorder/getUserMedia、IndexedDB Blob 和 Java NIO 私有文件。Playwright沿用既有CLI与已安装Chromium，假麦克风测试不需要真实设备。
+
+## Phase 09 最终工程核验
+
+2026-10-26沿用全部精确依赖与锁文件，未引入产品或测试依赖。`npm ls --depth=0`与项目Node22/npm10匹配；Java21/MySQL8.4的20项真实集成/单测及生产包构建通过。Web继续使用同版webpack构建，最终typecheck/lint/25单测/build通过。Playwright CLI沿用0.1.22与本机Chrome；不宣称依赖漏洞清零或所有浏览器兼容。新增恢复MySQL复用同一锁定镜像digest、独立命名卷与回环端口；完整命令与证据见 `TEST_REPORT.md`。

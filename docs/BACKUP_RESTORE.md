@@ -51,3 +51,28 @@ sh scripts/restore.sh .local/backups/my-new-backup/learning.json \
 - 零样本显示暂无数据，不填模拟百分比。浏览、播放、暂停、跳过、收藏不计真实提交。
 
 AI开关固定未启用，预置讲解按当前课版本和句ID读取；未配置供应商、密钥、预算或外发授权，不发起模型请求。录音开关可关闭新录制/上传，不阻断历史回放，已有草稿缓冲不删除。
+
+## Phase 09：恢复到独立 MySQL 实例
+
+原有默认恢复仍只创建新schema。本阶段另提供专属恢复MySQL，使用不同容器/卷（`northstar-english-phase09-recovery` / `northstar_english_phase09_recovery_data`），仅绑定127.0.0.1。首次从3310起选择空闲端口并记录 `.local/phase09-recovery.json`。复用现有私有.env中账号凭据，不输出或重写密码；它不依赖主MySQL卷。容器/卷/端口身份不匹配时拒绝操作，既有容器只start，不重建。
+
+```sh
+python3 scripts/recovery_mysql.py start
+# 以下目标须使用未使用的14位日期标识；媒体目标目录也必须不存在。
+sh scripts/restore.sh .local/backups/my-test-backup/learning.json \
+  --api http://127.0.0.1:8086 --web-port 3101 \
+  --target northstar_restore_20261026160000 --confirm-new-isolated \
+  --separate-mysql --recording-root .local/phase09-media
+python3 scripts/local.py exec python3 scripts/regression-runtime.py build \
+  --restore-db northstar_restore_20261026160000 --api-port 8087 --web-port 3102
+python3 scripts/local.py exec python3 scripts/regression-runtime.py start \
+  --restore-db northstar_restore_20261026160000 --api-port 8087 --web-port 3102
+python3 scripts/check-snapshot.py .local/backups/my-test-backup/learning.json \
+  --api http://127.0.0.1:8087 --media
+```
+
+`check-snapshot.py`只读比较schema版本与所有表/列/单元值，逐个ready录音检查大小及SHA-256；不打印原始文本/凭据。`--save-current <新文件>`可保留0600快照，用于下一次重启前后核对，现有文件拒绝覆盖。验证前暂停测试学习写入；恢复副本一旦继续学习，应另取新快照再比较。
+
+新浏览器只读回访可使用 `NORTHSTAR_BASE_URL=http://127.0.0.1:3102 NORTHSTAR_READ_ONLY=1 sh scripts/release-browser.sh release-revisit`。该用例在发送前阻断所有写请求，验证草稿、版本、测验/复习与实际录音解码。需验证真实续学时，使用固定恢复端口8087/3102，设置 `NORTHSTAR_CONTINUE_RESTORE=1`、`NORTHSTAR_RESTORE_SNAPSHOT=<恢复前快照路径>`，运行 `sh scripts/release-browser.sh release-continue`；入口先核验独立容器和API进程身份及全表/媒体一致性，再实际播放原句、提交一次听写并验证重试幂等。它会在恢复副本产生一条真实测试作答。
+
+结束时先运行 `python3 scripts/regression-runtime.py stop --restore-db <目标> --api-port 8087 --web-port 3102`，再运行 `python3 scripts/recovery_mysql.py stop`。只停本轮服务，库、容器、卷、备份和录音保留。完整演练结果见PHASE_09；这不是对主库执行恢复或替换的授权。

@@ -1,0 +1,248 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/v1/books",
+    "source": "apps/api/src/main/java/local/northstar/catalog/CatalogController.java",
+    "line": 30
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/lessons",
+    "source": "apps/api/src/main/java/local/northstar/catalog/CatalogController.java",
+    "line": 36
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/lessons/{id}",
+    "source": "apps/api/src/main/java/local/northstar/catalog/CatalogController.java",
+    "line": 41
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/licenses/{id}",
+    "source": "apps/api/src/main/java/local/northstar/catalog/CatalogController.java",
+    "line": 71
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/audio/{id}",
+    "source": "apps/api/src/main/java/local/northstar/catalog/CatalogController.java",
+    "line": 78
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/reading",
+    "source": "apps/api/src/main/java/local/northstar/exercise/ExerciseController.java",
+    "line": 34
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/knowledge/{id}/favorite",
+    "source": "apps/api/src/main/java/local/northstar/exercise/ExerciseController.java",
+    "line": 51
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/reading/{id}/attempts",
+    "source": "apps/api/src/main/java/local/northstar/exercise/ExerciseController.java",
+    "line": 64
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/reading/{id}/events",
+    "source": "apps/api/src/main/java/local/northstar/exercise/ExerciseController.java",
+    "line": 93
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/exercises/{id}/attempts",
+    "source": "apps/api/src/main/java/local/northstar/exercise/ExerciseController.java",
+    "line": 102
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/study/events",
+    "source": "apps/api/src/main/java/local/northstar/exercise/ExerciseController.java",
+    "line": 130
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/study/stages",
+    "source": "apps/api/src/main/java/local/northstar/exercise/ExerciseController.java",
+    "line": 144
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/reviews/items",
+    "source": "apps/api/src/main/java/local/northstar/exercise/ExerciseController.java",
+    "line": 148
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/drafts/{sentence}",
+    "source": "apps/api/src/main/java/local/northstar/exercise/ExerciseController.java",
+    "line": 152
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/drafts/{sentence}",
+    "source": "apps/api/src/main/java/local/northstar/exercise/ExerciseController.java",
+    "line": 158
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/quiz",
+    "source": "apps/api/src/main/java/local/northstar/exercise/QuizReviewController.java",
+    "line": 30
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/quiz/attempts",
+    "source": "apps/api/src/main/java/local/northstar/exercise/QuizReviewController.java",
+    "line": 42
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/quiz/events",
+    "source": "apps/api/src/main/java/local/northstar/exercise/QuizReviewController.java",
+    "line": 79
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/reviews/due",
+    "source": "apps/api/src/main/java/local/northstar/exercise/QuizReviewController.java",
+    "line": 87
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/reviews/{id}/answer",
+    "source": "apps/api/src/main/java/local/northstar/exercise/QuizReviewController.java",
+    "line": 96
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/reviews/{id}/results",
+    "source": "apps/api/src/main/java/local/northstar/exercise/QuizReviewController.java",
+    "line": 104
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/data/export",
+    "source": "apps/api/src/main/java/local/northstar/exportimport/ExportController.java",
+    "line": 49
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/data/import-preview",
+    "source": "apps/api/src/main/java/local/northstar/exportimport/ExportController.java",
+    "line": 58
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/health",
+    "source": "apps/api/src/main/java/local/northstar/health/HealthController.java",
+    "line": 19
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/capabilities",
+    "source": "apps/api/src/main/java/local/northstar/health/HealthController.java",
+    "line": 41
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/settings",
+    "source": "apps/api/src/main/java/local/northstar/health/HealthController.java",
+    "line": 46
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/recordings",
+    "source": "apps/api/src/main/java/local/northstar/practice/RecordingController.java",
+    "line": 39
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/recordings",
+    "source": "apps/api/src/main/java/local/northstar/practice/RecordingController.java",
+    "line": 44
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/recordings/{id}/audio",
+    "source": "apps/api/src/main/java/local/northstar/practice/RecordingController.java",
+    "line": 72
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/recordings/{id}/playbacks",
+    "source": "apps/api/src/main/java/local/northstar/practice/RecordingController.java",
+    "line": 77
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/recordings/{id}/ratings",
+    "source": "apps/api/src/main/java/local/northstar/practice/RecordingController.java",
+    "line": 91
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/recordings/{id}/delete",
+    "source": "apps/api/src/main/java/local/northstar/practice/RecordingController.java",
+    "line": 102
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/writing",
+    "source": "apps/api/src/main/java/local/northstar/practice/WritingController.java",
+    "line": 19
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/writing/draft",
+    "source": "apps/api/src/main/java/local/northstar/practice/WritingController.java",
+    "line": 25
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/writing/revisions",
+    "source": "apps/api/src/main/java/local/northstar/practice/WritingController.java",
+    "line": 33
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/practice/events",
+    "source": "apps/api/src/main/java/local/northstar/practice/WritingController.java",
+    "line": 48
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/reports",
+    "source": "apps/api/src/main/java/local/northstar/report/ReportController.java",
+    "line": 18
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/settings",
+    "source": "apps/api/src/main/java/local/northstar/report/ReportController.java",
+    "line": 57
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/study/resume",
+    "source": "apps/api/src/main/java/local/northstar/study/StudyController.java",
+    "line": 25
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/study/resume",
+    "source": "apps/api/src/main/java/local/northstar/study/StudyController.java",
+    "line": 33
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/study/sessions",
+    "source": "apps/api/src/main/java/local/northstar/study/StudyController.java",
+    "line": 56
+  }
+]

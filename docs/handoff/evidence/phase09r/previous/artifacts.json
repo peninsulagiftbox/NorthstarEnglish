@@ -1,0 +1,32 @@
+[
+  {
+    "path": "northstar-source.zip",
+    "sha256": "8f8b79e5b99a985ee52809ff7b7394309ca16e91852ab3259674b47b16cdee01",
+    "bytes": 487023
+  },
+  {
+    "path": "northstar-handoff.zip",
+    "sha256": "3a5e20455a9e784e68ae5c5da9e994e8dda623bb3f068c52b664238228ce2890",
+    "bytes": 137178
+  },
+  {
+    "path": "northstar-packages.sha256",
+    "sha256": "27582ab96439624fc1e139027ca0acf29e67ad996c1f8d2d10090daa2b595a84",
+    "bytes": 175
+  },
+  {
+    "path": "docs/handoff/evidence/source-snapshot.json",
+    "sha256": "ca3409ab298897085c4a81bb10442b5d27e299373a8c2e8682d328478c84261d",
+    "bytes": 63283
+  },
+  {
+    "path": "docs/handoff/evidence/source-package-files.json",
+    "sha256": "03b66042a9a2c42c7764a721e0cb3bb240ecae6ba18634f10f1ead6bad0b9dab",
+    "bytes": 30737
+  },
+  {
+    "path": "docs/handoff/evidence/handoff-package-files.json",
+    "sha256": "1d9d4b7649ec106c7645c18c04500e65cc1397960554a467e6fcf180112af055",
+    "bytes": 11115
+  }
+]

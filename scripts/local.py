@@ -181,9 +181,11 @@ def wait_health(url, seconds=60):
 
 def up(env):
     doctor(env)
+    owned_services = {}
     for name, key in (("api", "API_PORT"), ("web", "WEB_PORT")):
         record_path = LOCAL / (name + ".json")
         owned = record_path.exists() and owns_process(json.loads(record_path.read_text()))
+        owned_services[name] = owned
         if not available(int(env[key])) and not owned:
             raise RuntimeError(f"{key} 被其他进程占用；请修改 .env，不会停止占用进程")
     existing = subprocess.run(["docker", "inspect", "northstar-english-mysql-01"], env=env, capture_output=True)
@@ -195,13 +197,27 @@ def up(env):
     if not available(int(env["MYSQL_PORT"])):
         verify_container(env)
     LOCAL.mkdir(exist_ok=True)
-    compose(env, "up", "-d", "--wait", "mysql")
+    if existing.returncode == 0:
+        # Never let Compose reconcile/recreate an existing database container.
+        compose(env, "start", "--wait", "mysql")
+    else:
+        compose(env, "up", "-d", "--wait", "--no-recreate", "mysql")
     verify_container(env)
     jar = ROOT / "apps/api/target/northstar-api-0.1.0-SNAPSHOT.jar"
     if not jar.exists():
+        if owned_services['api']:
+            raise RuntimeError("API 正在运行但构建文件缺失；先停止本项目服务再重建")
         run([str(ROOT / "apps/api/mvnw"), "-f", str(ROOT / "apps/api/pom.xml"), "package", "-DskipTests"], env)
     if not (ROOT / "apps/web/.next/BUILD_ID").exists():
+        if owned_services['web']:
+            raise RuntimeError("Web 正在运行但构建文件缺失或正在重建；先停止本项目 Web，不覆盖运行中构建")
         run(["npm", "run", "build"], env)
+    manifest = json.loads((ROOT / "apps/web/.next/routes-manifest.json").read_text())
+    rewrites = manifest["rewrites"]
+    routes = rewrites if isinstance(rewrites, list) else sum(rewrites.values(), [])
+    expected = "http://127.0.0.1:" + env["API_PORT"] + "/api/v1/:path*"
+    if not any(route.get("destination") == expected for route in routes):
+        raise RuntimeError("Web 构建的 API_PORT 与配置不符；停止服务后重新 npm run build")
     start_process("api", [shutil.which("java", path=env["PATH"]), "-jar", str(jar)], ROOT / "apps/api", env, str(jar))
     wait_health("http://127.0.0.1:" + env["API_PORT"] + "/api/v1/health")
     run([sys.executable, str(ROOT / "scripts/grant-study.py")], env)

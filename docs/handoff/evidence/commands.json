@@ -1,0 +1,164 @@
+[
+  {
+    "id": "versions",
+    "command": [
+      "python3",
+      "-c",
+      "import subprocess,sys; print(sys.version); [subprocess.run(x,check=True) for x in [[\"node\",\"--version\"],[\"npm\",\"--version\"],[\"java\",\"-version\"]]]"
+    ],
+    "cwd": ".",
+    "startedAt": "2026-10-26T14:36:56.574443+08:00",
+    "exitCode": 0,
+    "seconds": 0.196,
+    "log": "versions.log"
+  },
+  {
+    "id": "python-unit",
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/tests",
+      "-v"
+    ],
+    "cwd": ".",
+    "startedAt": "2026-10-26T14:36:56.771008+08:00",
+    "exitCode": 1,
+    "seconds": 0.398,
+    "log": "sandbox-python-unit.log"
+  },
+  {
+    "id": "web-unit",
+    "command": [
+      "npm",
+      "test"
+    ],
+    "cwd": ".",
+    "startedAt": "2026-10-26T14:36:57.170060+08:00",
+    "exitCode": 0,
+    "seconds": 0.622,
+    "log": "web-unit.log"
+  },
+  {
+    "id": "web-typecheck",
+    "command": [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "cwd": ".",
+    "startedAt": "2026-10-26T14:36:57.792419+08:00",
+    "exitCode": 0,
+    "seconds": 1.03,
+    "log": "web-typecheck.log"
+  },
+  {
+    "id": "web-lint",
+    "command": [
+      "npm",
+      "run",
+      "lint"
+    ],
+    "cwd": ".",
+    "startedAt": "2026-10-26T14:36:58.822522+08:00",
+    "exitCode": 0,
+    "seconds": 3.483,
+    "log": "web-lint.log"
+  },
+  {
+    "id": "content-v1",
+    "command": [
+      "python3",
+      "scripts/validate-content.py",
+      "content/demo-01/v1"
+    ],
+    "cwd": ".",
+    "startedAt": "2026-10-26T14:37:02.306429+08:00",
+    "exitCode": 0,
+    "seconds": 0.173,
+    "log": "content-v1.log"
+  },
+  {
+    "id": "content-v2",
+    "command": [
+      "python3",
+      "scripts/validate-content.py",
+      "content/demo-01/v2"
+    ],
+    "cwd": ".",
+    "startedAt": "2026-10-26T14:37:02.479901+08:00",
+    "exitCode": 0,
+    "seconds": 0.138,
+    "log": "content-v2.log"
+  },
+  {
+    "id": "web-build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "cwd": ".",
+    "startedAt": "2026-10-26T14:37:02.618122+08:00",
+    "exitCode": 0,
+    "seconds": 11.464,
+    "log": "web-build.log"
+  },
+  {
+    "id": "java-unit",
+    "command": [
+      "./mvnw",
+      "-o",
+      "-Dtest=TokenAlignerTest,SimpleSchedulerTest,ContentPackageTest,DatabaseGuardTest,HealthControllerTest",
+      "test"
+    ],
+    "cwd": "apps/api",
+    "startedAt": "2026-10-26T14:37:14.083233+08:00",
+    "exitCode": 1,
+    "seconds": 23.453,
+    "log": "sandbox-java-unit.log"
+  },
+  {
+    "id": "diff-check",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "cwd": ".",
+    "startedAt": "2026-10-26T14:37:37.537310+08:00",
+    "exitCode": 0,
+    "seconds": 0.019,
+    "log": "diff-check.log"
+  },
+  {
+    "id": "java-pure",
+    "command": [
+      "./mvnw",
+      "-o",
+      "-Dtest=TokenAlignerTest,SimpleSchedulerTest,ContentPackageTest",
+      "test"
+    ],
+    "cwd": "apps/api",
+    "startedAt": "2026-10-26T14:38:33.080610+08:00",
+    "exitCode": 0,
+    "seconds": 2.9,
+    "log": "java-pure.log"
+  },
+  {
+    "id": "java-compile",
+    "command": [
+      "./mvnw",
+      "-o",
+      "-DskipTests",
+      "package"
+    ],
+    "cwd": "apps/api",
+    "startedAt": "2026-10-26T14:38:35.981816+08:00",
+    "exitCode": 0,
+    "seconds": 1.905,
+    "log": "java-compile.log"
+  }
+]

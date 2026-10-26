@@ -2,7 +2,7 @@
 
 一个面向个人自学、在本地运行的英语学习工作台。目标是把逐句听读、听写、精读、录音回放、写作和复习串成一条可追溯的学习路径，让进度来自真实练习记录。
 
-**当前状态：Phase 08 真实首页/报告、偏好设置与隔离备份恢复已实施，等待阶段审核。** 本地提供原创 10 句实播、听写、5 个源句词条、阅读提交与可追溯错误来源，以及私人录音、自动回放计次、不可变写作版本、三题测验历史与到期翻卡自评。当前默认配音为英式 Edge（Mia/Sonia、Leo/Ryan）v2，v1与历史记录保留；[评测与更换报告](docs/TTS_EDGE_EVALUATION.md)。素材来源审查为 `pending_review`，正式发布受阻。
+**当前状态：Phase 01–09 本地工程与核心闭环已完成验收（PASS_WITH_NOTES），等待最终审核；课程素材正式发布仍受授权审查阻塞。** 本地提供原创 10 句实播、听写、5 个源句词条、阅读提交与可追溯错误来源，以及私人录音、自动回放计次、不可变写作版本、三题测验历史与到期翻卡自评。当前默认配音为英式 Edge（Mia/Sonia、Leo/Ryan）v2，v1与历史记录保留；[评测与更换报告](docs/TTS_EDGE_EVALUATION.md)。素材来源审查为 `pending_review`，正式发布受阻。第九阶段结果与未完成验收见[阶段报告](docs/progress/PHASE_09.md)。
 
 [快速开始](#快速开始) · [当前功能](#当前功能) · [开发与验证](#开发与验证) · [开发路线](#开发路线) · [隐私与内容来源](#隐私与内容来源)
 
@@ -247,8 +247,8 @@ NorthstarEnglish/
 | 05 | 精读词汇、证据题与知识点关联 | 已实施，待审核 |
 | 06 | 录音持久化、写作版本与差异 | 已实施，待审核 |
 | 07 | 测验轮次、复习历史与简化调度 | 已实施，等待审核；详见第七阶段报告 |
-| 08 | 真实首页 / 报告、设置、导出备份 | 已实施，等待审核；详见第八阶段报告 |
-| 09 | 集成回归、本地发布、恢复演练 | 未开始 |
+| 08 | 真实首页 / 报告、设置、导出备份 | 已实施；详见第八阶段报告 |
+| 09 | 集成回归、本地发布与恢复演练 | 本地工程PASS_WITH_NOTES；完整闭环、独立MySQL/录音恢复与重启续学实测，素材授权/实体设备仍待审 |
 
 完整范围与审核边界见 [IMPLEMENTATION_PLAN](docs/IMPLEMENTATION_PLAN.md)。
 
@@ -356,3 +356,24 @@ python3 scripts/local.py exec sh scripts/reading-browser-smoke.sh
 设置页可下载服务端JSON并只读预检恢复包；`sh scripts/backup.sh <新目录>` 另外备份可用私人录音并核对哈希。`scripts/restore.sh` 只向全新时间戳隔离库恢复，拒绝现库覆盖/重复导入；具体格式、命令、权限、媒体与浏览器未同步缓冲边界见 [备份恢复说明](docs/BACKUP_RESTORE.md)。所有新库/测试数据保留，不自动清理。
 
 验收脚本 `scripts/reports-browser-smoke.sh` 拒绝主库写入。实际运行结果、失败记录与未测项见 [PHASE_08](docs/progress/PHASE_08.md)。本阶段不自动进入Phase09。
+
+### Phase 09：最终回归与本地发布门禁
+
+从已准备的本地开发环境启动本项目服务：`sh scripts/doctor.sh`、`sh scripts/dev-up.sh`；停止用 `sh scripts/dev-down.sh`，它保留数据库容器与卷。端口或 `API_PORT` 有变化时，停止 Web 后重建，使生产转发地址与 `.env` 相符。缺少内容包时停止并按 `docs/CONTENT_MANIFEST.md` 的审核流程处理，不用替代音源。
+
+从零安装与验证命令：
+
+```sh
+python3 scripts/local.py exec npm ci
+python3 scripts/local.py exec npm run typecheck
+python3 scripts/local.py exec npm run lint
+python3 scripts/local.py exec npm test
+python3 scripts/local.py exec npm run build
+python3 scripts/local.py db-test
+```
+
+完整浏览器写入回归只允许连接返回 `X-Northstar-Test-Database: true` 的隔离数据库。先运行 `python3 scripts/local.py db-test` 应用已审查迁移并授权测试账号，再执行 `python3 scripts/local.py exec python3 scripts/regression-runtime.py build`、`python3 scripts/local.py exec python3 scripts/regression-runtime.py start`（测试 API 端口8086、Web3101），最后运行 `sh scripts/release-browser.sh`。浏览器结束后运行 `python3 scripts/local.py exec python3 scripts/regression-runtime.py stop`。测试写入与录音媒体位于 `.local`，不要用主站端口运行。脚本验证浏览、盲听听写、错题证据、口语跳过、两版作文、真实错误测验、到期翻卡、刷新恢复和设备/HTTP故障边界。完整结果见 [第九阶段报告](docs/progress/PHASE_09.md)。本轮已在允许本机Docker/回环端口的环境实际验证；命令需同样权限，源码存在不代替每次升级后的验收。
+
+人工操作流程：首次打开首页→课程中心→仅进入 Demo 01→第6句播放→精听提交错误文本并检查对照/回听→精读答错并沿证据句回到第6句→录音权限允许时录制并真实回放，或明确跳过→写作保存V1、修改后保存V2→测验错答→复习翻卡并自评→刷新和关闭后重开，检查草稿、版本、事件和到期复习。实体麦克风需分别手工记录Chrome/Safari允许与拒绝路径；虚拟设备结果不能替代。发布前还必须按 [备份恢复说明](docs/BACKUP_RESTORE.md) 将SQL和媒体恢复到全新隔离目标，校验后继续提交一次真实练习。
+
+发布状态、设计偏差、测试结果和下一步见 [RELEASE_CHECKLIST](docs/RELEASE_CHECKLIST.md)、[TEST_REPORT](docs/TEST_REPORT.md) 和 [PHASE_09](docs/progress/PHASE_09.md)。

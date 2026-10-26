@@ -1,0 +1,6 @@
+Observed command: python3 docs/handoff/evidence/package_handoff.py /private/tmp/northstar-source-audit-344qu8jd
+cwd: <PROJECT_ROOT>
+Observed raw exit code: 1
+AssertionError: evidence/__pycache__/freeze_sources.cpython-314.pyc
+Cause: syntax verification generated a Python cache; handoff enumeration included it and the existing exclusion guard correctly refused it.
+Resolution: exclude generated Python cache from enumeration and check every entry before writing ZIP. This is packaging-only evidence, not a business acceptance result.
