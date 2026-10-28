@@ -24,30 +24,27 @@ import tools.jackson.databind.node.ObjectNode;
 public class CatalogController {
     private final JdbcOperations jdbc;
     private final ContentPackage content;
+    private final CatalogReader reader;
     private final JsonMapper mapper = JsonMapper.builder().build();
-    public CatalogController(JdbcOperations jdbc, ContentPackage content) { this.jdbc = jdbc; this.content = content; }
+    public CatalogController(JdbcOperations jdbc, ContentPackage content, CatalogReader reader) { this.jdbc = jdbc; this.content = content; this.reader = reader; }
 
     @GetMapping("/api/v1/books")
-    public Map<String, Object> books() {
-        return Map.of("books", jdbc.queryForList("SELECT id, catalog_key AS catalogKey, sequence_no AS sequence, title, edition_label AS editionLabel, availability, declared_lesson_count AS declaredLessonCount, metadata_source AS metadataSource FROM book ORDER BY sequence_no"),
-                "standaloneLessons", lessons());
-    }
+    public Map<String, Object> books() { return reader.books(); }
 
     @GetMapping("/api/v1/lessons")
-    public List<Map<String, Object>> lessons() {
-        return jdbc.queryForList("SELECT l.id, l.slug, l.kind, l.availability, l.book_id AS bookId, v.id AS versionId, JSON_UNQUOTE(JSON_EXTRACT(v.payload_json,'$.title')) AS title, v.release_ready AS releaseReady, 'local_test_only' AS usageScope FROM lesson l JOIN lesson_version v ON l.current_version_id = v.id WHERE l.availability = 'available' ORDER BY l.id");
-    }
+    public List<Map<String, Object>> lessons() { return reader.lessons(); }
+
+    @GetMapping("/api/v1/books/{id}/lessons")
+    public Map<String, Object> bookLessons(@PathVariable String id, @RequestParam(required=false) String cursor,
+            @RequestParam(defaultValue="20") int limit) { return reader.bookLessons(id, cursor, limit); }
+
+    @GetMapping("/api/v1/lessons/{id}/versions")
+    public Map<String, Object> versions(@PathVariable String id) { return reader.versions(id); }
 
     @GetMapping("/api/v1/lessons/{id}")
     public JsonNode lesson(@PathVariable String id, @RequestParam(required=false) String versionId) {
-        List<String> payloads = jdbc.queryForList("SELECT v.payload_json FROM lesson l JOIN lesson_version v ON v.lesson_id=l.id AND v.id=COALESCE(?,l.current_version_id) WHERE l.id = ? AND l.availability = 'available'", String.class, versionId, id);
-        if (payloads.isEmpty()) throw new CatalogFailure(HttpStatus.NOT_FOUND, "LESSON_NOT_FOUND", "课程不存在或尚未开放。");
-        ObjectNode result = (ObjectNode) mapper.readTree(payloads.getFirst());
-        // Standard answers stay in the versioned server package until grading endpoints exist.
-        for (JsonNode exercise : result.path("exercises")) {
-            ((ObjectNode) exercise).remove(List.of("answerKey", "explanation"));
-        }
-        var assets = jdbc.queryForList("SELECT a.id, a.license_id AS licenseId, a.source_kind AS sourceKind, a.storage_key AS storageKey, a.mime_type AS mimeType, a.byte_size AS byteSize, a.duration_ms AS durationMs, a.sha256, a.status FROM audio_asset a WHERE a.lesson_version_id = ?", result.path("versionId").asText());
+        ObjectNode result = reader.lesson(id, versionId);
+        var assets = jdbc.queryForList("SELECT a.id, a.license_id AS licenseId, a.source_kind AS sourceKind, a.storage_key AS storageKey, a.mime_type AS mimeType, a.byte_size AS byteSize, a.duration_ms AS durationMs, a.sha256, a.status FROM audio_asset a WHERE a.lesson_version_id = ? AND (a.lesson_version_id IN (SELECT id FROM lesson_version WHERE lesson_id='demo-01') OR a.license_id IN (SELECT id FROM content_license WHERE review_status='confirmed'))", result.path("versionId").asText());
         Map<String, Map<String, Object>> byId = new LinkedHashMap<>();
         for (Map<String, Object> asset : assets) byId.put(asset.get("id").toString(), asset);
         for (JsonNode sentence : result.path("sentences")) {
@@ -77,7 +74,7 @@ public class CatalogController {
 
     @GetMapping("/api/v1/audio/{id}")
     public ResponseEntity<FileSystemResource> audio(@PathVariable String id) {
-        var values = jdbc.queryForList("SELECT storage_key AS storageKey, byte_size AS byteSize, sha256, status FROM audio_asset WHERE id = ?", id);
+        var values = jdbc.queryForList("SELECT a.storage_key AS storageKey,a.byte_size AS byteSize,a.sha256,a.status FROM audio_asset a JOIN lesson_version v ON v.id=a.lesson_version_id JOIN lesson l ON l.id=v.lesson_id JOIN content_license c ON c.id=v.license_id JOIN content_license ac ON ac.id=a.license_id WHERE a.id=? AND l.availability='available' AND (l.id='demo-01' OR (c.review_status='confirmed' AND ac.review_status='confirmed'))", id);
         if (values.isEmpty()) throw new CatalogFailure(HttpStatus.NOT_FOUND, "AUDIO_NOT_FOUND", "音频资源不存在。");
         var path = check(values.getFirst());
         // Spring MVC serves Resource byte ranges, including suffix ranges and 416.

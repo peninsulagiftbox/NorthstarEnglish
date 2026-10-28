@@ -16,17 +16,37 @@ public class ContentSeeder implements ApplicationRunner {
     private final Flyway flyway;
     public ContentSeeder(ContentPackage content, Flyway flyway) { this.content = content; this.flyway = flyway; }
 
-    @Override public void run(ApplicationArguments arguments) throws Exception { seed(); }
+    @Override public void run(ApplicationArguments arguments) throws Exception {
+        if (arguments.containsOption("northstar.initialize-content")
+                && arguments.getOptionValues("northstar.initialize-content").equals(java.util.List.of("true"))) initialize();
+        else seed();
+    }
 
-    public void seed() throws Exception {
+    /** Explicit command only, never inferred from a missing Demo or current pointer. */
+    public void initialize() throws Exception { process(true); }
+
+    /** Retained public entry point now performs read-only verification. */
+
+    public void seed() throws Exception { process(false); }
+
+    private void process(boolean initialize) throws Exception {
         var bundles = new java.util.ArrayList<ContentPackage.Bundle>();
         for (int number : content.publishedVersions()) bundles.add(content.load(number));
         String activeVersion = "demo-01-v" + content.activeVersion();
         var source = flyway.getConfiguration().getDataSource();
         var jdbc = new JdbcTemplate(source);
-        new TransactionTemplate(new DataSourceTransactionManager(source)).executeWithoutResult(transaction -> {
+        var transactionTemplate = new TransactionTemplate(new DataSourceTransactionManager(source));
+        transactionTemplate.setReadOnly(!initialize);
+        transactionTemplate.executeWithoutResult(transaction -> {
             // Lock the project row so simultaneous local startups cannot race the seed.
-            jdbc.queryForObject("SELECT project_key FROM project_identity FOR UPDATE", String.class);
+            jdbc.queryForObject("SELECT project_key FROM project_identity" + (initialize ? " FOR UPDATE" : ""), String.class);
+            if (initialize) {
+                // Refuse partial or previously initialized databases, including learning-only remnants.
+                for (String table : jdbc.queryForList("SELECT table_name FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name NOT IN ('project_identity','flyway_schema_history','user_setting')", String.class)) {
+                    if (!table.matches("[a-z_]+") || jdbc.queryForObject("SELECT COUNT(*) FROM `" + table + "`", Long.class) != 0)
+                        throw new IllegalStateException("Initialization requires empty content and learning tables");
+                }
+            }
             for (var bundle : bundles) {
             String versionId = text(bundle.lesson(), "versionId");
             String folder = "demo-01/v" + bundle.lesson().path("version").asInt() + "/";
@@ -37,11 +57,12 @@ public class ContentSeeder implements ApplicationRunner {
                     throw new IllegalStateException("Frozen content version changed; create a new version");
                 }
                 verifyRows(jdbc, bundle);
-                seedReading(jdbc, bundle.lesson());
-                seedWriting(jdbc, bundle.lesson());
-                seedQuiz(jdbc, bundle.lesson());
+                seedReading(jdbc, bundle.lesson(), false);
+                seedWriting(jdbc, bundle.lesson(), false);
+                seedQuiz(jdbc, bundle.lesson(), false);
                 continue;
             }
+            if (!initialize) throw new IllegalStateException("Frozen Demo missing; run explicit initialization only on an empty database");
             JsonNode lesson = bundle.lesson(), manifest = bundle.manifest();
             for (JsonNode license : manifest.path("licenses")) {
                 if (jdbc.queryForObject("SELECT COUNT(*) FROM content_license WHERE id=?", Integer.class, text(license,"id")) == 1) continue;
@@ -62,10 +83,12 @@ public class ContentSeeder implements ApplicationRunner {
                         text(audio,"id"), text(lesson,"versionId"), text(audio,"licenseId"), text(audio,"sourceKind"), folder + text(audio,"storageKey"),
                         text(audio,"mimeType"), audio.path("byteSize").asInt(), audio.path("durationMs").asInt(), text(audio,"sha256"));
             }
+            String paragraphId = versionId.equals("demo-01-v1") ? "af61b21b-371a-4550-85a2-8301db66a325" : "a214bafb-e722-4f77-b5ed-62311f41b116";
+            jdbc.update("INSERT INTO paragraph(id,version_id,stable_key,sequence_no) VALUES (?,?,?,1)", paragraphId, versionId, "original-dialogue");
             for (JsonNode s : lesson.path("sentences")) {
-                jdbc.update("INSERT INTO sentence (id,lesson_id,lesson_version_id,stable_key,sequence_no,speaker,text,translation,explanation,focus,audio_asset_id,start_ms,end_ms) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                jdbc.update("INSERT INTO sentence (id,lesson_id,lesson_version_id,stable_key,sequence_no,speaker,text,translation,explanation,focus,audio_asset_id,start_ms,end_ms,paragraph_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         text(s,"id"), text(lesson,"id"), text(lesson,"versionId"), text(s,"stableKey"), s.path("sequence").asInt(), text(s,"speaker"),
-                        text(s,"text"), text(s,"translation"), text(s,"explanation"), text(s,"focus"), text(s,"audioAssetId"), 0, s.path("endMs").asInt());
+                        text(s,"text"), text(s,"translation"), text(s,"explanation"), text(s,"focus"), text(s,"audioAssetId"), 0, s.path("endMs").asInt(), paragraphId);
             }
             // Phase 04 dictation targets publish atomically with the immutable version.
             for (JsonNode sentence : lesson.path("sentences")) {
@@ -73,26 +96,26 @@ public class ContentSeeder implements ApplicationRunner {
                         text(sentence,"id") + "-dictation", text(lesson,"id"), versionId, text(sentence,"id"));
             }
             verifyRows(jdbc, bundle);
-            seedReading(jdbc, lesson);
-            seedWriting(jdbc, lesson);
-            seedQuiz(jdbc, lesson);
+            seedReading(jdbc, lesson, true);
+            seedWriting(jdbc, lesson, true);
+            seedQuiz(jdbc, lesson, true);
             }
-            var current = jdbc.queryForList("SELECT current_version_id FROM lesson WHERE id='demo-01'");
-            Object old = current.getFirst().get("current_version_id");
-            if (old != null && bundles.stream().noneMatch(b -> old.equals(text(b.lesson(),"versionId")))) throw new IllegalStateException("Unknown active content version; refuse overwrite");
-            jdbc.update("UPDATE lesson SET current_version_id=? WHERE id='demo-01'", activeVersion);
+            if (initialize) jdbc.update("UPDATE lesson SET current_version_id=? WHERE id='demo-01' AND current_version_id IS NULL", activeVersion);
         });
     }
 
-    private void seedQuiz(JdbcTemplate jdbc, JsonNode lesson) {
+    private void seedQuiz(JdbcTemplate jdbc, JsonNode lesson, boolean initialize) {
         String version=text(lesson,"versionId"), sentence=version+"-s06", please=version+"-kp-please";
-        if(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_point WHERE id=?",Integer.class,please)==0)
+        if(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_point WHERE id=?",Integer.class,please)==0) {
+            requireInitialization(initialize);
             jdbc.update("INSERT INTO knowledge_point(id,lesson_id,version_id,sentence_id,term,meaning,usage_note,example_text) VALUES (?,?,?,?,?,?,?,?)",please,text(lesson,"id"),version,sentence,"please + verb","请……（礼貌请求）","本地预置讲解 · please + 动词原形","Please put them beside the blue bench.");
+        }
         for(JsonNode question:lesson.path("exercises")) {
             if(!"quiz_choice".equals(text(question,"kind")))continue;
             String id=text(question,"id"), target=question.path("sentenceIds").get(0).asText();
             String point=id.endsWith("01")?version+"-kp-community-garden":id.endsWith("02")?version+"-kp-beside":please;
             if(jdbc.queryForObject("SELECT COUNT(*) FROM quiz_question WHERE exercise_id=?",Integer.class,id)==0) {
+                requireInitialization(initialize);
                 jdbc.update("INSERT INTO exercise(id,lesson_id,version_id,sentence_id,kind,algorithm_version) VALUES (?,?,?,?,'quiz_choice','quiz_choice_v1')",id,text(lesson,"id"),version,target);
                 jdbc.update("INSERT INTO quiz_question(exercise_id,version_id,sentence_id,knowledge_point_id,payload_json) VALUES (?,?,?,?,?)",id,version,target,point,question.toString());
             }
@@ -102,9 +125,10 @@ public class ContentSeeder implements ApplicationRunner {
         if(jdbc.queryForObject("SELECT COUNT(*) FROM quiz_question WHERE version_id=?",Integer.class,version)!=3)throw new IllegalStateException("Quiz requires three questions");
     }
 
-    private void seedWriting(JdbcTemplate jdbc, JsonNode lesson) {
+    private void seedWriting(JdbcTemplate jdbc, JsonNode lesson, boolean initialize) {
         String version=text(lesson,"versionId"), id=version+"-writing-01";
         if(jdbc.queryForObject("SELECT COUNT(*) FROM writing_task WHERE id=?",Integer.class,id)==0) {
+            requireInitialization(initialize);
             jdbc.update("INSERT INTO writing_task(id,lesson_id,version_id,prompt) VALUES (?,?,?,?)",id,text(lesson,"id"),version,"Write 2–3 sentences about helping in a garden. Use please, beside, or I can ...");
             for(JsonNode exercise:lesson.path("exercises")) if("writing_prompt".equals(text(exercise,"kind")))
                 for(JsonNode sentence:exercise.path("sentenceIds")) jdbc.update("INSERT INTO writing_source(task_id,version_id,sentence_id) VALUES (?,?,?)",id,version,sentence.asText());
@@ -112,20 +136,23 @@ public class ContentSeeder implements ApplicationRunner {
         if(jdbc.queryForObject("SELECT COUNT(*) FROM writing_source WHERE task_id=?",Integer.class,id)!=3)throw new IllegalStateException("Writing source incomplete");
     }
 
-    private void seedReading(JdbcTemplate jdbc, JsonNode lesson) {
+    private void seedReading(JdbcTemplate jdbc, JsonNode lesson, boolean initialize) {
         String version = text(lesson,"versionId"), lessonId = text(lesson,"id");
         var notes = java.util.Map.of("community garden","名词短语 · 本课指社区共用的花园", "beside","介词 · 表示在某物旁边，相当于 next to", "bench","名词 · 本课指供人坐的长椅", "soil","不可数名词 · 本课指种植物的土壤", "watering can","名词短语 · 本课指浇水用的壶");
         for (JsonNode word : lesson.path("vocabulary")) {
             String id = text(word,"id"), sentence = word.path("sentenceIds").get(0).asText();
             Object[] values = {lessonId,version,sentence,text(word,"term"),text(word,"meaning"),notes.getOrDefault(text(word,"term"),"本课语境用法"),text(word,"example")};
-            if (jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_point WHERE id=?", Integer.class,id)==0)
+            if (jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_point WHERE id=?", Integer.class,id)==0) {
+                requireInitialization(initialize);
                 jdbc.update("INSERT INTO knowledge_point(id,lesson_id,version_id,sentence_id,term,meaning,usage_note,example_text) VALUES (?,?,?,?,?,?,?,?)",id,values[0],values[1],values[2],values[3],values[4],values[5],values[6]);
+            }
             verify(jdbc,"knowledge_point",id,new String[]{"lesson_id","version_id","sentence_id","term","meaning","usage_note","example_text"},values);
         }
         for (JsonNode question : lesson.path("exercises")) {
             if (!"reading_choice".equals(text(question,"kind"))) continue;
             String id=text(question,"id"), sentence=question.path("sentenceIds").get(0).asText();
             if(jdbc.queryForObject("SELECT COUNT(*) FROM exercise WHERE id=?",Integer.class,id)==0) {
+                requireInitialization(initialize);
                 jdbc.update("INSERT INTO exercise(id,lesson_id,version_id,sentence_id,kind,algorithm_version) VALUES (?,?,?,?,'reading_choice','reading_choice_v1')",id,lessonId,version,sentence);
                 jdbc.update("INSERT INTO reading_question(exercise_id,version_id,sentence_id,knowledge_point_id,payload_json) VALUES (?,?,?,?,?)",id,version,sentence,version+"-kp-beside",question.toString());
                 for(JsonNode option : question.path("options")) jdbc.update("INSERT INTO reading_option(id,exercise_id) VALUES (?,?)",text(option,"id"),id);
@@ -140,8 +167,7 @@ public class ContentSeeder implements ApplicationRunner {
         String versionId = text(bundle.lesson(),"versionId");
         String folder = "demo-01/v" + bundle.lesson().path("version").asInt() + "/";
         if (jdbc.queryForObject("SELECT COUNT(*) FROM sentence WHERE lesson_version_id = ?", Integer.class, versionId) != 10
-                || jdbc.queryForObject("SELECT COUNT(*) FROM audio_asset WHERE lesson_version_id = ?", Integer.class, versionId) != 10
-                || jdbc.queryForObject("SELECT COUNT(*) FROM book WHERE availability = 'catalog_only'", Integer.class) != 4) {
+                || jdbc.queryForObject("SELECT COUNT(*) FROM audio_asset WHERE lesson_version_id = ?", Integer.class, versionId) != 10) {
             throw new IllegalStateException("Seed data incomplete; refuse silent repair");
         }
         String payload = jdbc.queryForObject("SELECT payload_json FROM lesson_version WHERE id = ?", String.class, versionId);
@@ -159,8 +185,8 @@ public class ContentSeeder implements ApplicationRunner {
                     new Object[]{versionId,text(audio,"licenseId"),text(audio,"sourceKind"),folder+text(audio,"storageKey"),text(audio,"mimeType"),audio.path("byteSize").asInt(),audio.path("durationMs").asInt(),text(audio,"sha256"),"ready"});
         }
         for (JsonNode book : bundle.manifest().path("books")) {
-            verify(jdbc, "book", text(book,"id"), new String[]{"catalog_key","sequence_no","title","edition_label","availability","declared_lesson_count","metadata_source"},
-                    new Object[]{text(book,"catalogKey"),book.path("sequence").asInt(),text(book,"title"),text(book,"editionLabel"),"catalog_only",book.path("declaredLessonCount").asInt(),text(book,"metadataSource")});
+            verify(jdbc, "book", text(book,"id"), new String[]{"catalog_key","sequence_no","title","edition_label","declared_lesson_count","metadata_source"},
+                    new Object[]{text(book,"catalogKey"),book.path("sequence").asInt(),text(book,"title"),text(book,"editionLabel"),book.path("declaredLessonCount").asInt(),text(book,"metadataSource")});
         }
         var mapper = tools.jackson.databind.json.JsonMapper.builder().build();
         for (JsonNode license : bundle.manifest().path("licenses")) {
@@ -182,6 +208,10 @@ public class ContentSeeder implements ApplicationRunner {
                 throw new IllegalStateException("Stored content rows differ from frozen version");
             }
         }
+    }
+
+    private static void requireInitialization(boolean initialize) {
+        if (!initialize) throw new IllegalStateException("Frozen Demo incomplete; ordinary startup will not repair content");
     }
 
     private static String text(JsonNode node, String key) { return node.path(key).asText(); }

@@ -30,6 +30,17 @@ class ContentPackageTest {
         } finally { Files.deleteIfExists(outside); }
     }
 
+    @Test void acceptsGenericNamesButRejectsAbsoluteEncodedAndDirectoryTraversal() throws Exception {
+        var content = new ContentPackage(temp.toString());
+        Path file = temp.resolve("original-course/version-7/speech/twelfth-line.mp3");
+        Files.createDirectories(file.getParent());byte[] bytes="test audio".getBytes();Files.write(file,bytes);
+        assertEquals(file,content.checkedAudio("original-course/version-7/speech/twelfth-line.mp3",bytes.length,ContentPackage.sha256(bytes)));
+        for(String key:java.util.List.of("/etc/passwd","other/../file.mp3","%2e%2e/x.mp3","folder//file.mp3","folder/./file.mp3","folder\\file.mp3"))
+            assertThrows(IllegalStateException.class,()->content.checkedAudio(key,bytes.length,ContentPackage.sha256(bytes)));
+        // Frozen Demo adapter retains its own naming restriction.
+        assertThrows(IllegalStateException.class,()->new DemoContentAdapter(temp.toString()).checkedAudio("original-course/version-7/speech/twelfth-line.mp3",bytes.length,ContentPackage.sha256(bytes)));
+    }
+
     @Test void loadsRealFrozenBundle() throws Exception {
         var bundle = new ContentPackage("../../content").load();
         assertEquals(10, bundle.lesson().path("sentences").size());

@@ -46,7 +46,7 @@ class ReportExportIntegrationTest {
                 var bad=json.createObjectNode();bad.put("format","northstar.snapshot.v1");bad.put("sha256","broken");bad.put("payloadJson",exported.path("payloadJson").asText());
                 assertEquals(422,send(base+"/data/import-preview","POST",bad).statusCode());
                 for(String replacement:List.of("\"owner\":\"foreign\"","\"schemaVersion\":\"999\"")) {
-                    String raw=exported.path("payloadJson").asText().replace(replacement.contains("owner")?"\"owner\":\"local\"":"\"schemaVersion\":\"008\"",replacement);
+                    String raw=exported.path("payloadJson").asText().replace(replacement.contains("owner")?"\"owner\":\"local\"":"\"schemaVersion\":\""+json.readTree(exported.path("payloadJson").asText()).path("schemaVersion").asText()+"\"",replacement);
                     bad.put("payloadJson",raw);bad.put("sha256",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(raw.getBytes(StandardCharsets.UTF_8))));
                     assertEquals(422,send(base+"/data/import-preview","POST",bad).statusCode());
                 }

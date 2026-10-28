@@ -116,7 +116,7 @@ paths:
       description: Private repeatable-read logical DB snapshot; includes original answers and writing. No credentials. Media binaries and unsynced browser buffers are excluded explicitly. All SQL cells are strings or null; tables and columns are fixed to the current schema.
       responses:
         '200':
-          description: northstar.snapshot.v1 envelope with raw UTF-8 payloadJson and its SHA-256; owner local, project identity, schemaVersion 008, exportedAt, mediaIncluded false, browserBuffersIncluded false, tables. No-store.
+          description: northstar.snapshot.v1 envelope with raw UTF-8 payloadJson and its SHA-256; owner local, project identity, schemaVersion from the actual Flyway history, exportedAt, mediaIncluded false, browserBuffersIncluded false, tables. No-store.
           content:
             application/json:
               schema:
@@ -146,7 +146,7 @@ paths:
   /books:
     get:
       operationId: getBooks
-      description: Four catalog-only book metadata records, with a separate original demo. No textbook lesson bodies or recordings.
+      description: Real book metadata and counts, with separate available standalone lessons (bookId null). Declared counts do not mean imported content.
       responses:
         '200':
           description: Catalog metadata; no-store
@@ -168,21 +168,80 @@ paths:
       operationId: listAvailableLessons
       responses:
         '200':
-          description: Original demo only; catalog-only books do not have fake lessons
+          description: Available real lessons in the unchanged array contract; no placeholder lessons
           content:
             application/json:
               schema:
                 type: array
                 items: {$ref: '#/components/schemas/LessonSummary'}
         '503': {$ref: '#/components/responses/Unavailable'}
+  /books/{id}/lessons:
+    get:
+      operationId: listBookLessons
+      description: Actual rows only, ordered by sequence (null last) then immutable ID. Cursor is bound to book and ordering keys. Unavailable rows have no version or content title; no content body or media is exposed. Stable while the catalog is unchanged; no concurrent-publish snapshot guarantee.
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+        - {name: cursor, in: query, schema: {type: string, maxLength: 600}}
+        - {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 20}}
+      responses:
+        '200':
+          description: Empty books return items=[], nextCursor=null; never populate declared textbook lesson counts
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items, nextCursor]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      required: [id, bookId, sequence, displayNumber, availability, readable, versionId, title]
+                      properties:
+                        id: {type: string}
+                        bookId: {type: string}
+                        sequence: {type: [integer, 'null']}
+                        displayNumber: {type: [string, 'null']}
+                        availability: {type: string, enum: [draft, available, withdrawn]}
+                        readable: {type: boolean}
+                        versionId: {type: [string, 'null']}
+                        title: {type: [string, 'null']}
+                  nextCursor: {type: [string, 'null']}
+        '400': {description: INVALID_CURSOR or INVALID_LIMIT}
+        '404': {description: BOOK_NOT_FOUND}
+  /lessons/{id}/versions:
+    get:
+      operationId: listLessonVersions
+      description: Readable versions ordered by number and ID. No inferred publication state. Old Demo retains its existing local-test exception; other pending-rights content is inaccessible.
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      responses:
+        '200':
+          description: Version list, current indicator does not change historical learning associations
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [versions]
+                properties:
+                  versions:
+                    type: array
+                    items:
+                      type: object
+                      required: [versionId, number, isCurrent, readable]
+                      properties:
+                        versionId: {type: string}
+                        number: {type: integer, minimum: 1}
+                        isCurrent: {type: boolean}
+                        readable: {type: boolean}
+        '404': {description: LESSON_NOT_FOUND for unknown or inaccessible lessons}
   /lessons/{id}:
     get:
       operationId: getLesson
       parameters:
         - {name: versionId, in: query, required: false, schema: {type: string}, example: demo-01-v2}
         - {name: id, in: path, required: true, schema: {type: string}, example: demo-01}
-      description: One request returns ten original sentences, translations, preset explanations, vocabulary, exercise definitions and audio URIs. Answer keys and quiz explanations remain server-side. Audio integrity is checked before returning success.
-      description: Returns the current default version, or an explicit immutable published version. Old-version learning records remain bound to that version.
+      description: Current or explicitly selected readable version. Ordered relational paragraphs and sentences may have different counts per version. Frozen Demo remains unchanged. Answer keys stay server-side; corrupt or missing audio retains the existing whole-lesson 503 contract. Historical learning records stay bound to their version.
       responses:
         '200':
           description: Frozen versioned local-test content; releaseReady=false
@@ -192,20 +251,31 @@ paths:
                 type: object
                 required: [id, versionId, version, title, bookId, kind, availability, sentences, vocabulary, exercises, licenses, releaseReady, usageScope, explanationLabel]
                 properties:
-                  id: {type: string, const: demo-01}
-                  versionId: {type: string, const: demo-01-v1}
-                  version: {type: integer, const: 1}
+                  id: {type: string}
+                  versionId: {type: string}
+                  version: {type: integer, minimum: 1}
                   title: {type: string}
-                  bookId: {type: 'null'}
-                  kind: {type: string, const: original_demo}
+                  bookId: {type: ['string', 'null']}
+                  kind: {type: string, enum: [original_demo, licensed]}
                   availability: {type: string, const: available}
                   usageScope: {type: string, const: local_test_only}
-                  releaseReady: {type: boolean, const: false}
-                  explanationLabel: {type: string, const: 本地预置讲解}
+                  releaseReady: {type: boolean}
+                  explanationLabel: {type: string}
+                  projectionVersion: {type: string, const: relational-v1}
+                  paragraphs:
+                    type: array
+                    items:
+                      type: object
+                      required: [id, stableKey, sequence]
+                      properties:
+                        id: {type: string}
+                        stableKey: {type: string}
+                        sequence: {type: integer, minimum: 1}
+                  availableTasks: {type: array, items: {type: string}}
+                  hasWritingTask: {type: boolean}
                   sentences:
                     type: array
-                    minItems: 10
-                    maxItems: 10
+                    minItems: 1
                     items: {$ref: '#/components/schemas/Sentence'}
                   vocabulary:
                     type: array
@@ -241,6 +311,7 @@ paths:
                     type: array
                     items: {$ref: '#/components/schemas/ContentLicense'}
         '404': {$ref: '#/components/responses/ContentNotFound'}
+        '422': {description: VERSION_LESSON_MISMATCH for a known version belonging to another lesson}
         '503': {$ref: '#/components/responses/Unavailable'}
   /licenses/{id}:
     get:
@@ -914,6 +985,8 @@ components:
         editionLabel: {type: string}
         availability: {type: string, const: catalog_only}
         declaredLessonCount: {type: integer}
+        actualLessonCount: {type: integer, minimum: 0}
+        availableLessonCount: {type: integer, minimum: 0}
         metadataSource: {type: string}
     LessonSummary:
       type: object
@@ -921,9 +994,9 @@ components:
       properties:
         id: {type: string}
         slug: {type: string}
-        kind: {type: string, const: original_demo}
+        kind: {type: string, enum: [original_demo, licensed]}
         availability: {type: string, const: available}
-        bookId: {type: 'null'}
+        bookId: {type: ['string', 'null']}
         versionId: {type: string}
         title: {type: string}
         releaseReady: {type: boolean, const: false}
@@ -933,13 +1006,13 @@ components:
       required: [id, sourceType, medium, owner, sourceRef, rightsScope, territory, reviewStatus, proofRef, generator, voice, declaration]
       properties:
         id: {type: string}
-        sourceType: {type: string, const: original}
+        sourceType: {type: string, enum: [original, licensed]}
         medium: {type: string, enum: [text, audio]}
         owner: {type: string}
         sourceRef: {type: string}
         rightsScope: {type: string}
         territory: {type: string}
-        reviewStatus: {type: string, const: pending_review}
+        reviewStatus: {type: string, enum: [pending_review, confirmed, rejected, expired]}
         proofRef: {type: ['string', 'null']}
         generator: {type: string}
         voice: {type: string}
@@ -950,7 +1023,8 @@ components:
       properties:
         id: {type: string}
         stableKey: {type: string}
-        sequence: {type: integer, minimum: 1, maximum: 10}
+        paragraphId: {type: string}
+        sequence: {type: integer, minimum: 1}
         speaker: {type: string}
         text: {type: string}
         translation: {type: string}

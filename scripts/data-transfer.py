@@ -26,7 +26,7 @@ def load_snapshot(path):
     if digest(envelope['payloadJson'].encode()) != envelope['sha256']:
         raise ValueError('校验和不匹配')
     payload = json.loads(envelope['payloadJson'])
-    if payload['project'] != local.IDENTITY or payload['owner'] != 'local' or payload['schemaVersion'] != '008':
+    if payload['project'] != local.IDENTITY or payload['owner'] != 'local' or payload['schemaVersion'] not in {'008', '009.04', '009.05'}:
         raise ValueError('版本或归属不匹配')
     return envelope, payload
 
