@@ -5,18 +5,22 @@ async page => {
  const get=async path=>{const r=await page.request.get(base+'/api/v1'+path);assert(r.ok(),'GET '+path+': '+r.status());return r.json();};
  const context='lessonId=demo-01&versionId=demo-01-v2';
  const lesson=tab=>base+'/lesson/demo-01?version=demo-01-v2&tab='+tab+'&sentence=demo-01-v2-s06&english=1&translation=1';
- const shot=name=>page.screenshot({path:'docs/evidence/phase-09r/screenshots/'+name+'.png'});
+ const shot=name=>page.screenshot({path:'output/playwright/phase10b2-demo/'+name+'.png'});
  page.setDefaultTimeout(15000);page.on('pageerror',e=>errors.push(e.message));
  assert((await page.request.get(base+'/api/v1/health')).headers()['x-northstar-test-database']==='true','Isolated database required');
  let stage='catalog';
  try {
  await page.setViewportSize({width:1440,height:900});await page.goto(base+'/dashboard');
- await page.getByRole('heading',{name:/The Neighborhood Garden/}).waitFor();await shot('dashboard-1440');
+ await page.getByRole('heading',{name:'今天，来学一点英语。',exact:true}).waitFor();await shot('dashboard-1440');
  await page.getByRole('navigation',{name:'主导航'}).getByRole('link',{name:'课程中心',exact:true}).click();
  await page.getByText('仅目录 · 暂不可学习',{exact:true}).first().waitFor();
- assert(await page.locator('.book-card').count()===4,'Four catalog-only books');
- assert(await page.locator('.book-card a,.book-card button').count()===0,'Unavailable books have no entry');
- await page.getByRole('link',{name:/开始浏览原创课|继续学习/}).first().click();await page.getByRole('tab',{name:'课文',exact:true}).waitFor();
+ const catalog=await get('/books');
+ assert(await page.locator('.book-card').count()===catalog.books.length,'Book cards match real API metadata');
+ assert(catalog.books.filter(b=>['nce-book-1','nce-book-2','nce-book-3','nce-book-4'].includes(b.id)).length===4,'Four original textbook catalogs retained');
+ await page.getByRole('button',{name:'查看实际课程',exact:true}).first().click();
+ await page.getByText('本册尚无已导入课程',{exact:true}).waitFor();
+ assert(await page.locator('.book-card').first().getByRole('link').count()===0,'Empty textbook catalog has no fake study links');
+ await page.getByRole('link',{name:'浏览 The Neighborhood Garden',exact:true}).click();await page.getByRole('tab',{name:'课文',exact:true}).waitFor();
  await page.goto(lesson('text'));await page.getByRole('button',{name:'选择并播放句子 6',exact:true}).click();
  await page.waitForFunction(()=>{const a=document.querySelector('audio[hidden]');return a&&!a.paused&&a.currentTime>.1;});
  assert(await page.locator('audio[hidden]').evaluate(a=>a.src.includes('a06')),'Real sentence6 audio');

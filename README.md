@@ -110,8 +110,17 @@ python3 scripts/local.py exec npm ci
 python3 scripts/local.py exec npm run build
 python3 scripts/local.py exec apps/api/mvnw -f apps/api/pom.xml verify
 
+# 已初始化数据库的正常启动；不会补写内容或重设课程当前版本。
 sh scripts/dev-up.sh
 ```
+
+Phase 10B-2 将内容初始化改为显式操作。**全新、身份已核对且内容与学习表为空的数据库**，在启动普通服务前运行一次（已有个人库禁止执行）：
+
+```bash
+python3 scripts/local.py exec java -jar apps/api/target/northstar-api-0.1.0-SNAPSHOT.jar --spring.main.web-application-type=none --northstar.content-root="$PWD/content" --northstar.initialize-content=true
+```
+
+该命令只初始化冻结 Demo、四册元信息及其原任务；不是教材发布器。已有/部分初始化库会拒绝，不会补写或重置。新排序迁移 V009.05 目前只在10B-2隔离环境验证，现有个人库迁移及主站替换需单独授权，不能把本阶段开发测试视为迁移批准。详细验收见 [PHASE_10B_2](docs/progress/PHASE_10B_2.md)。
 
 打开脚本输出的地址，默认是 **[http://127.0.0.1:3100](http://127.0.0.1:3100)**。在设置页显示“已连接”表示请求已通过前端转发到 Java，并真实读取 MySQL；课程页和工作台均有加载、失败与重试入口。
 
@@ -201,7 +210,9 @@ Phase 02 的内容提取、重复播种、真实 MySQL 约束、媒体 HTTP 与�
 | GET | `/api/v1/settings` | 读取已持久化的本地偏好 |
 | GET | `/api/v1/books` | 四册目录占位及独立原创课 |
 | GET | `/api/v1/lessons` | 当前可用原创课列表 |
-| GET | `/api/v1/lessons/demo-01` | 带版本的 10 句、预置讲解、词汇、练习定义与音频 URI |
+| GET | `/api/v1/books/{id}/lessons?cursor&limit` | 真实册内课程与稳定分页，空册不生成占位课 |
+| GET | `/api/v1/lessons/{id}/versions` | 可读取的版本列表及当前指针标识 |
+| GET | `/api/v1/lessons/{id}?versionId=...` | 当前或指定版本的段落、句子、预置讲解与独立音频 URI |
 | GET | `/api/v1/audio/{id}` | 校验后的 MP3，支持 Range / 206 / 416 |
 | GET | `/api/v1/licenses/{id}` | 原创声明、来源及待审查状态 |
 | GET / PUT | `/api/v1/study/resume` | 浏览位置、Tab、选句与显示偏好；If-Match 防覆盖 |

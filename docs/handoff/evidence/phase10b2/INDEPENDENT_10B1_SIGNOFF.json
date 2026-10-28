@@ -1,0 +1,39 @@
+{
+  "at": "2026-10-28T03:10:25.610875+08:00",
+  "reviewer": "/root/phase10b1_review",
+  "reviewerType": "Independent review agent, not human signature",
+  "verdict": "PASS_WITH_CONTROLLER_NOTE",
+  "B01": "PASS",
+  "B03": "PASS",
+  "acceptedFor": "Phase10B2 isolated code development and testing only",
+  "checks": {
+    "frozenCandidateFiles": 4,
+    "backupFiles": 32,
+    "sourceHistoricalSchema": "V008 / 37 tables",
+    "historicalMigrationsMatchHead": 8,
+    "commandRecords": 7578,
+    "rawLogHashes": 7367,
+    "snapshotSummaryHashes": 44,
+    "isolatedRolesAndMedia": 12,
+    "upgradeAndEmptyPaths": "PASS, including old cells, history CRC, media, repeat startup, FK/CHECK/UQ negatives",
+    "faultAndNewTargetRecoveryPaths": 5,
+    "controllerExitPreserved": 1,
+    "publicFlywayLogHashes": 10,
+    "isolatedCandidateJarHash": "0aa22702023aa20d33405c2572e0469707fc41948ff985a687dc7fcec3ce3005"
+  },
+  "excluded": [
+    "Personal DB migration or service replacement",
+    "Changed/new migration automatic approval",
+    "Modern latest-schema empty bootstrap (must be retested in 10B2)",
+    "Human/third-party signature",
+    "Browser microphone/real-device/audio listening acceptance",
+    "Content publication/licensing"
+  ],
+  "historicalSourceVersion": "008",
+  "currentSourceVersion": "009.04 per later migration evidence and parent health check",
+  "databaseCommands": 0,
+  "processControlCommands": 0,
+  "exitCode": 0,
+  "controllerExitCode": 1,
+  "independentReviewComplete": true
+}
