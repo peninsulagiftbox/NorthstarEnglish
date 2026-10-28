@@ -8,16 +8,19 @@ import org.flywaydb.core.Flyway;
 public final class ApprovedOrderMigration {
     private static final String SHA = "8b32932f9447faf37a27dd449eb11106130d20637c887ce0bd0b8d2f5bdefa32";
     public static void main(String[] args) throws Exception {
-        if (args.length != 1 || !"phase10b2-source-order-v1".equals(System.getenv("NORTHSTAR_APPROVED_ACTION")))
+        boolean rehearsal = args.length == 2 && "--rehearse".equals(args[0]);
+        String scope = rehearsal ? "phase10b2-isolated-order-v1" : "phase10b2-source-order-v1";
+        if ((!rehearsal && args.length != 1) || !scope.equals(System.getenv("NORTHSTAR_APPROVED_ACTION")))
             throw new IllegalStateException("Missing explicit approved maintenance scope");
-        String expected = System.getenv("EXPECTED_SOURCE_UUID");
-        if (expected == null || expected.isBlank() || !"3308".equals(System.getenv("MYSQL_PORT")))
+        String expected = System.getenv(rehearsal ? "EXPECTED_TARGET_UUID" : "EXPECTED_SOURCE_UUID");
+        int port = Integer.parseInt(System.getenv().getOrDefault("MYSQL_PORT", "0"));
+        if (expected == null || expected.isBlank() || (rehearsal ? port < 3313 || port > 3399 || expected.equals(System.getenv("EXPECTED_SOURCE_UUID")) : port != 3308))
             throw new IllegalStateException("Missing pinned source identity");
-        Path directory = Path.of(args[0]).toRealPath();
+        Path directory = Path.of(args[rehearsal ? 1 : 0]).toRealPath();
         Path migration = directory.resolve("V009_05__lesson_catalog_order.sql");
         String hash = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(migration)));
         if (!SHA.equals(hash)) throw new IllegalStateException("Unreviewed migration bytes");
-        String url = "jdbc:mysql://127.0.0.1:3308/northstar_english?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true";
+        String url = "jdbc:mysql://127.0.0.1:" + port + "/northstar_english?connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true";
         String password = System.getenv("DB_MIGRATION_PASSWORD");
         try (Connection c = DriverManager.getConnection(url, "northstar_migrator", password); Statement s = c.createStatement()) {
             c.setReadOnly(true);
@@ -31,7 +34,7 @@ public final class ApprovedOrderMigration {
         }
         Flyway flyway = Flyway.configure().dataSource(url,"northstar_migrator",password)
                 .locations("filesystem:"+directory).target("009.05").cleanDisabled(true).baselineOnMigrate(false).validateOnMigrate(true).load();
-        flyway.validate();
+        // migrate performs checksum validation while permitting the one explicitly checked pending migration.
         var pending = flyway.info().pending();
         if (pending.length != 1 || !"009.05".equals(pending[0].getVersion().getVersion()))
             throw new IllegalStateException("Only frozen V009.05 may be pending");

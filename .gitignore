@@ -68,3 +68,6 @@ backup*.sql
 !/docs/handoff/evidence/personal-migration-20261027/*.java
 /docs/handoff/evidence/*review-*.receipt.json
 /docs/handoff/evidence/phase10b2-deployment/**
+
+# Raw regression evidence remains local; publish reviewed progress summaries.
+/docs/handoff/evidence/phase10b-retest-20261028/**

@@ -69,7 +69,7 @@ def start(c,role,initialize=False,schema='northstar_english'):
         c.end_api(role,(p,stream,api,web));raise
 
 
-def compare_order(before,after):
+def compare_order(before,after,allow_redundant_book_index_drop=False):
     assert set(before)==set(after), 'Unexpected new or missing table'
     for table,data in before.items():
         actual=after[table]; columns=data['columns']
@@ -84,7 +84,17 @@ def compare_order(before,after):
             lines=sql.splitlines()
             if added: lines=[line for line in lines if not any(key in line for key in ['`sequence_no`','`display_number`','`uq_lesson_book_sequence`','`ck_lesson_sequence`'])]
             return sorted(line.strip().rstrip(',') for line in lines)
-        assert normalize(data['createSql'],False)==normalize(actual['createSql'],table=='lesson'), table+': unexpected schema change'
+        old_sql=data['createSql']
+        if table=='lesson' and allow_redundant_book_index_drop:
+            # A source InnoDB auto-created FK index may disappear when the new index covers its prefix.
+            # Restoring SHOW CREATE makes that old index explicit, so the restored path can retain it.
+            compact=''.join(actual['createSql'].replace('`','').lower().split())
+            assert 'uniquekeyuq_lesson_book_sequence(book_id,sequence_no)' in compact
+            old_index=lambda line:line.strip().rstrip(',')=='KEY `book_id` (`book_id`)'
+            assert sum(old_index(line) for line in old_sql.splitlines())==1
+            assert not any(old_index(line) for line in actual['createSql'].splitlines())
+            old_sql='\n'.join(line for line in old_sql.splitlines() if not old_index(line))
+        assert normalize(old_sql,False)==normalize(actual['createSql'],table=='lesson'), table+': unexpected schema change'
 
 
 def main():
