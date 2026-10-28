@@ -120,7 +120,7 @@ Phase 10B-2 将内容初始化改为显式操作。**全新、身份已核对且
 python3 scripts/local.py exec java -jar apps/api/target/northstar-api-0.1.0-SNAPSHOT.jar --spring.main.web-application-type=none --northstar.content-root="$PWD/content" --northstar.initialize-content=true
 ```
 
-该命令只初始化冻结 Demo、四册元信息及其原任务；不是教材发布器。已有/部分初始化库会拒绝，不会补写或重置。新排序迁移 V009.05 目前只在10B-2隔离环境验证，现有个人库迁移及主站替换需单独授权，不能把本阶段开发测试视为迁移批准。详细验收见 [PHASE_10B_2](docs/progress/PHASE_10B_2.md)。
+该命令只初始化冻结 Demo、四册元信息及其原任务；不是教材发布器。已有/部分初始化库会拒绝，不会补写或重置。2026-10-28 经用户明确授权，现有个人库已从 V009.04 迁移到 V009.05，并完成本地前后端部署及只读复核；详见 [部署报告](docs/progress/PHASE_10B_2_DEPLOYMENT.md)。开发与隔离验收历史见 [PHASE_10B_2](docs/progress/PHASE_10B_2.md)。其他数据库仍需独立核对身份、备份与批准，禁止直接复用本机维护动作。
 
 打开脚本输出的地址，默认是 **[http://127.0.0.1:3100](http://127.0.0.1:3100)**。在设置页显示“已连接”表示请求已通过前端转发到 Java，并真实读取 MySQL；课程页和工作台均有加载、失败与重试入口。
 
