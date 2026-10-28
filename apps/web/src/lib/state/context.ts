@@ -15,10 +15,10 @@ export function lessonHref(context: Checkpoint) {
   const params = new URLSearchParams({ version: context.versionId, tab: context.tab, sentence: context.sentenceId, english: context.showEnglish ? '1' : '0', translation: context.showTranslation ? '1' : '0' });
   return `/lesson/${encodeURIComponent(context.lessonId)}?${params}`;
 }
-/** Published Demo sentence IDs retain their stable suffix across v1/v2. */
+/** Only the frozen Demo has a reviewed suffix mapping. Other versions start at their own first sentence. */
 export function lessonVersionHref(context: Checkpoint, versionId: string) {
   const prefix = `${context.versionId}-`;
-  const sentenceId = context.sentenceId.startsWith(prefix) ? `${versionId}-${context.sentenceId.slice(prefix.length)}` : '';
+  const sentenceId = context.lessonId === 'demo-01' && /^demo-01-v[12]$/.test(context.versionId) && /^demo-01-v[12]$/.test(versionId) && context.sentenceId.startsWith(prefix) ? `${versionId}-${context.sentenceId.slice(prefix.length)}` : '';
   return lessonHref({ ...context, versionId, sentenceId });
 }
 export function isBlind(context: Checkpoint) { return !context.showEnglish || context.tab === 'dictation'; }

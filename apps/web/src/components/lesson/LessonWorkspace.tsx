@@ -1,6 +1,8 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { getLessonVersions } from '@/lib/api/catalog';
+import type { LessonVersion } from '@/lib/api/catalog';
 import { useLesson } from '@/lib/state/LessonProvider';
 import { draftKey, isBlind, lessonVersionHref, tabs } from '@/lib/state/context';
 import { Button, Card, Message, Modal } from '@/components/ui/Primitives';
@@ -35,7 +37,8 @@ export function SentenceList() {
   useEffect(() => { document.querySelector<HTMLButtonElement>('.sentence.selected')?.scrollIntoView({ block: 'nearest' }); }, [checkpoint.sentenceId]);
   const blind = isBlind(checkpoint);
   const { controller } = useMedia();
-  return <ol className="sentence-list">{lesson.sentences.map(sentence => <li key={sentence.id}><button className={`sentence ${checkpoint.sentenceId === sentence.id ? 'selected' : ''}`} aria-label={`选择并播放句子 ${sentence.sequence}`} aria-pressed={checkpoint.sentenceId === sentence.id} disabled={!controller} onClick={() => { update({ sentenceId: sentence.id }); controller?.load(sentence.id); void controller?.play(); }}>
+  const starts = new Map((lesson.paragraphs ?? []).map(p => [lesson.sentences.find(s => s.paragraphId === p.id)?.id, p]));
+  return <ol className="sentence-list">{lesson.sentences.map(sentence => <li key={sentence.id}>{starts.has(sentence.id) && <h3 className="muted">段落 {starts.get(sentence.id)!.sequence}</h3>}<button className={`sentence ${checkpoint.sentenceId === sentence.id ? 'selected' : ''}`} aria-label={`选择并播放句子 ${sentence.sequence}`} aria-pressed={checkpoint.sentenceId === sentence.id} disabled={!controller} onClick={() => { update({ sentenceId: sentence.id }); controller?.load(sentence.id); void controller?.play(); }}>
     <span className="sentence-index" aria-hidden="true">{String(sentence.sequence).padStart(2, '0')}</span><span><small>{sentence.speaker} · {String(sentence.sequence).padStart(3, '0')}</small><span className="sentence-text" lang={blind ? undefined : 'en'}>{blind ? `句子 ${sentence.sequence} · 原文已隐藏` : sentence.text}</span>{!blind && checkpoint.showTranslation && <span className="translation">{sentence.translation}</span>}</span>
   </button></li>)}</ol>;
 }
@@ -45,6 +48,12 @@ function WorkspaceContent() {
   const { captureBusy } = useMedia();
   const [drawer, setDrawer] = useState(false);
   const [notice, setNotice] = useState(false);
+  const [versions, setVersions] = useState<LessonVersion[]>([]), [versionError, setVersionError] = useState('');
+  const [versionRetry, setVersionRetry] = useState(0);
+  useEffect(() => { let active = true;
+    getLessonVersions(lesson.id).then(value => { if (active) { setVersions(value.versions); setVersionError(''); } }).catch(e => { if (active) setVersionError(e.message); });
+    return () => { active = false; };
+  }, [lesson.id, versionRetry]);
   const blind = isBlind(checkpoint);
   const showTranslationControl = !blind && ['text', 'vocabulary'].includes(checkpoint.tab);
   const showBlindControl = ['text', 'speaking'].includes(checkpoint.tab);
@@ -55,21 +64,25 @@ function WorkspaceContent() {
     const exposed = checkpoint.tab === 'text' ? lesson.sentences : lesson.sentences.filter(s => s.id === checkpoint.sentenceId);
     Promise.all(exposed.map(s => write('exposure', s.id, true))).catch(() => setExposureError(true));
   }, [blind, checkpoint.tab, checkpoint.sentenceId, lesson]);
-  return <div className="lesson-workspace"><header className="lesson-header"><p className="eyebrow">ORIGINAL DEMONSTRATION · DEMO 01</p><h1>{lesson.title}</h1><div className="section-heading"><p className="muted">原创体验课 · {lesson.sentences.length} 句 · {lesson.versionId.endsWith('-v2') ? '英式 Edge 配音 v2' : '原型配音 v1'} · 日常交流 / 礼貌请求</p><Button onClick={() => setNotice(true)}>内容来源</Button></div></header>
+  return <div className="lesson-workspace"><header className="lesson-header"><p className="eyebrow">LOCAL COURSE · {lesson.id}</p><h1>{lesson.title}</h1><div className="section-heading"><p className="muted">{lesson.bookId ? '册内课程' : '独立原创课'} · {lesson.sentences.length} 句 · {lesson.versionId}</p><Button onClick={() => setNotice(true)}>内容来源</Button></div></header>
     <LessonTabs />{preferences?.showHints && <p className="muted">键盘提示：空格 播放/暂停 · J/K 前后句 · R 单句循环。输入框内不触发。{!preferences.shortcutEnabled && '（快捷键已关闭）'}</p>}<div className="workspace-grid"><Card className="lesson-card"><div role="tabpanel" id="lesson-panel" aria-labelledby={`tab-${checkpoint.tab}`}>
       <div className="section-heading"><div><h2>{tabs.find(t => t[0] === checkpoint.tab)?.[1]}{checkpoint.tab === 'text' ? ' · 完整对话' : ''}</h2><p className="muted">{checkpoint.tab === 'text' ? '点击句子即可选中、播放原句并查看讲解。' : checkpoint.tab === 'vocabulary' ? '点词卡定位原句；提交阅读答案后查看证据与反馈。' : checkpoint.tab === 'speaking' ? '先听本句示范，再录制、回放并人工自评。' : checkpoint.tab === 'writing' ? '保留草稿，保存独立版本，再比较和修改。' : '选择目标句，保留逐句草稿；浏览与播放不计练习完成。'}</p></div>{(showTranslationControl || showBlindControl) && <div className="toolbar" aria-label="内容显示设置">{showTranslationControl && <Button aria-pressed={!checkpoint.showTranslation} onClick={() => update({ showTranslation: !checkpoint.showTranslation })}>{checkpoint.showTranslation ? '隐藏译文' : '显示译文'}</Button>}{showBlindControl && <Button aria-pressed={!checkpoint.showEnglish} onClick={() => update({ showEnglish: !checkpoint.showEnglish })}>{checkpoint.showEnglish ? '盲听模式' : '显示英文'}</Button>}</div>}</div>
       {checkpoint.tab === 'text' ? <SentenceList /> : <><div className="sentence-picker" aria-label="选择句子">{lesson.sentences.map(s => <Button key={s.id} disabled={captureBusy} aria-label={`选择句子 ${s.sequence}`} aria-pressed={checkpoint.sentenceId === s.id} onClick={() => update({ sentenceId: s.id })}>{String(s.sequence).padStart(2, '0')}</Button>)}</div>
       {checkpoint.tab === 'vocabulary' && <VocabularyPanel key={lesson.versionId} />}
-      {checkpoint.tab === 'dictation' && <DictationEditor key={lesson.versionId} exposureUncertain={exposureError} />}
-      {checkpoint.tab === 'writing' && <WritingEditor key={lesson.versionId} />}
+      {checkpoint.tab === 'dictation' && (lesson.availableTasks && !lesson.availableTasks.includes('dictation') ? <Message>本版本暂无听写练习，不生成完成记录。</Message> : <DictationEditor key={lesson.versionId} exposureUncertain={exposureError} />)}
+      {checkpoint.tab === 'writing' && (lesson.hasWritingTask === false ? <Message>本版本暂无写作任务，不生成完成记录。</Message> : <WritingEditor key={lesson.versionId} />)}
       {checkpoint.tab === 'speaking' && <RecorderPanel key={key} />}
-      {checkpoint.tab === 'quiz' && <QuizPanel key={lesson.versionId} />}</>}
+      {checkpoint.tab === 'quiz' && (lesson.availableTasks && !lesson.availableTasks.includes('quiz_choice') ? <Message>本版本暂无课时测验，不生成完成记录。</Message> : <QuizPanel key={lesson.versionId} />)}</>}
     </div></Card><aside className="surface tutor-desktop" aria-label="句子助教"><TutorPanel /></aside></div>
     <div className={`sync-status ${syncError ? 'error' : ''}`} role="status">{sync}{syncError && <Button onClick={() => window.location.reload()}>重新载入同步</Button>}</div>
     <Button className="tutor-toggle" onClick={() => setDrawer(true)}>打开句子助教</Button>
     <fieldset className="player-capture-guard" disabled={captureBusy} inert={captureBusy}><PlayerBar /></fieldset>
     {drawer && <Modal drawer title="句子助教" onClose={() => setDrawer(false)}><TutorPanel /></Modal>}
-    {notice && <Modal title="原创 Demo · 内容来源" onClose={() => setNotice(false)} actions={<Button variant="primary" data-modal-initial-focus onClick={() => setNotice(false)}>知道了</Button>}><p>文本与讲解来自冻结的原创 Demo 01 版本包。{lesson.audioLabel ?? '原型配音的生成工具和音色尚未查明。'} 合成语音及素材正式发布授权仍待审核。</p><p>当前范围为本地功能测试，尚不具备正式发布条件。</p><p>当前版本：{lesson.versionId}。新版本不会覆盖旧版草稿和练习。</p><p><Link className="button" href={lessonVersionHref(checkpoint, 'demo-01-v2')} onClick={() => setNotice(false)}>英式 Edge 配音 v2</Link> <Link className="button" href={lessonVersionHref(checkpoint, 'demo-01-v1')} onClick={() => setNotice(false)}>原型配音 v1</Link></p></Modal>}
+    {notice && <Modal title="课程内容与版本来源" onClose={() => setNotice(false)} actions={<Button variant="primary" data-modal-initial-focus onClick={() => setNotice(false)}>知道了</Button>}><p>{lesson.explanationLabel ?? '本地预置讲解'}。{lesson.audioLabel ?? '音频来源见本版本来源记录。'}</p><p>当前版本：{lesson.versionId}。来源授权状态不代表教学效果验收。新版本不会覆盖旧版草稿和练习。</p>
+      {lesson.licenses?.map((license, i) => <p key={i}>{license.sourceRef} · {license.reviewStatus}</p>)}
+      {versionError ? <Message error>{versionError}<Button onClick={() => setVersionRetry(n => n + 1)}>重新读取版本</Button></Message> : !versions.length ? <Message>正在读取可访问版本…</Message> : <><p>切换版本保留历史学习记录；通用课程将回到目标版本首句。</p><p>{versions.map(v => <Link className="button" key={v.versionId} href={lessonVersionHref(checkpoint, v.versionId)} onClick={() => setNotice(false)}>版本 {v.number}{v.isCurrent ? ' · 当前' : ' · 历史'}</Link>)}</p></>}
+    </Modal>}
+
     {exposureError && <Message error>答案暴露状态无法保存。请检查浏览器存储；当前不保证独立听写统计。</Message>}
   </div>;
 }
