@@ -48,3 +48,23 @@ backup*.sql
 *.keystore
 # Edge TTS v2 audio remains local pending service/output rights review.
 /content/demo-01/v2/audio/*.mp3
+
+# Phase 10 raw operational evidence stays local; publish source helpers and reviewed summaries only.
+/docs/handoff/evidence/phase10b1/**
+!/docs/handoff/evidence/phase10b1/*.py
+!/docs/handoff/evidence/phase10b1/*.java
+!/docs/handoff/evidence/phase10b1/README.md
+!/docs/handoff/evidence/phase10b1/candidate/
+/docs/handoff/evidence/phase10b1/candidate/*
+!/docs/handoff/evidence/phase10b1/candidate/*.sql
+!/docs/handoff/evidence/phase10b1/candidate/README.md
+/docs/handoff/evidence/phase10b2/**
+!/docs/handoff/evidence/phase10b2/*.py
+!/docs/handoff/evidence/phase10b2/README.md
+!/docs/handoff/evidence/phase10b2/INDEPENDENT_10B1_REVIEW.md
+!/docs/handoff/evidence/phase10b2/INDEPENDENT_10B1_SIGNOFF.json
+/docs/handoff/evidence/personal-migration-20261027/**
+!/docs/handoff/evidence/personal-migration-20261027/*.py
+!/docs/handoff/evidence/personal-migration-20261027/*.java
+/docs/handoff/evidence/*review-*.receipt.json
+/docs/handoff/evidence/phase10b2-deployment/**
