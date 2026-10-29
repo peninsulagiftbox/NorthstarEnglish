@@ -81,3 +81,6 @@ backup*.sql
 /docs/handoff/evidence/phase10b3-deployment/**
 /docs/handoff/evidence/ui-catalog-20261028/**
 /docs/handoff/evidence/ui-learning-path-20261028/**
+
+# Catalog dialog raw UI evidence remains local.
+/docs/handoff/evidence/ui-catalog-dialog-20261029/**

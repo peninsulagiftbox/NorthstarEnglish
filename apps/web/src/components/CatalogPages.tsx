@@ -5,7 +5,7 @@ import { getBookLessons, getCatalog, getLesson, getResume } from '@/lib/api/cata
 import type { Book, Catalog, LessonPage, Resume } from '@/lib/api/catalog';
 import { lessonHref } from '@/lib/state/context';
 import { LearningReport } from './LearningReport';
-import { Button, Card, EmptyState, Message } from '@/components/ui/Primitives';
+import { Button, Card, EmptyState, Message, Modal } from '@/components/ui/Primitives';
 
 function BookCourses({ book }: { book: Book }) {
   const [open, setOpen] = useState(false), [data, setData] = useState<LessonPage | null>(null);
@@ -16,15 +16,26 @@ function BookCourses({ book }: { book: Book }) {
     catch (e) { setError(e instanceof Error ? e.message : '课程列表读取失败。'); }
     finally { setBusy(false); }
   }
-  return <Card className="book-card"><span className={`book-cover book-${book.sequence}`}>N<span>BOOK {String(book.sequence).padStart(2, '0')}</span></span><div className="book-details"><p className="eyebrow">BOOK {String(book.sequence).padStart(2, '0')}</p><h2>{book.title}</h2><p className="muted">{book.declaredLessonCount} 课 · 目录元信息</p><div className="book-availability"><span className="book-status">{book.availableLessonCount > 0 ? '课程内容见下方列表' : '仅目录 · 暂不可学习'}</span><p className="muted">实际 {book.actualLessonCount} 课 · 可学习 {book.availableLessonCount} 课</p></div><Button aria-expanded={open} onClick={() => { setOpen(!open); if (!open && !data && !busy) void load(); }}>{open ? '收起课程列表' : '查看实际课程'}</Button>
-    {open && <div aria-label={`${book.title}实际课程`}>
+  return <><Card className="book-card">
+    <span className={`book-cover book-${book.sequence}`} aria-hidden="true">N<span>BOOK {String(book.sequence).padStart(2, '0')}</span></span>
+    <div className="book-details">
+      <p className="eyebrow">BOOK {String(book.sequence).padStart(2, '0')}</p><h2>{book.title}</h2>
+      <p className="muted">{book.declaredLessonCount} 课 · 目录元信息</p>
+      <div className="book-availability"><span className="book-status">{book.availableLessonCount > 0 ? '已有可学习内容' : '仅目录 · 暂不可学习'}</span><p className="muted">实际 {book.actualLessonCount} 课 · 可学习 {book.availableLessonCount} 课</p></div>
+      <Button aria-haspopup="dialog" onClick={() => { setOpen(true); if (!data && !busy) void load(); }}>查看实际课程 <span aria-hidden="true">↗</span></Button>
+    </div>
+  </Card>
+  {open && <Modal title={`${book.title} · 实际课程`} onClose={() => setOpen(false)} actions={<Button onClick={() => setOpen(false)}>返回目录</Button>}>
+    <div className="book-course-summary"><span className="eyebrow">BOOK {String(book.sequence).padStart(2, '0')}</span><p className="muted">已导入 {book.actualLessonCount} 课 · 可学习 {book.availableLessonCount} 课</p></div>
+    <div className="book-course-results" aria-busy={busy}>
       {busy && <Message>正在读取课程…</Message>}
       {error && <Message error>{error}<Button disabled={busy} onClick={() => void load(data?.nextCursor ?? undefined)}>重新读取</Button></Message>}
-      {data && !data.items.length && <EmptyState title="本册尚无已导入课程"><p>当前只有目录元信息，未提供教材正文或录音。</p></EmptyState>}
-      {!!data?.items.length && <ul>{data.items.map(item => <li key={item.id}>{item.readable && item.versionId ? <Link href={`/lesson/${encodeURIComponent(item.id)}?version=${encodeURIComponent(item.versionId)}`}>{item.displayNumber ?? (item.sequence ? `第 ${item.sequence} 课` : '课次未设置')} · {item.title}</Link> : <span>{item.displayNumber ?? '课次未设置'} · 尚不可学习（{item.availability}）</span>}</li>)}</ul>}
+      {!busy && !error && data && !data.items.length && <EmptyState title="本册尚无已导入课程"><p>当前只有目录元信息，未提供教材正文或录音。</p><p>返回目录后，可浏览独立原创课程。</p></EmptyState>}
+      {!!data?.items.length && <ul className="book-course-list">{data.items.map(item => <li key={item.id}>{item.readable && item.versionId ? <Link href={`/lesson/${encodeURIComponent(item.id)}?version=${encodeURIComponent(item.versionId)}`}><span className="book-course-number">{item.displayNumber ?? (item.sequence ? `第 ${item.sequence} 课` : '课次未设置')}</span><span className="book-course-title">{item.title}</span><span className="book-course-action">浏览 →</span></Link> : <div><span className="book-course-number">{item.displayNumber ?? (item.sequence ? `第 ${item.sequence} 课` : '课次未设置')}</span><span className="book-course-title">{item.title}</span><span className="muted">尚不可学习（{item.availability}）</span></div>}</li>)}</ul>}
       {data?.nextCursor && !error && <Button disabled={busy} onClick={() => void load(data.nextCursor!)}>加载更多课程</Button>}
-    </div>}
-  </div></Card>;
+    </div>
+  </Modal>}
+  </>;
 }
 
 export function CatalogPage({ dashboard = false }: { dashboard?: boolean }) {

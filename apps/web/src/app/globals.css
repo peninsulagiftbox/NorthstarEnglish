@@ -114,6 +114,20 @@ small { font-size:12px; }
 .book-cover span { font-size:10px; letter-spacing:2px; }
 .book-2 { background:#315b89; } .book-3 { background:#895635; } .book-4 { background:#685182; }
 .book-card h2 { font-size:18px; }
+.book-details h2 { overflow-wrap:anywhere; }
+.book-course-summary { border-bottom:1px solid var(--line); padding-bottom:16px; margin-bottom:16px; }
+.book-course-summary p { margin:4px 0 0; font-size:12px; }
+.book-course-results .empty-state { padding:28px 8px; }
+.book-course-results .empty-state h2 { font-size:17px; }
+.book-course-results .empty-state p { margin:8px 0 0; font-size:13px; }
+.book-course-list { list-style:none; padding:0; margin:0 0 16px; }
+.book-course-list li + li { border-top:1px solid var(--line); }
+.book-course-list li > a,.book-course-list li > div { display:flex; align-items:baseline; flex-wrap:wrap; gap:6px 12px; padding:16px 8px; border-radius:8px; }
+.book-course-list li > a:hover { background:#f0faf6; }
+.book-course-number { color:var(--muted); font-size:12px; }
+.book-course-title { flex:1 1 180px; min-width:0; font-weight:600; overflow-wrap:anywhere; }
+.book-course-action { color:var(--accent); font-size:12px; }
+
 .boundary { border-top:1px solid var(--line); padding-top:18px; margin:20px 0 0; color:var(--muted); font-size:12px; }
 .message { padding:14px 0; margin:0; color:var(--muted); }
 .error { color:var(--error); }
