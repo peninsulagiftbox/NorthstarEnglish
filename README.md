@@ -143,7 +143,7 @@ sh scripts/dev-up.sh
 
 ## 开发与验证
 
-Phase 10B-3 的稳定身份、版本映射与显式发布实现及隔离验收见 [阶段报告](docs/progress/PHASE_10B_3.md)。新增迁移仅应用隔离目标，**个人库仍需另行批准升级；不要在个人配置下启动包含这些 pending 迁移的新 JAR**。独立发布服务不执行 DDL；普通 Spring 启动仍沿用原 Flyway 机制。已有个人学习记录不迁移到新版，历史 Demo 保留本地测试入口及 `legacy_unassessed` 边界。
+Phase 10B-3 的稳定身份、版本映射与显式发布实现及隔离验收见 [阶段报告](docs/progress/PHASE_10B_3.md)。2026-10-29 经用户审核授权，本机个人库已由009.05升级009.15并完成本地前后端部署，见[部署报告](docs/progress/PHASE_10B_3_DEPLOYMENT.md)。其他实例仍须独立核对身份、新鲜备份及同候选隔离恢复，不能直接复用本机迁移授权。独立发布服务不执行DDL；普通Spring启动仍沿用Flyway机制。原学习记录不迁移到新版，历史Demo保留本地测试入口及 `legacy_unassessed` 边界。
 
 ### 修改后重建
 
