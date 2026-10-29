@@ -17,3 +17,10 @@ test('generic version links do not invent cross-version sentence identities', ()
   assert.equal(url.searchParams.get('version'), 'new-opaque');
   assert.equal(url.searchParams.get('sentence'), '');
 });
+
+test('rejects unknown lifecycle, source types and duplicate stable identities', () => {
+  assert.equal(validateLesson({ ...content, kind: 'original', publicationState: 'published', contentReadiness: 'basic_content' }, 'other').publicationState, 'published');
+  for (const extra of [{ publicationState: 'unknown' }, { contentReadiness: 'unknown' }, { kind: 'unknown' }]) assert.throws(() => validateLesson({ ...content, ...extra }, 'other'));
+  assert.throws(() => validateLesson({ ...content, sentences: [1, 2].map(n => ({ ...content.sentences[0], id: `physical-${n}`, identityId: 'same-stable' })) }, 'other'));
+  assert.throws(() => validateLesson({ ...content, sentences: [{ ...content.sentences[0], audio: { ...content.sentences[0].audio, sourceKind: 'unknown' } }] }, 'other'));
+});

@@ -117,13 +117,17 @@ class MultiCourseIntegrationTest {
             String version=id+"-v"+v;
             var payload=json.createObjectNode().put("id",id).put("versionId",version).put("title",id.equals("fixture-a")?"Original Test A":"Original Test B").put("version",v).put("explanationLabel","本地预置测试讲解").put("audioLabel","原创合成测试音 · 非朗读/非发音示范");payload.putArray("exercises");
             String hash=ContentPackage.sha256(payload.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
-            admin.update("INSERT INTO lesson_version(id,lesson_id,version_no,license_id,content_sha256,manifest_sha256,payload_json) VALUES (?,?,?,?,?,?,?)",version,id,v,id+"-license",hash,hash,payload.toString());
-            for(int n=1;n<=paragraphs;n++)admin.update("INSERT INTO paragraph(id,version_id,stable_key,sequence_no) VALUES (?,?,?,?)",version+"-p"+n,version,"paragraph-"+n,n);
+            admin.update("INSERT INTO lesson_version(id,lesson_id,version_no,license_id,content_sha256,manifest_sha256,payload_json,publication_state,release_ready) VALUES (?,?,?,?,?,?,?,'published',TRUE)",version,id,v,id+"-license",hash,hash,payload.toString());
+            for(int n=1;n<=paragraphs;n++) {
+                String identity=java.util.UUID.randomUUID().toString();admin.update("INSERT INTO paragraph_identity(id,lesson_id,registry_key) VALUES (?,?,?)",identity,id,identity);
+                admin.update("INSERT INTO paragraph(id,version_id,stable_key,sequence_no,lesson_id,identity_id) VALUES (?,?,?,?,?,?)",version+"-p"+n,version,"paragraph-"+n,n,id,identity);
+            }
             for(int n=1;n<=count;n++) {
+                String identity=java.util.UUID.randomUUID().toString();admin.update("INSERT INTO sentence_identity(id,lesson_id,registry_key) VALUES (?,?,?)",identity,id,identity);
                 String asset=version+"-a"+n,key=id+"/version-"+v+"/sounds/utterance-"+n+".mp3";
                 Path target=Path.of(System.getenv("NORTHSTAR_CONTENT_ROOT")).resolve(key);Files.createDirectories(target.getParent());Files.write(target,audio);
                 admin.update("INSERT INTO audio_asset(id,lesson_version_id,license_id,source_kind,storage_key,mime_type,byte_size,duration_ms,sha256,status) VALUES (?,?,?,'original_tts',?,'audio/mpeg',?,2000,?,'ready')",asset,version,id+"-license",key,audio.length,ContentPackage.sha256(audio));
-                admin.update("INSERT INTO sentence(id,lesson_id,lesson_version_id,stable_key,sequence_no,speaker,text,translation,explanation,focus,audio_asset_id,start_ms,end_ms,paragraph_id) VALUES (?,?,?,?,?,'Tester',?,'原创测试句','本地预置讲解','test',?,0,2000,?)",version+"-s"+n,id,version,"line-"+n,n,"I place test card "+n+" beside the window in version "+v+".",asset,version+"-p"+((n-1)/(count/paragraphs)+1));
+                admin.update("INSERT INTO sentence(id,lesson_id,lesson_version_id,stable_key,sequence_no,speaker,text,translation,explanation,focus,audio_asset_id,start_ms,end_ms,paragraph_id,identity_id) VALUES (?,?,?,?,?,'Tester',?,'原创测试句','本地预置讲解','test',?,0,2000,?,?)",version+"-s"+n,id,version,"line-"+n,n,"I place test card "+n+" beside the window in version "+v+".",asset,version+"-p"+((n-1)/(count/paragraphs)+1),identity);
             }
         }
         admin.update("UPDATE lesson SET current_version_id=? WHERE id=?",id+"-v2",id);

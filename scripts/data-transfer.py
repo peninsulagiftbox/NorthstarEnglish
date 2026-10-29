@@ -26,7 +26,7 @@ def load_snapshot(path):
     if digest(envelope['payloadJson'].encode()) != envelope['sha256']:
         raise ValueError('校验和不匹配')
     payload = json.loads(envelope['payloadJson'])
-    if payload['project'] != local.IDENTITY or payload['owner'] != 'local' or payload['schemaVersion'] not in {'008', '009.04', '009.05'}:
+    if payload['project'] != local.IDENTITY or payload['owner'] != 'local' or payload['schemaVersion'] not in {'008', '009.04', '009.05', '009.14', '009.15'}:
         raise ValueError('版本或归属不匹配')
     return envelope, payload
 
@@ -50,7 +50,10 @@ def main():
     parser.add_argument('--confirm-new-isolated', action='store_true')
     parser.add_argument('--separate-mysql', action='store_true', help='restore only: verified dedicated recovery MySQL instance')
     parser.add_argument('--phase09r', action='store_true', help='use ONLY identity-checked Phase09-R source and restore containers')
+    parser.add_argument('--phase10b3', action='store_true', help='use ONLY the UUID-checked Phase10B3 isolated test source; never the personal container')
     args = parser.parse_args()
+    if args.phase10b3 and (args.phase09r or args.separate_mysql):
+        raise ValueError('Phase10B3隔离模式不能和其他目标模式组合')
     if args.action == 'backup' and args.separate_mysql:
         raise ValueError('--separate-mysql 仅用于恢复目标，不更改备份来源')
     url = urllib.parse.urlparse(args.api)
@@ -58,7 +61,17 @@ def main():
         raise ValueError('仅支持本地回环 API')
     env = local.environment()
     source_container = 'northstar-english-mysql-01'
-    if args.phase09r:
+    if args.phase10b3:
+        import phase10b3_isolated as isolated
+        campaign = isolated.campaign()
+        role = (isolated.r.STATE / 'ACTIVE_TEST_ROLE').read_text().strip()
+        state = campaign.verify(role)
+        env = isolated.env(campaign, role, 'northstar_phase01_test')
+        if args.api != 'http://127.0.0.1:' + env['API_PORT'] or not args.recording_root.resolve().is_relative_to(campaign.PRIVATE / role / 'recordings'):
+            raise ValueError('Phase10B3 API和媒体目录必须属于已核验的隔离目标')
+        campaign.sql(role, 'SELECT project_key FROM project_identity', readonly=True)
+        source_container = state['containerId']
+    elif args.phase09r:
         import phase09r
         env = phase09r.verify('source')
         if args.api != env['NORTHSTAR_BASE_URL'].replace(':'+env['WEB_PORT'], ':'+env['API_PORT']):
@@ -112,7 +125,7 @@ def main():
         print('PASS: JSON + 媒体清单 + 可用录音已校验；不含浏览器未同步缓冲。目录：' + str(args.path))
         return
     envelope, payload = load_snapshot(args.path)
-    destination = 'northstar-english-mysql-01'
+    destination = source_container if args.phase10b3 else 'northstar-english-mysql-01'
     if args.phase09r:
         phase09r.verify('restore')
         destination = phase09r.CONTAINERS['restore']
@@ -180,6 +193,8 @@ def main():
         data = payload['tables'][table]
         if not re.fullmatch(r'[a-z_]+', table) or not all(re.fullmatch(r'[a-z][a-z0-9_]*', c) for c in data['columns']):
             raise ValueError('无效表结构')
+        generated = {'target_uniqueness_key'} if table == 'version_sentence_map' else set()
+        restored_columns = [c for c in data['columns'] if c not in generated]
         rows = data['rows']
         if table == 'writing_revision':
             rows = sorted(rows, key=lambda r: (r[data['columns'].index('task_id')], int(r[data['columns'].index('version_no')])))
@@ -189,7 +204,7 @@ def main():
                 index = data['columns'].index('current_version_id')
                 lesson_links.append((values[data['columns'].index('id')], values[index]))
                 values[index] = None
-            commands.append('INSERT INTO `' + table + '` (' + ','.join('`' + c + '`' for c in data['columns']) + ') VALUES (' + ','.join(literal(v) for v in values) + ');')
+            commands.append('INSERT INTO `' + table + '` (' + ','.join('`' + c + '`' for c in restored_columns) + ') VALUES (' + ','.join(literal(v) for c, v in zip(data['columns'], values) if c not in generated) + ');')
     for lesson, version in lesson_links:
         commands.append('UPDATE lesson SET current_version_id=' + literal(version) + ' WHERE id=' + literal(lesson) + ';')
     commands.append('COMMIT;')

@@ -31,6 +31,7 @@ public class StudyController {
     }
 
     @PutMapping("/api/v1/study/resume")
+    @org.springframework.transaction.annotation.Transactional
     public ResponseEntity<?> save(@Valid @RequestBody Checkpoint checkpoint,
             @RequestHeader(value = "If-Match", required = false) String match) {
         if (match == null) throw new Failure(HttpStatus.PRECONDITION_REQUIRED, "REVISION_REQUIRED", "保存浏览位置需要版本号。");
@@ -54,12 +55,14 @@ public class StudyController {
     }
 
     @PostMapping("/api/v1/study/sessions")
+    @org.springframework.transaction.annotation.Transactional
     public ResponseEntity<?> session(@Valid @RequestBody Checkpoint checkpoint,
             @RequestHeader(value = "If-Match", required = false) String match) {
         return save(checkpoint, match);
     }
 
     private void validate(Checkpoint value) {
+        local.northstar.catalog.VersionAccess.require(jdbc,value.lessonId,value.versionId);
         if (value.positionMs != null && (value.positionMs < 0 || value.positionMs > 600000)) throw new Failure(HttpStatus.BAD_REQUEST, "INVALID_POSITION", "播放位置超出范围。");
         if (value.playingSentenceId != null) {
             Integer valid = jdbc.queryForObject("SELECT COUNT(*) FROM sentence WHERE id=? AND lesson_id=? AND lesson_version_id=? AND end_ms>=?", Integer.class, value.playingSentenceId, value.lessonId, value.versionId, value.positionMs == null ? 0 : value.positionMs);

@@ -28,6 +28,7 @@ public class ExerciseController {
         this.jdbc=jdbc; this.tx=new TransactionTemplate(manager); this.content=content;
     }
     private void readingContext(String lesson,String version) {
+        local.northstar.catalog.VersionAccess.require(jdbc,lesson,version);
         if(jdbc.queryForObject("SELECT COUNT(*) FROM lesson_version v JOIN lesson l ON l.id=v.lesson_id WHERE v.id=? AND l.id=? AND l.availability='available'",Integer.class,version,lesson)!=1)
             throw failure(422,"CONTEXT_MISMATCH","课次与内容版本不匹配。");
     }
@@ -49,6 +50,7 @@ public class ExerciseController {
         return Map.of("vocabulary",words,"questions",questions);
     }
     @PutMapping("/api/v1/knowledge/{id}/favorite")
+    @org.springframework.transaction.annotation.Transactional
     public Object favorite(@PathVariable String id,@Valid @RequestBody Favorite value) {
         readingContext(value.lessonId,value.versionId);
         if(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_point WHERE id=? AND lesson_id=? AND version_id=?",Integer.class,id,value.lessonId,value.versionId)!=1) throw failure(422,"CONTEXT_MISMATCH","词条不属于当前课程版本。");
@@ -151,11 +153,11 @@ public class ExerciseController {
     }
     @GetMapping("/api/v1/drafts/{sentence}")
     public Object draft(@PathVariable String sentence,@RequestParam String lessonId,@RequestParam String versionId) {
-        target(lessonId,versionId,sentence);
         var rows=jdbc.queryForList("SELECT raw_text AS text,row_version AS rowVersion FROM exercise_draft WHERE sentence_id=? AND lesson_id=? AND version_id=?",sentence,lessonId,versionId);
         return rows.isEmpty()?Map.of("text","","rowVersion",0):rows.getFirst();
     }
     @PutMapping("/api/v1/drafts/{sentence}")
+    @org.springframework.transaction.annotation.Transactional
     public Object saveDraft(@PathVariable String sentence,@Valid @RequestBody Draft value,@RequestHeader(value="If-Match",required=false) String match) {
         target(value.lessonId,value.versionId,sentence);
         if(match==null) throw failure(428,"REVISION_REQUIRED","保存草稿需要版本号。");
@@ -169,6 +171,7 @@ public class ExerciseController {
         return Map.of("rowVersion",revision+1);
     }
     private Map<String,Object> target(String lesson,String version,String sentence) {
+        local.northstar.catalog.VersionAccess.require(jdbc,lesson,version);
         var rows=jdbc.queryForList("SELECT s.text,a.storage_key,a.byte_size,a.sha256,a.status FROM sentence s JOIN lesson l ON l.id=s.lesson_id JOIN audio_asset a ON a.id=s.audio_asset_id WHERE s.id=? AND s.lesson_id=? AND s.lesson_version_id=? AND l.availability='available'",sentence,lesson,version);
         if(rows.isEmpty()) throw failure(422,"CONTEXT_MISMATCH","课次、内容版本或句子不匹配。");
         return rows.getFirst();

@@ -71,3 +71,13 @@ backup*.sql
 
 # Raw regression evidence remains local; publish reviewed progress summaries.
 /docs/handoff/evidence/phase10b-retest-20261028/**
+
+# Phase10B3 raw commands and private-data pointers stay local.
+/docs/handoff/evidence/phase10b3/**
+!/docs/handoff/evidence/phase10b3/README.md
+!/docs/handoff/evidence/phase10b3/demo-identity-registry.json
+
+# Private maintenance backups and deployment logs.
+/docs/handoff/evidence/phase10b3-deployment/**
+/docs/handoff/evidence/ui-catalog-20261028/**
+/docs/handoff/evidence/ui-learning-path-20261028/**

@@ -212,9 +212,11 @@ paths:
   /lessons/{id}/versions:
     get:
       operationId: listLessonVersions
-      description: Readable versions ordered by number and ID. No inferred publication state. Old Demo retains its existing local-test exception; other pending-rights content is inaccessible.
+      description: Readable versions ordered by number and ID. Publication state and content readiness are independent. Withdrawn versions remain listed as unreadable; scores and drafts are never copied across versions. Old Demo retains its existing local-test exception; other pending-rights content is inaccessible.
       parameters:
         - {name: id, in: path, required: true, schema: {type: string}}
+        - {name: fromVersion, in: query, required: false, schema: {type: string}}
+        - {name: fromSentence, in: query, required: false, schema: {type: string}}
       responses:
         '200':
           description: Version list, current indicator does not change historical learning associations
@@ -234,6 +236,12 @@ paths:
                         number: {type: integer, minimum: 1}
                         isCurrent: {type: boolean}
                         readable: {type: boolean}
+                        publicationState: {$ref: '#/components/schemas/PublicationState'}
+                        contentReadiness: {$ref: '#/components/schemas/ContentReadiness'}
+                        targetSentenceId: {type: string, description: Navigation target from a confirmed one-to-one mapping only}
+                        mappingStatus: {type: string, enum: [unmapped, confirmed, no_target, ambiguous]}
+                        relation: {type: string, enum: [equivalent, edited]}
+        '422': {description: VERSION_LESSON_MISMATCH for a foreign source sentence}
         '404': {description: LESSON_NOT_FOUND for unknown or inaccessible lessons}
   /lessons/{id}:
     get:
@@ -244,7 +252,7 @@ paths:
       description: Current or explicitly selected readable version. Ordered relational paragraphs and sentences may have different counts per version. Frozen Demo remains unchanged. Answer keys stay server-side; corrupt or missing audio retains the existing whole-lesson 503 contract. Historical learning records stay bound to their version.
       responses:
         '200':
-          description: Frozen versioned local-test content; releaseReady=false
+          description: Immutable version projection; legacy Demo keeps releaseReady=false and local_test_only
           content:
             application/json:
               schema:
@@ -256,9 +264,12 @@ paths:
                   version: {type: integer, minimum: 1}
                   title: {type: string}
                   bookId: {type: ['string', 'null']}
-                  kind: {type: string, enum: [original_demo, licensed]}
+                  kind: {type: string, enum: [original_demo, original, licensed]}
                   availability: {type: string, const: available}
                   usageScope: {type: string, const: local_test_only}
+                  publicationState: {$ref: '#/components/schemas/PublicationState'}
+                  contentReadiness: {$ref: '#/components/schemas/ContentReadiness'}
+                  hasHistoricalEvidence: {type: boolean, description: Reference only for reviewed equivalent mappings; never mastery evidence}
                   releaseReady: {type: boolean}
                   explanationLabel: {type: string}
                   projectionVersion: {type: string, const: relational-v1}
@@ -270,6 +281,7 @@ paths:
                       properties:
                         id: {type: string}
                         stableKey: {type: string}
+                        identityId: {type: string}
                         sequence: {type: integer, minimum: 1}
                   availableTasks: {type: array, items: {type: string}}
                   hasWritingTask: {type: boolean}
@@ -310,6 +322,7 @@ paths:
                   licenses:
                     type: array
                     items: {$ref: '#/components/schemas/ContentLicense'}
+        '410': {description: VERSION_WITHDRAWN; historical evidence and local buffers are retained}
         '404': {$ref: '#/components/responses/ContentNotFound'}
         '422': {description: VERSION_LESSON_MISMATCH for a known version belonging to another lesson}
         '503': {$ref: '#/components/responses/Unavailable'}
@@ -344,6 +357,7 @@ paths:
           content:
             audio/mpeg:
               schema: {type: string, format: binary}
+        '410': {description: VERSION_WITHDRAWN; course media is no longer distributed}
         '404': {$ref: '#/components/responses/ContentNotFound'}
         '416':
           description: Malformed or unsatisfiable byte range; Content-Range bytes */size. Spring Resource response may have an empty body.
@@ -988,18 +1002,27 @@ components:
         actualLessonCount: {type: integer, minimum: 0}
         availableLessonCount: {type: integer, minimum: 0}
         metadataSource: {type: string}
+    PublicationState:
+      type: string
+      enum: [draft, validated, published, withdrawn]
+    ContentReadiness:
+      type: string
+      enum: [legacy_unassessed, basic_content, teaching_complete]
+      description: teaching_complete is reserved; Phase10B3 does not grant it
     LessonSummary:
       type: object
       required: [id, slug, kind, availability, bookId, versionId, title, releaseReady, usageScope]
       properties:
         id: {type: string}
         slug: {type: string}
-        kind: {type: string, enum: [original_demo, licensed]}
+        kind: {type: string, enum: [original_demo, original, licensed]}
         availability: {type: string, const: available}
         bookId: {type: ['string', 'null']}
         versionId: {type: string}
         title: {type: string}
-        releaseReady: {type: boolean, const: false}
+        publicationState: {$ref: '#/components/schemas/PublicationState'}
+        contentReadiness: {$ref: '#/components/schemas/ContentReadiness'}
+        releaseReady: {type: boolean}
         usageScope: {type: string, const: local_test_only}
     ContentLicense:
       type: object
@@ -1023,6 +1046,7 @@ components:
       properties:
         id: {type: string}
         stableKey: {type: string}
+        identityId: {type: string}
         paragraphId: {type: string}
         sequence: {type: integer, minimum: 1}
         speaker: {type: string}
@@ -1039,7 +1063,7 @@ components:
           properties:
             id: {type: string}
             licenseId: {type: string}
-            sourceKind: {type: string, const: original_tts}
+            sourceKind: {type: string, enum: [original_tts, original_recording, licensed_audio]}
             mimeType: {type: string, const: audio/mpeg}
             byteSize: {type: integer, minimum: 1}
             durationMs: {type: integer, minimum: 1}

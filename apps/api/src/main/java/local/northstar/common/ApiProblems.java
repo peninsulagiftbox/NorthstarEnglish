@@ -24,6 +24,9 @@ public class ApiProblems {
 
     @ExceptionHandler(Exception.class)
     ProblemDetail unexpected(Exception exception, HttpServletRequest request) {
+        if (exception instanceof local.northstar.catalog.VersionAccess.Failure expected) {
+            return problem(HttpStatus.valueOf(expected.status), expected.code, expected.getMessage(), request.getRequestURI());
+        }
         if (exception instanceof org.springframework.web.server.ResponseStatusException expected) {
             return problem(HttpStatus.valueOf(expected.getStatusCode().value()), "PRACTICE_REQUEST", expected.getReason(), request.getRequestURI());
         }

@@ -1,0 +1,159 @@
+{
+  "policy": "Explicit per-physical-record legacy registration; no inferred equivalence or automatic history transfer",
+  "records": [
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v1-s01",
+      "versionId": "demo-01-v1",
+      "identityId": "5b1b6397-726b-4bce-a8ab-9ab4465ec6b0",
+      "registryKey": "b451d6b7-8ae3-4e85-bede-a46c85113861"
+    },
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v1-s02",
+      "versionId": "demo-01-v1",
+      "identityId": "5ee777cf-d4d0-4e77-aeb7-94433826e8c9",
+      "registryKey": "bc613d9c-bd14-419d-bd18-4b2d101153a2"
+    },
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v1-s03",
+      "versionId": "demo-01-v1",
+      "identityId": "7ba886cb-e049-414f-9380-1403ba89f1ab",
+      "registryKey": "a3f16402-7745-44d3-83e6-241b02387401"
+    },
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v1-s04",
+      "versionId": "demo-01-v1",
+      "identityId": "882fefd4-ae2f-43ee-b87c-1f6744b4fdeb",
+      "registryKey": "dff65790-b8c9-446e-87a7-9a9f8faa6b1b"
+    },
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v1-s05",
+      "versionId": "demo-01-v1",
+      "identityId": "657f1d3d-cca1-4951-bb2d-747c282a857b",
+      "registryKey": "33bd07e3-626a-47e8-babf-eae9d7a69ffc"
+    },
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v1-s06",
+      "versionId": "demo-01-v1",
+      "identityId": "084b1d14-a68e-4579-8762-8a330d1340df",
+      "registryKey": "23c47438-ae86-49ab-af77-8b848c5e128a"
+    },
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v1-s07",
+      "versionId": "demo-01-v1",
+      "identityId": "e219f1b2-8e66-4964-aeeb-665f7a097b30",
+      "registryKey": "bcdb9c40-ce7b-47cd-9c5a-23038d2a6442"
+    },
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v1-s08",
+      "versionId": "demo-01-v1",
+      "identityId": "ba159541-ebe3-4526-ba2a-d7c8d170663c",
+      "registryKey": "72abb3fb-5d10-405f-8ca6-32dc1d80a170"
+    },
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v1-s09",
+      "versionId": "demo-01-v1",
+      "identityId": "aaf1178f-1ffb-4e51-bd46-93a0e1782061",
+      "registryKey": "58894176-f040-4a15-bdba-fc6bcd31ed0f"
+    },
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v1-s10",
+      "versionId": "demo-01-v1",
+      "identityId": "bc547fd9-d32f-43e7-9604-e70c97806c78",
+      "registryKey": "cc5889b7-afe4-4470-8739-ff046a13d5d4"
+    },
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v2-s01",
+      "versionId": "demo-01-v2",
+      "identityId": "bef1dded-af7b-4fb0-8b99-d14d9a33fcbb",
+      "registryKey": "e849a0c4-ccb6-4fd6-ab95-b0e6d84576d4"
+    },
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v2-s02",
+      "versionId": "demo-01-v2",
+      "identityId": "f2f76109-4cce-461c-972d-e4965a54548c",
+      "registryKey": "9479c686-6ea4-4af9-9606-cdc8144b930a"
+    },
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v2-s03",
+      "versionId": "demo-01-v2",
+      "identityId": "f104cec5-ee29-4581-ac14-a9d723a74849",
+      "registryKey": "06f851b5-6805-47ff-9e84-d224e2953541"
+    },
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v2-s04",
+      "versionId": "demo-01-v2",
+      "identityId": "29ac5723-05b3-4a24-a551-aded752aa562",
+      "registryKey": "b4aab232-7970-4a5e-9a6e-bbab343e5983"
+    },
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v2-s05",
+      "versionId": "demo-01-v2",
+      "identityId": "1306f7ba-9871-45a8-bf98-9b7df0e2358a",
+      "registryKey": "bbc46d5c-be42-4776-8aae-3435c41ff309"
+    },
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v2-s06",
+      "versionId": "demo-01-v2",
+      "identityId": "87d0374a-0dad-4b42-8269-9bee475d862a",
+      "registryKey": "81304b23-0af1-48f4-b30d-e7b691e72ea4"
+    },
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v2-s07",
+      "versionId": "demo-01-v2",
+      "identityId": "aeed8176-76d6-43e5-bab1-b7dff3d28ebf",
+      "registryKey": "c72d5911-e197-4957-b2c8-a31b45a8ad68"
+    },
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v2-s08",
+      "versionId": "demo-01-v2",
+      "identityId": "a6e286ba-22cf-49de-8bad-955c1309fcff",
+      "registryKey": "1d71b234-60ee-4aea-abaf-47920fa544cd"
+    },
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v2-s09",
+      "versionId": "demo-01-v2",
+      "identityId": "a95858e7-7727-4c55-9bb4-5463f42e6cd1",
+      "registryKey": "d0da2a40-66b0-4513-862d-f0c5a396d7d6"
+    },
+    {
+      "type": "sentence",
+      "physicalId": "demo-01-v2-s10",
+      "versionId": "demo-01-v2",
+      "identityId": "0739b1e5-53ad-49c6-91ba-978c27204e20",
+      "registryKey": "1fb4539a-90e9-443b-8dcc-973303f7a936"
+    },
+    {
+      "type": "paragraph",
+      "physicalId": "af61b21b-371a-4550-85a2-8301db66a325",
+      "versionId": "demo-01-v1",
+      "identityId": "ff62f8dc-3ded-49ce-9777-9c28e3701181",
+      "registryKey": "64b9c18f-4fee-4b23-9296-e9c4b44cd8ab"
+    },
+    {
+      "type": "paragraph",
+      "physicalId": "a214bafb-e722-4f77-b5ed-62311f41b116",
+      "versionId": "demo-01-v2",
+      "identityId": "e9a29d88-3176-4fba-bc1a-be0335fe4642",
+      "registryKey": "e081ea58-dc2d-46a6-8c8b-326427c6dfef"
+    }
+  ]
+}

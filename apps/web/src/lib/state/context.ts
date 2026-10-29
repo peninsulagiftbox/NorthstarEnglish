@@ -15,10 +15,9 @@ export function lessonHref(context: Checkpoint) {
   const params = new URLSearchParams({ version: context.versionId, tab: context.tab, sentence: context.sentenceId, english: context.showEnglish ? '1' : '0', translation: context.showTranslation ? '1' : '0' });
   return `/lesson/${encodeURIComponent(context.lessonId)}?${params}`;
 }
-/** Only the frozen Demo has a reviewed suffix mapping. Other versions start at their own first sentence. */
-export function lessonVersionHref(context: Checkpoint, versionId: string) {
-  const prefix = `${context.versionId}-`;
-  const sentenceId = context.lessonId === 'demo-01' && /^demo-01-v[12]$/.test(context.versionId) && /^demo-01-v[12]$/.test(versionId) && context.sentenceId.startsWith(prefix) ? `${versionId}-${context.sentenceId.slice(prefix.length)}` : '';
+/** Only a reviewed server mapping can choose a sentence in a different version. */
+export function lessonVersionHref(context: Checkpoint, versionId: string, mappedSentenceId?: string) {
+  const sentenceId = versionId === context.versionId ? context.sentenceId : mappedSentenceId ?? '';
   return lessonHref({ ...context, versionId, sentenceId });
 }
 export function isBlind(context: Checkpoint) { return !context.showEnglish || context.tab === 'dictation'; }

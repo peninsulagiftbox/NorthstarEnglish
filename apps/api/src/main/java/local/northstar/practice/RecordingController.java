@@ -38,12 +38,12 @@ public class RecordingController {
     }
     @GetMapping("/api/v1/recordings")
     public Object list(@RequestParam String lessonId,@RequestParam String versionId,@RequestParam String sentenceId){
-        c.context(lessonId,versionId,sentenceId);
+        if(c.jdbc.queryForObject("SELECT COUNT(*) FROM sentence WHERE id=? AND lesson_id=? AND lesson_version_id=?",Integer.class,sentenceId,lessonId,versionId)!=1)throw fail(422,"录音历史上下文不匹配。");
         return Map.of("state",c.state(sentenceId,"speaking"),"recordings",c.jdbc.queryForList("SELECT r.id,r.mime_type AS mimeType,r.duration_ms AS durationMs,r.byte_size AS byteSize,r.status,r.client_created_at AS clientCreatedAt,r.created_at AS createdAt,(SELECT COUNT(*) FROM recording_observation o WHERE o.recording_id=r.id) AS playbackCount FROM personal_recording r WHERE r.lesson_id=? AND r.version_id=? AND r.sentence_id=? AND r.status<>'deleted' ORDER BY r.created_at DESC,r.id",lessonId,versionId,sentenceId));
     }
     @PostMapping("/api/v1/recordings")
     public JsonNode upload(@Valid @RequestBody Upload value) {
-        c.context(value.lessonId,value.versionId,value.sentenceId);PracticeCommands.timestamp(value.createdAt);
+        PracticeCommands.timestamp(value.createdAt);
         byte[] bytes;try{bytes=Base64.getDecoder().decode(value.audioBase64);}catch(Exception e){throw fail(422,"录音编码无效。");}
         if(bytes.length<32 || bytes.length>8388608)throw fail(413,"录音需为32字节至8MB。");
         boolean webm=value.mimeType.equals("audio/webm") || value.mimeType.equals("audio/webm;codecs=opus");
@@ -53,6 +53,7 @@ public class RecordingController {
         String hash=PracticeCommands.hash(bytes);
         // The file is durable before the DB commit; a crash can leave an orphan, never a false ready row.
         JsonNode receipt=c.command(value.eventId,"recording-upload",value,()->{
+            c.context(value.lessonId,value.versionId,value.sentenceId);
             if(!c.jdbc.queryForObject("SELECT recording_enabled FROM user_setting WHERE owner_key='local'",Boolean.class))throw fail(409,"录音功能已在设置中关闭；本机录音缓冲仍保留。");
             String id=UUID.randomUUID().toString();Path temp=null;
             try {

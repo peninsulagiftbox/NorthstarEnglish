@@ -23,7 +23,9 @@ public class WritingController {
         return Map.of("taskId",id,"prompt",task.get("prompt"),"sourceSentenceIds",c.jdbc.queryForList("SELECT sentence_id FROM writing_source WHERE task_id=? ORDER BY sentence_id",String.class,id),"draft",drafts.isEmpty()?Map.of("text","","rowVersion",0):drafts.getFirst(),"state",c.state(id,"writing"),"revisions",c.jdbc.queryForList("SELECT id,version_no AS versionNo,raw_text AS text,source_draft_version AS draftVersion,parent_revision_id AS parentRevisionId,created_at AS createdAt FROM writing_revision WHERE task_id=? ORDER BY version_no",id));
     }
     @PutMapping("/api/v1/writing/draft")
+    @org.springframework.transaction.annotation.Transactional
     public Object draft(@Valid @RequestBody Draft value) {
+        local.northstar.catalog.VersionAccess.require(c.jdbc,value.lessonId,value.versionId);
         String id=task(value.lessonId,value.versionId).get("id").toString();
         if(value.rowVersion==0) {
             try{c.jdbc.update("INSERT INTO writing_draft(task_id,raw_text) VALUES (?,?)",id,value.text);}catch(DuplicateKeyException e){throw fail(412,"另一页面已保存草稿；请比较本机与服务端文本。");}
@@ -33,6 +35,7 @@ public class WritingController {
     @PostMapping("/api/v1/writing/revisions")
     public JsonNode revision(@Valid @RequestBody Revision value) {
         return c.command(value.eventId,"writing-revision",value,()->{
+            local.northstar.catalog.VersionAccess.require(c.jdbc,value.lessonId,value.versionId);
             String task=task(value.lessonId,value.versionId).get("id").toString();
             var rows=c.jdbc.queryForList("SELECT raw_text,row_version,next_revision FROM writing_draft WHERE task_id=? FOR UPDATE",task);
             if(rows.isEmpty())throw fail(412,"请先同步草稿。");var draft=rows.getFirst();
@@ -48,6 +51,7 @@ public class WritingController {
     @PostMapping("/api/v1/practice/events")
     public JsonNode event(@Valid @RequestBody Event value) {
         return c.command(value.eventId,"practice-event",value,()->{
+            local.northstar.catalog.VersionAccess.require(c.jdbc,value.lessonId,value.versionId);
             String target;
             if(value.kind.equals("writing"))target=task(value.lessonId,value.versionId).get("id").toString();
             else if(value.kind.equals("speaking")){c.context(value.lessonId,value.versionId,value.sentenceId);target=value.sentenceId;}

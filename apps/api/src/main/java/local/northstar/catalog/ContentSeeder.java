@@ -76,7 +76,7 @@ public class ContentSeeder implements ApplicationRunner {
                         text(book,"availability"), book.path("declaredLessonCount").asInt(), text(book,"metadataSource"));
             }
             if (jdbc.queryForObject("SELECT COUNT(*) FROM lesson WHERE id=?", Integer.class, text(lesson,"id")) == 0) jdbc.update("INSERT INTO lesson (id,slug,kind,availability) VALUES (?,?,?,?)", text(lesson,"id"), text(lesson,"slug"), text(lesson,"kind"), text(lesson,"availability"));
-            jdbc.update("INSERT INTO lesson_version (id,lesson_id,version_no,license_id,content_sha256,manifest_sha256,payload_json,release_ready) VALUES (?,?,?,?,?,?,?,FALSE)",
+            jdbc.update("INSERT INTO lesson_version (id,lesson_id,version_no,license_id,content_sha256,manifest_sha256,payload_json,release_ready,publication_state,content_readiness,schema_version) VALUES (?,?,?,?,?,?,?,FALSE,'published','legacy_unassessed','northstar.legacy.demo.v1')",
                     text(lesson,"versionId"), text(lesson,"id"), lesson.path("version").asInt(), text(lesson,"licenseId"), bundle.lessonHash(), bundle.manifestHash(), lesson.toString());
             for (JsonNode audio : manifest.path("audioAssets")) {
                 jdbc.update("INSERT INTO audio_asset (id,lesson_version_id,license_id,source_kind,storage_key,mime_type,byte_size,duration_ms,sha256,status) VALUES (?,?,?,?,?,?,?,?,?,'ready')",
@@ -84,11 +84,12 @@ public class ContentSeeder implements ApplicationRunner {
                         text(audio,"mimeType"), audio.path("byteSize").asInt(), audio.path("durationMs").asInt(), text(audio,"sha256"));
             }
             String paragraphId = versionId.equals("demo-01-v1") ? "af61b21b-371a-4550-85a2-8301db66a325" : "a214bafb-e722-4f77-b5ed-62311f41b116";
-            jdbc.update("INSERT INTO paragraph(id,version_id,stable_key,sequence_no) VALUES (?,?,?,1)", paragraphId, versionId, "original-dialogue");
+            String paragraphIdentity=ContentIdentities.initializeDemo(jdbc,"paragraph",paragraphId);
+            jdbc.update("INSERT INTO paragraph(id,version_id,stable_key,sequence_no,lesson_id,identity_id) VALUES (?,?,?,1,'demo-01',?)", paragraphId, versionId, "original-dialogue",paragraphIdentity);
             for (JsonNode s : lesson.path("sentences")) {
-                jdbc.update("INSERT INTO sentence (id,lesson_id,lesson_version_id,stable_key,sequence_no,speaker,text,translation,explanation,focus,audio_asset_id,start_ms,end_ms,paragraph_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                jdbc.update("INSERT INTO sentence (id,lesson_id,lesson_version_id,stable_key,sequence_no,speaker,text,translation,explanation,focus,audio_asset_id,start_ms,end_ms,paragraph_id,identity_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         text(s,"id"), text(lesson,"id"), text(lesson,"versionId"), text(s,"stableKey"), s.path("sequence").asInt(), text(s,"speaker"),
-                        text(s,"text"), text(s,"translation"), text(s,"explanation"), text(s,"focus"), text(s,"audioAssetId"), 0, s.path("endMs").asInt(), paragraphId);
+                        text(s,"text"), text(s,"translation"), text(s,"explanation"), text(s,"focus"), text(s,"audioAssetId"), 0, s.path("endMs").asInt(), paragraphId,ContentIdentities.initializeDemo(jdbc,"sentence",text(s,"id")));
             }
             // Phase 04 dictation targets publish atomically with the immutable version.
             for (JsonNode sentence : lesson.path("sentences")) {

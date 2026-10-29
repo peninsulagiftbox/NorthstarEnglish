@@ -39,7 +39,7 @@ public class CatalogController {
             @RequestParam(defaultValue="20") int limit) { return reader.bookLessons(id, cursor, limit); }
 
     @GetMapping("/api/v1/lessons/{id}/versions")
-    public Map<String, Object> versions(@PathVariable String id) { return reader.versions(id); }
+    public Map<String, Object> versions(@PathVariable String id,@RequestParam(required=false) String fromVersion,@RequestParam(required=false) String fromSentence) { return reader.versions(id,fromVersion,fromSentence); }
 
     @GetMapping("/api/v1/lessons/{id}")
     public JsonNode lesson(@PathVariable String id, @RequestParam(required=false) String versionId) {
@@ -74,7 +74,9 @@ public class CatalogController {
 
     @GetMapping("/api/v1/audio/{id}")
     public ResponseEntity<FileSystemResource> audio(@PathVariable String id) {
-        var values = jdbc.queryForList("SELECT a.storage_key AS storageKey,a.byte_size AS byteSize,a.sha256,a.status FROM audio_asset a JOIN lesson_version v ON v.id=a.lesson_version_id JOIN lesson l ON l.id=v.lesson_id JOIN content_license c ON c.id=v.license_id JOIN content_license ac ON ac.id=a.license_id WHERE a.id=? AND l.availability='available' AND (l.id='demo-01' OR (c.review_status='confirmed' AND ac.review_status='confirmed'))", id);
+        var context=jdbc.queryForList("SELECT v.lesson_id,v.id,v.publication_state FROM audio_asset a JOIN lesson_version v ON v.id=a.lesson_version_id JOIN lesson l ON l.id=v.lesson_id JOIN content_license c ON c.id=v.license_id JOIN content_license ac ON ac.id=a.license_id WHERE a.id=? AND l.availability='available' AND (l.id='demo-01' OR (c.review_status='confirmed' AND ac.review_status='confirmed'))",id);
+        if(!context.isEmpty() && "withdrawn".equals(context.getFirst().get("publication_state")))VersionAccess.require(jdbc,context.getFirst().get("lesson_id").toString(),context.getFirst().get("id").toString());
+        var values = jdbc.queryForList("SELECT a.storage_key AS storageKey,a.byte_size AS byteSize,a.sha256,a.status FROM audio_asset a JOIN lesson_version v ON v.id=a.lesson_version_id JOIN lesson l ON l.id=v.lesson_id JOIN content_license c ON c.id=v.license_id JOIN content_license ac ON ac.id=a.license_id WHERE a.id=? AND v.publication_state='published' AND l.availability='available' AND (l.id='demo-01' OR (c.review_status='confirmed' AND ac.review_status='confirmed'))", id);
         if (values.isEmpty()) throw new CatalogFailure(HttpStatus.NOT_FOUND, "AUDIO_NOT_FOUND", "音频资源不存在。");
         var path = check(values.getFirst());
         // Spring MVC serves Resource byte ranges, including suffix ranges and 416.

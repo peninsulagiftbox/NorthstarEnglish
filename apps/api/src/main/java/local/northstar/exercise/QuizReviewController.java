@@ -24,6 +24,7 @@ public class QuizReviewController {
     public QuizReviewController(JdbcOperations jdbc,ExerciseController commands) {this.jdbc=jdbc;this.commands=commands;}
     private ResponseStatusException invalid(String text) {return new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,text);}
     private void context(String lesson,String version) {
+        local.northstar.catalog.VersionAccess.require(jdbc,lesson,version);
         if(jdbc.queryForObject("SELECT COUNT(*) FROM lesson_version v JOIN lesson l ON l.id=v.lesson_id WHERE v.id=? AND l.id=? AND l.availability='available'",Integer.class,version,lesson)!=1)throw invalid("课程与版本不匹配。");
     }
     private void time(String value) {try {Instant.parse(value);}catch(Exception error){throw invalid("客户端时间必须包含时区。");}}
@@ -104,7 +105,7 @@ public class QuizReviewController {
     @PostMapping("/api/v1/reviews/{id}/results")
     public JsonNode rate(@PathVariable String id,@Valid @RequestBody ReviewRating value) {
         return commands.command(value.eventId,"review-rating:"+id,value,()->{
-            time(value.clientOccurredAt);
+            context(value.lessonId,value.versionId);time(value.clientOccurredAt);
             var rows=jdbc.queryForList("SELECT * FROM review_item WHERE id=? AND owner_key='local' FOR UPDATE",id);
             if(rows.isEmpty())throw new ResponseStatusException(HttpStatus.NOT_FOUND,"复习卡不存在。");
             var row=rows.getFirst();

@@ -1,0 +1,2 @@
+ALTER TABLE sentence ADD COLUMN identity_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL;
+ALTER TABLE paragraph ADD COLUMN lesson_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL, ADD COLUMN identity_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL;

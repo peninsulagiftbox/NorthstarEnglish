@@ -23,6 +23,7 @@ public class PracticeCommands {
     public PracticeCommands(JdbcOperations jdbc,PlatformTransactionManager manager) {this.jdbc=jdbc;tx=new TransactionTemplate(manager);}
     public static ResponseStatusException fail(int code,String message) {return new ResponseStatusException(HttpStatus.valueOf(code),message);}
     public void context(String lesson,String version,String sentence) {
+        local.northstar.catalog.VersionAccess.require(jdbc,lesson,version);
         if(jdbc.queryForObject("SELECT COUNT(*) FROM sentence s JOIN lesson l ON l.id=s.lesson_id WHERE s.lesson_id=? AND s.lesson_version_id=? AND s.id=? AND l.availability='available'",Integer.class,lesson,version,sentence)!=1) throw fail(422,"课次、版本和目标句不匹配。");
     }
     public void progress(String target,String kind,String state) {

@@ -35,11 +35,11 @@ test('lesson links pin the immutable version for historical reviews', () => {
 });
 
 
-test('voice version links preserve task, sentence suffix and visibility in both directions', () => {
+test('reviewed mappings preserve task and visibility; absent mappings never infer suffixes', () => {
   for (const version of ['demo-01-v1','demo-01-v2']) for (const [tab] of tabs) for (const showEnglish of [true,false]) for (const showTranslation of [true,false]) {
     const context = { ...resume, versionId: version, sentenceId: `${version}-s06`, tab, showEnglish, showTranslation };
     for (const target of ['demo-01-v1','demo-01-v2']) {
-      const url = new URL(lessonVersionHref(context,target),'http://localhost');
+      const url = new URL(lessonVersionHref(context,target,`${target}-s06`),'http://localhost');
       const targetLesson = { id:'demo-01',versionId:target,sentences:[{id:`${target}-s01`},{id:`${target}-s06`}] } as Lesson;
       assert.equal(url.searchParams.get('version'),target);
       assert.deepEqual(resolveContext(targetLesson,url.searchParams,null),{lessonId:context.lessonId,versionId:target,sentenceId:`${target}-s06`,tab,showEnglish,showTranslation:context.showTranslation});
@@ -47,4 +47,6 @@ test('voice version links preserve task, sentence suffix and visibility in both 
   }
   const url = new URL(lessonVersionHref({...resume,sentenceId:'foreign-sentence'},'demo-01-v2'),'http://localhost');
   assert.equal(url.searchParams.get('sentence'),'');
+  const noMap = new URL(lessonVersionHref({ ...resume, versionId: 'demo-01-v1', sentenceId: 'demo-01-v1-s06' }, 'demo-01-v2'), 'http://localhost');
+  assert.equal(noMap.searchParams.get('sentence'), '');
 });

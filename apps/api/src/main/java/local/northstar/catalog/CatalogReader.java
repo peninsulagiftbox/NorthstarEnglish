@@ -6,6 +6,8 @@ import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Objects;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Service;
@@ -18,8 +20,8 @@ public class CatalogReader {
     private final JdbcOperations jdbc;
     private final JsonMapper mapper = JsonMapper.builder().build();
     // Preserve the frozen Demo's existing local-test exception; it never grants access to other pending content.
-    private static final String READABLE = "l.availability='available' AND (l.id='demo-01' OR c.review_status='confirmed') AND EXISTS (SELECT 1 FROM sentence s WHERE s.lesson_version_id=v.id AND s.lesson_id=l.id)";
-    private static final String SUMMARY = "SELECT l.id,l.slug,l.kind,l.availability,l.book_id AS bookId,l.sequence_no AS sequence,l.display_number AS displayNumber,v.id AS versionId,JSON_UNQUOTE(JSON_EXTRACT(v.payload_json,'$.title')) AS title,v.release_ready AS releaseReady,'local_test_only' AS usageScope FROM lesson l JOIN lesson_version v ON v.id=l.current_version_id AND v.lesson_id=l.id JOIN content_license c ON c.id=v.license_id ";
+    private static final String READABLE = "l.availability='available' AND v.publication_state='published' AND (l.id='demo-01' OR c.review_status='confirmed') AND EXISTS (SELECT 1 FROM sentence s WHERE s.lesson_version_id=v.id AND s.lesson_id=l.id)";
+    private static final String SUMMARY = "SELECT l.id,l.slug,l.kind,l.availability,l.book_id AS bookId,l.sequence_no AS sequence,l.display_number AS displayNumber,v.id AS versionId,JSON_UNQUOTE(JSON_EXTRACT(v.payload_json,'$.title')) AS title,v.release_ready AS releaseReady,v.publication_state AS publicationState,v.content_readiness AS contentReadiness,'local_test_only' AS usageScope FROM lesson l JOIN lesson_version v ON v.id=l.current_version_id AND v.lesson_id=l.id JOIN content_license c ON c.id=v.license_id ";
     public CatalogReader(JdbcOperations jdbc) { this.jdbc = jdbc; }
 
     public Map<String, Object> books() {
@@ -68,20 +70,30 @@ public class CatalogReader {
         var lessons = jdbc.queryForList("SELECT availability,current_version_id FROM lesson WHERE id=?", id);
         if (lessons.isEmpty() || !"available".equals(lessons.getFirst().get("availability"))) throw notFound();
         Object target = requested == null ? lessons.getFirst().get("current_version_id") : requested;
-        var rows = jdbc.queryForList("SELECT v.id,v.lesson_id AS lessonId,v.version_no AS version,v.payload_json AS payload,v.release_ready AS releaseReady,c.review_status AS reviewStatus FROM lesson_version v JOIN content_license c ON c.id=v.license_id WHERE v.id=?", target);
+        var rows = jdbc.queryForList("SELECT v.id,v.lesson_id AS lessonId,v.version_no AS version,v.payload_json AS payload,v.release_ready AS releaseReady,v.publication_state AS publicationState,v.content_readiness AS contentReadiness,c.review_status AS reviewStatus FROM lesson_version v JOIN content_license c ON c.id=v.license_id WHERE v.id=?", target);
         if (rows.isEmpty()) throw problem(HttpStatus.NOT_FOUND, "VERSION_NOT_FOUND", "课程版本不存在。");
         var row = rows.getFirst();
         if (!id.equals(row.get("lessonId"))) throw problem(HttpStatus.UNPROCESSABLE_CONTENT, "VERSION_LESSON_MISMATCH", "指定版本不属于本课。");
         if (!id.equals("demo-01") && !"confirmed".equals(row.get("reviewStatus"))) throw notFound();
+        VersionAccess.require(jdbc,id,row.get("id").toString());
         return row;
     }
 
-    public Map<String, Object> versions(String id) {
-        // A valid explicit historical version remains accessible even if current is unavailable.
-        var rows = jdbc.queryForList("SELECT v.id AS versionId,v.version_no AS number,(v.id=l.current_version_id) AS isCurrent,TRUE AS readable FROM lesson l JOIN lesson_version v ON v.lesson_id=l.id JOIN content_license c ON c.id=v.license_id WHERE l.id=? AND " + READABLE + " ORDER BY v.version_no,v.id", id);
-        if (rows.isEmpty()) throw notFound();
-        for (var row : rows) { row.put("readable", true); row.put("isCurrent", sqlBoolean(row.get("isCurrent"))); }
-        return Map.of("versions", rows);
+    public Map<String, Object> versions(String id) { return versions(id,null,null); }
+    public Map<String, Object> versions(String id,String fromVersion,String fromSentence) {
+        var rows=jdbc.queryForList("SELECT v.id AS versionId,v.version_no AS number,(v.id=l.current_version_id) AS isCurrent,v.publication_state AS publicationState,v.content_readiness AS contentReadiness,(v.publication_state='published') AS readable FROM lesson l JOIN lesson_version v ON v.lesson_id=l.id JOIN content_license c ON c.id=v.license_id WHERE l.id=? AND l.availability='available' AND (l.id='demo-01' OR c.review_status='confirmed') AND v.publication_state IN ('published','withdrawn') ORDER BY v.version_no,v.id",id);
+        if(rows.isEmpty())throw notFound();
+        if(fromVersion!=null && fromSentence!=null && jdbc.queryForObject("SELECT COUNT(*) FROM sentence WHERE id=? AND lesson_id=? AND lesson_version_id=?",Integer.class,fromSentence,id,fromVersion)!=1)throw problem(HttpStatus.UNPROCESSABLE_CONTENT,"VERSION_LESSON_MISMATCH","源句与课程版本不匹配。");
+        for(var row:rows) {
+            row.put("readable",sqlBoolean(row.get("readable")));row.put("isCurrent",sqlBoolean(row.get("isCurrent")));
+            row.put("mappingStatus","unmapped");
+            if(fromVersion!=null && fromSentence!=null) {
+                var maps=jdbc.queryForList("SELECT to_sentence_id AS targetSentenceId,relation,mapping_status AS mappingStatus FROM version_sentence_map WHERE lesson_id=? AND from_version_id=? AND to_version_id=? AND from_sentence_id=?",id,fromVersion,row.get("versionId"),fromSentence);
+                if(maps.size()==1 && Set.of("equivalent","edited").contains(Objects.toString(maps.getFirst().get("relation"),"")))row.putAll(maps.getFirst());
+                else if(!maps.isEmpty())row.put("mappingStatus",maps.getFirst().get("mappingStatus").equals("no_target")?"no_target":"ambiguous");
+            }
+        }
+        return Map.of("versions",rows);
     }
 
     public ObjectNode lesson(String id, String requested) {
@@ -93,8 +105,8 @@ public class CatalogReader {
             if (!(exercise instanceof ObjectNode)) throw invalid();
             ((ObjectNode) exercise).remove(List.of("answerKey", "explanation"));
         }
-        var paragraphs = jdbc.queryForList("SELECT id,stable_key AS stableKey,sequence_no AS sequence FROM paragraph WHERE version_id=? ORDER BY sequence_no,id", versionId);
-        var sentences = jdbc.queryForList("SELECT id,stable_key AS stableKey,sequence_no AS sequence,paragraph_id AS paragraphId,speaker,text,translation,explanation,focus,audio_asset_id AS audioAssetId,start_ms AS startMs,end_ms AS endMs FROM sentence WHERE lesson_id=? AND lesson_version_id=? ORDER BY sequence_no,id", id, versionId);
+        var paragraphs = jdbc.queryForList("SELECT id,stable_key AS stableKey,identity_id AS identityId,sequence_no AS sequence FROM paragraph WHERE version_id=? ORDER BY sequence_no,id", versionId);
+        var sentences = jdbc.queryForList("SELECT id,stable_key AS stableKey,identity_id AS identityId,sequence_no AS sequence,paragraph_id AS paragraphId,speaker,text,translation,explanation,focus,audio_asset_id AS audioAssetId,start_ms AS startMs,end_ms AS endMs FROM sentence WHERE lesson_id=? AND lesson_version_id=? ORDER BY sequence_no,id", id, versionId);
         if (paragraphs.isEmpty() || sentences.isEmpty()) throw invalid();
         Map<String, Integer> positions = new LinkedHashMap<>();
         for (var paragraph : paragraphs) positions.put(paragraph.get("id").toString(), ((Number)paragraph.get("sequence")).intValue());
@@ -112,6 +124,8 @@ public class CatalogReader {
         result.set("paragraphs", mapper.valueToTree(paragraphs)); result.put("projectionVersion", "relational-v1");
         var metadata = jdbc.queryForMap("SELECT book_id AS bookId,sequence_no AS sequence,display_number AS displayNumber,kind,availability FROM lesson WHERE id=?", id);
         for (var entry : metadata.entrySet()) result.set(entry.getKey(), mapper.valueToTree(entry.getValue()));
+        result.put("publicationState",v.get("publicationState").toString());result.put("contentReadiness",v.get("contentReadiness").toString());
+        result.put("hasHistoricalEvidence",jdbc.queryForObject("SELECT COUNT(*) FROM version_sentence_map m JOIN exercise_attempt a ON a.sentence_id=m.from_sentence_id AND a.version_id=m.from_version_id WHERE m.lesson_id=? AND m.to_version_id=? AND m.relation='equivalent' AND m.mapping_status='confirmed'",Integer.class,id,versionId)>0);
         result.put("version", ((Number)v.get("version")).intValue()); result.put("releaseReady", (Boolean)v.get("releaseReady"));
         // No unsupported task UI for a content-only version; this is not a teaching-readiness claim.
         result.set("availableTasks", mapper.valueToTree(jdbc.queryForList("SELECT DISTINCT kind FROM exercise WHERE lesson_id=? AND version_id=? ORDER BY kind", String.class, id, versionId)));
