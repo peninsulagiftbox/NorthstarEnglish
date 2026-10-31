@@ -90,7 +90,7 @@ class MultiCourseIntegrationTest {
             admin.update("UPDATE content_license SET review_status='confirmed' WHERE id='fixture-a-license'");
             String key=admin.queryForObject("SELECT storage_key FROM audio_asset WHERE id='fixture-a-v1-a1'",String.class);
             admin.update("UPDATE audio_asset SET storage_key='../../outside.mp3' WHERE id='fixture-a-v1-a1'");
-            assertEquals(503,send(audio,null).statusCode());get("/lessons/fixture-a?versionId=fixture-a-v1",503);
+            assertEquals(503,send(audio,null).statusCode());assertEquals("unavailable",get("/lessons/fixture-a?versionId=fixture-a-v1",200).path("sentences").get(0).path("audio").path("status").asText());
             admin.update("UPDATE audio_asset SET storage_key=? WHERE id='fixture-a-v1-a1'",key);
             admin.update("UPDATE audio_asset SET sha256=? WHERE id='fixture-a-v1-a1'","0".repeat(64));assertEquals(503,send(audio,null).statusCode());
             admin.update("UPDATE audio_asset SET sha256=? WHERE id='fixture-a-v1-a1'",ContentPackage.sha256(Files.readAllBytes(Path.of(System.getenv("NORTHSTAR_TEST_AUDIO")))));

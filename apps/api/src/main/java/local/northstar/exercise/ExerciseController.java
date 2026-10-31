@@ -35,7 +35,7 @@ public class ExerciseController {
     @GetMapping("/api/v1/reading")
     public Object reading(@RequestParam String lessonId,@RequestParam String versionId) {
         readingContext(lessonId,versionId);
-        var words=jdbc.queryForList("SELECT k.id,k.sentence_id AS sentenceId,s.sequence_no AS sequence,s.text AS sourceText,k.term,k.meaning,k.usage_note AS usageNote,k.example_text AS example,COALESCE(f.favorite,FALSE) AS favorite FROM knowledge_point k JOIN sentence s ON s.id=k.sentence_id LEFT JOIN vocabulary_favorite f ON f.knowledge_point_id=k.id WHERE k.id<>CONCAT(k.version_id,'-kp-please') AND k.lesson_id=? AND k.version_id=? ORDER BY s.sequence_no,k.id",lessonId,versionId);
+        var words=jdbc.queryForList("SELECT k.id,k.sentence_id AS sentenceId,s.sequence_no AS sequence,s.text AS sourceText,k.term,k.meaning,k.usage_note AS usageNote,k.example_text AS example,COALESCE(f.favorite,FALSE) AS favorite FROM knowledge_point k JOIN sentence s ON s.id=k.sentence_id LEFT JOIN vocabulary_favorite f ON f.knowledge_point_id=k.id WHERE k.lesson_id=? AND k.version_id=? ORDER BY s.sequence_no,k.id",lessonId,versionId);
         for(var word:words) word.put("favorite",((Number)word.get("favorite")).intValue()!=0);
         var questions=new ArrayList<Object>();
         for(var row:jdbc.queryForList("SELECT r.exercise_id,r.payload_json,r.knowledge_point_id,r.sentence_id,COALESCE(p.current_state,'not_started') AS state FROM reading_question r JOIN exercise e ON e.id=r.exercise_id LEFT JOIN reading_progress p ON p.exercise_id=e.id WHERE e.lesson_id=? AND e.version_id=? ORDER BY e.id",lessonId,versionId)) {
@@ -109,7 +109,10 @@ public class ExerciseController {
             if(!id.equals(value.sentenceId+"-dictation")) throw failure(422,"CONTEXT_MISMATCH","听写题目与目标句不匹配。");
             if(value.text.isBlank() || TokenAligner.tokens(value.text).isEmpty()) throw failure(422,"EMPTY_ANSWER","请输入非空英文听写。");
             if(!value.audioPlayed) throw failure(422,"AUDIO_NOT_PLAYED","请先播放本句音频，再正式提交。");
-            try { content.checkedAudio(target.get("storage_key").toString(),((Number)target.get("byte_size")).longValue(),target.get("sha256").toString()); }
+            try {
+                long decoded=content.checkedDuration(target.get("storage_key").toString(),((Number)target.get("byte_size")).longValue(),target.get("sha256").toString());
+                if(((Number)target.get("end_ms")).longValue()>decoded+1 || ((Number)target.get("start_ms")).longValue()<0 || ((Number)target.get("end_ms")).longValue()<=((Number)target.get("start_ms")).longValue())throw new java.io.IOException("Invalid audio interval");
+            }
             catch(Exception error) { throw failure(503,"AUDIO_UNAVAILABLE","本句音源缺失或损坏，草稿保留；恢复音源后重试。"); }
             if(!"ready".equals(target.get("status"))) throw failure(503,"AUDIO_UNAVAILABLE","本句音频不可用。");
             var result=TokenAligner.align(target.get("text").toString(),value.text);
@@ -172,7 +175,7 @@ public class ExerciseController {
     }
     private Map<String,Object> target(String lesson,String version,String sentence) {
         local.northstar.catalog.VersionAccess.require(jdbc,lesson,version);
-        var rows=jdbc.queryForList("SELECT s.text,a.storage_key,a.byte_size,a.sha256,a.status FROM sentence s JOIN lesson l ON l.id=s.lesson_id JOIN audio_asset a ON a.id=s.audio_asset_id WHERE s.id=? AND s.lesson_id=? AND s.lesson_version_id=? AND l.availability='available'",sentence,lesson,version);
+        var rows=jdbc.queryForList("SELECT s.text,s.start_ms,s.end_ms,a.storage_key,a.byte_size,a.sha256,a.status FROM sentence s JOIN lesson l ON l.id=s.lesson_id JOIN audio_asset a ON a.id=s.audio_asset_id WHERE s.id=? AND s.lesson_id=? AND s.lesson_version_id=? AND l.availability='available'",sentence,lesson,version);
         if(rows.isEmpty()) throw failure(422,"CONTEXT_MISMATCH","课次、内容版本或句子不匹配。");
         return rows.getFirst();
     }

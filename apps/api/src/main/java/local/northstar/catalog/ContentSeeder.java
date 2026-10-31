@@ -100,6 +100,7 @@ public class ContentSeeder implements ApplicationRunner {
             seedReading(jdbc, lesson, true);
             seedWriting(jdbc, lesson, true);
             seedQuiz(jdbc, lesson, true);
+            local.northstar.exercise.QuizSets.freezeDefault(jdbc, versionId);
             }
             if (initialize) jdbc.update("UPDATE lesson SET current_version_id=? WHERE id='demo-01' AND current_version_id IS NULL", activeVersion);
         });

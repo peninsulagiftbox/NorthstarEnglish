@@ -34,9 +34,13 @@ public final class ContentPublication {
     public String snapshot(String version){
         var result=new TreeMap<String,Object>();
         result.put("version",db.queryForList("SELECT id,lesson_id,version_no,license_id,content_sha256,manifest_sha256,payload_json,content_readiness,schema_version FROM lesson_version WHERE id=?",version));
-        for(String table:List.of("paragraph","sentence","audio_asset","exercise","knowledge_point","reading_question","reading_option","writing_task","writing_source","quiz_question")) {
-            String where=switch(table){case "paragraph","exercise","knowledge_point","reading_question","writing_task","writing_source","quiz_question"->"version_id=?";case "reading_option"->"exercise_id IN (SELECT id FROM exercise WHERE version_id=?)";default->"lesson_version_id=?";};
-            result.put(table,db.queryForList("SELECT * FROM "+table+" WHERE "+where+" ORDER BY "+(table.equals("reading_question")||table.equals("quiz_question")?"exercise_id":table.equals("writing_source")?"task_id,sentence_id":"id"),version));
+        for(String table:List.of("paragraph","sentence","audio_asset","exercise","knowledge_point","reading_question","reading_option","writing_task","writing_source","quiz_question","exercise_set","exercise_set_item")) {
+            String where=switch(table){case "paragraph","exercise","knowledge_point","reading_question","writing_task","writing_source","quiz_question","exercise_set","exercise_set_item"->"version_id=?";case "reading_option"->"exercise_id IN (SELECT id FROM exercise WHERE version_id=?)";default->"lesson_version_id=?";};
+            result.put(table,db.queryForList("SELECT * FROM "+table+" WHERE "+where+" ORDER BY "+(table.equals("reading_question")||table.equals("quiz_question")?"exercise_id":table.equals("writing_source")?"task_id,sentence_id":table.equals("exercise_set_item")?"set_id,ordinal":"id"),version));
+        }
+        if("northstar.local.audio.v1".equals(db.queryForObject("SELECT schema_version FROM lesson_version WHERE id=?",String.class,version))) {
+            result.put("lesson_audio",db.queryForList("SELECT * FROM lesson_audio WHERE version_id=?",version));
+            result.put("audio_alignment",db.queryForList("SELECT * FROM audio_alignment WHERE version_id=? ORDER BY id",version));
         }
         return hash(result);
     }
@@ -62,11 +66,12 @@ public final class ContentPublication {
     }
     private void basic(Map<String,Object> v){
         String version=v.get("id").toString(),lesson=v.get("lesson_id").toString();
-        check("basic_content".equals(v.get("content_readiness")) && "northstar.local.basic.v1".equals(v.get("schema_version")),"PROFILE_NOT_SUPPORTED");
+        boolean audioProfile="northstar.local.audio.v1".equals(v.get("schema_version"));
+        check("basic_content".equals(v.get("content_readiness")) && (audioProfile || "northstar.local.basic.v1".equals(v.get("schema_version"))),"PROFILE_NOT_SUPPORTED");
         JsonNode payload=raw(version,"lesson.json",v.get("content_sha256").toString());
         JsonNode manifest=raw(version,"manifest.json",v.get("manifest_sha256").toString());
         check(payload.equals(json.readTree(v.get("payload_json").toString())) && lesson.equals(payload.path("id").asText()) && version.equals(payload.path("versionId").asText()),"CONTENT_PROJECTION_MISMATCH");
-        check(!payload.has("learningPlan") && !payload.has("fullAudioAssetId") && !payload.path("title").asText().isBlank(),"PROFILE_NOT_SUPPORTED");
+        check(!payload.has("learningPlan") && (audioProfile || !payload.has("fullAudioAssetId")) && !payload.path("title").asText().isBlank(),"PROFILE_NOT_SUPPORTED");
         check(version.equals(manifest.path("versionId").asText()) && lesson.equals(manifest.path("lessonId").asText()) && v.get("content_sha256").equals(manifest.path("lessonSha256").asText()),"MANIFEST_MISMATCH");
         String kind=db.queryForObject("SELECT kind FROM lesson WHERE id=?",String.class,lesson);
         check(Set.of("original_demo","original","licensed").contains(kind),"INVALID_LESSON_KIND");
@@ -84,11 +89,13 @@ public final class ContentPublication {
             JsonNode projected=payload.path("sentences").get(sequence-1);
             for(var pair:Map.of("id","id","text","text","translation","translation","speaker","speaker","explanation","explanation","focus","focus","audioAssetId","audio_asset_id").entrySet())
                 check(projected.path(pair.getKey()).asText().equals(s.get(pair.getValue())),"CONTENT_PROJECTION_MISMATCH");
+            check(projected.path("startMs").isIntegralNumber() && projected.path("endMs").isIntegralNumber(),"INTERVAL_INVALID");
             check(projected.path("startMs").asInt(-1)==((Number)s.get("start_ms")).intValue() && projected.path("endMs").asInt(-1)==((Number)s.get("end_ms")).intValue(),"CONTENT_PROJECTION_MISMATCH");
             check(!s.get("text").toString().isBlank(),"EMPTY_SENTENCE");
         }
         var assets=db.queryForList("SELECT * FROM audio_asset WHERE lesson_version_id=? ORDER BY id",version);
-        check(assets.size()==sentences.size() && manifest.path("audioAssets").size()==assets.size(),"MEDIA_MANIFEST_MISMATCH");
+        check((audioProfile || assets.size()==sentences.size()) && manifest.path("audioAssets").size()==assets.size(),"MEDIA_MANIFEST_MISMATCH");
+        var durations=new HashMap<String,Long>();
         for(var a:assets){
             String source=a.get("source_kind").toString();check(Set.of("original_tts","original_recording","licensed_audio").contains(source),"INVALID_AUDIO_KIND");
             license(a.get("license_id").toString(),source.equals("licensed_audio")?"licensed":"original","audio");
@@ -97,23 +104,44 @@ public final class ContentPublication {
             for(var pair:Map.of("id","id","licenseId","license_id","sourceKind","source_kind","storageKey","storage_key","sha256","sha256").entrySet())check(declared.path(pair.getKey()).asText().equals(a.get(pair.getValue())),"MEDIA_MANIFEST_MISMATCH");
             check(declared.path("byteSize").asLong()==((Number)a.get("byte_size")).longValue() && declared.path("durationMs").asInt()==((Number)a.get("duration_ms")).intValue(),"MEDIA_MANIFEST_MISMATCH");
             check("ready".equals(a.get("status")),"MEDIA_UNAVAILABLE");
-            for(var s:sentences)if(s.get("audio_asset_id").equals(a.get("id")))check(((Number)s.get("start_ms")).intValue()==0 && ((Number)s.get("end_ms")).intValue()<=((Number)a.get("duration_ms")).intValue(),"INTERVAL_INVALID");
-            try{new AudioResources(root).checked(a.get("storage_key").toString(),((Number)a.get("byte_size")).longValue(),a.get("sha256").toString());}catch(Exception e){throw new Rejected("MEDIA_UNAVAILABLE");}
+            long duration=((Number)a.get("duration_ms")).longValue();
+            try {
+                Path file=new AudioResources(root).checked(a.get("storage_key").toString(),((Number)a.get("byte_size")).longValue(),a.get("sha256").toString());
+                long decoded=AudioProbe.duration(file,a.get("sha256").toString());
+                check(audioProfile ? Math.abs(decoded-duration)<=1 : decoded+1>=duration,"MEDIA_DURATION_MISMATCH");
+            } catch(Rejected e){throw e;} catch(Exception e){throw new Rejected("MEDIA_UNAVAILABLE");}
+            durations.put(a.get("id").toString(),duration);
+            var covered=sentences.stream().filter(sentence->sentence.get("audio_asset_id").equals(a.get("id")) || a.get("id").equals(payload.path("fullAudioAssetId").asText())).toList();
+            check(!covered.isEmpty() || (audioProfile && a.get("id").equals(payload.path("fullAudioAssetId").asText())),"UNREFERENCED_MEDIA");
+            if(!audioProfile)for(var sentence:covered)check(((Number)sentence.get("start_ms")).intValue()==0,"INTERVAL_INVALID");
+            if(audioProfile) {
+                var reviews=db.queryForList("SELECT * FROM audio_alignment WHERE asset_id=? AND version_id=?",a.get("id"),version);
+                check(reviews.size()==1,"ALIGNMENT_NOT_VERIFIED");var review=reviews.getFirst();
+                String transcript=covered.stream().map(sentence->java.text.Normalizer.normalize(sentence.get("text").toString().replace("\r\n","\n").replace('\r','\n'),java.text.Normalizer.Form.NFC).replaceAll("^[ \t\n]+|[ \t\n]+$", "")).collect(java.util.stream.Collectors.joining("\n"))+"\n";
+                check("verified".equals(review.get("status")) && a.get("sha256").equals(review.get("audio_sha256")) && ContentPackage.sha256(transcript.getBytes(StandardCharsets.UTF_8)).equals(review.get("transcript_sha256")),"ALIGNMENT_NOT_VERIFIED");
+            }
         }
+        var segments=sentences.stream().map(sentence->{var segment=new HashMap<String,Object>();segment.put("audioAssetId",sentence.get("audio_asset_id"));segment.put("startMs",sentence.get("start_ms"));segment.put("endMs",sentence.get("end_ms"));return (Map<String,Object>)segment;}).toList();
+        try{AudioIntervals.validate(segments,durations);}catch(IllegalArgumentException e){throw new Rejected("INTERVAL_INVALID");}
+        if(audioProfile) {
+            var main=db.queryForList("SELECT asset_id FROM lesson_audio WHERE version_id=?",version);
+            check(payload.has("fullAudioAssetId") ? main.size()==1 && payload.path("fullAudioAssetId").asText().equals(main.getFirst().get("asset_id")) : main.isEmpty(),"MAIN_AUDIO_MISMATCH");
+        }
+
         // Validate existing choice answers, rather than accepting arbitrary JSON plans.
         for(String table:List.of("reading_question","quiz_question"))for(var q:db.queryForList("SELECT payload_json FROM "+table+" WHERE version_id=?",version)){
             var question=json.readTree(q.get("payload_json").toString());var options=new HashSet<String>();
             for(var option:question.path("options"))check(!option.path("text").asText().isBlank() && options.add(option.path("id").asText()),"INVALID_EXERCISE");
             check(options.size()>=2 && options.size()<=8 && options.contains(question.path("answerKey").asText()),"INVALID_EXERCISE");
         }
-        check(db.queryForObject("SELECT COUNT(*) FROM quiz_question WHERE version_id=?",Integer.class,version)==0 || db.queryForObject("SELECT COUNT(*) FROM quiz_question WHERE version_id=?",Integer.class,version)==3,"UNSUPPORTED_QUIZ_SIZE");
+        check(db.queryForObject("SELECT COUNT(*) FROM quiz_question WHERE version_id=?",Integer.class,version)<=100,"UNSUPPORTED_QUIZ_SIZE");
     }
     /** Freezes a draft only after successful local basic validation. No lifecycle demotion or revalidation overwrite. */
     public String validate(String lesson,String version,String reviewer){
         if(reviewer==null || reviewer.isBlank())return "REVIEWER_REQUIRED";
         try{return tx.execute(status->{
             db.queryForList("SELECT id FROM lesson WHERE id=? FOR UPDATE",lesson);var v=version(lesson,version,true);
-            check("draft".equals(v.get("publication_state")),"VERSION_NOT_DRAFT");basic(v);String digest=snapshot(version);
+            check("draft".equals(v.get("publication_state")),"VERSION_NOT_DRAFT");basic(v);local.northstar.exercise.QuizSets.freezeDefault(db,version);String digest=snapshot(version);
             db.update("INSERT INTO content_validation(version_id,snapshot_sha256,content_sha256,manifest_sha256,algorithm,reviewer) VALUES (?,?,?,?,'northstar.relational.v1',?)",version,digest,v.get("content_sha256"),v.get("manifest_sha256"),reviewer);
             db.update("UPDATE lesson_version SET publication_state='validated' WHERE id=?",version);return "VALIDATED";
         });}catch(Rejected e){return e.code;}

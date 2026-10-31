@@ -32,7 +32,7 @@ class ReadingIntegrationTest {
             int before=jdbc.queryForObject("SELECT COUNT(*) FROM exercise_attempt WHERE exercise_id=?",Integer.class,question);
             try {
                 var initial=mapper.readTree(send(client,base+"/reading?lessonId=demo-01&versionId=demo-01-v2","GET",null).body());
-                assertEquals(5,initial.path("vocabulary").size());
+                assertEquals(6,initial.path("vocabulary").size());
                 assertEquals("Where should Mia put the small plants?",initial.path("questions").get(0).path("prompt").asText());
                 assertFalse(initial.path("questions").get(0).has("answerKey"));
                 var fav=Map.of("lessonId","demo-01","versionId","demo-01-v2","favorite",true);

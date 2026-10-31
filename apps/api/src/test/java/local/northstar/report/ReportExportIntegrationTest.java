@@ -28,7 +28,10 @@ class ReportExportIntegrationTest {
             try {
                 var report=body(send(base+"/reports","GET",null));
                 assertEquals(admin.queryForObject("SELECT COUNT(*) FROM exercise_attempt a JOIN exercise e ON e.id=a.exercise_id WHERE e.kind='dictation' AND NOT a.answer_exposed",Integer.class),report.path("metrics").path("dictation").path("independentSubmitted").asInt());
-                assertEquals(admin.queryForObject("SELECT COALESCE(SUM(correct_count),0) FROM quiz_run",Integer.class),report.path("metrics").path("quiz").path("correct").asInt());
+                String verified="r.total_count IS NOT NULL AND r.submitted_count=r.total_count AND (SELECT COUNT(*) FROM quiz_run_item i WHERE i.run_id=r.id)=r.total_count";
+                assertEquals(admin.queryForObject("SELECT COALESCE(SUM(r.correct_count),0) FROM quiz_run r WHERE "+verified,Integer.class),report.path("metrics").path("quiz").path("correct").asInt());
+                assertEquals(admin.queryForObject("SELECT COALESCE(SUM(r.total_count),0) FROM quiz_run r WHERE "+verified,Integer.class),report.path("metrics").path("quiz").path("total").asInt());
+                assertEquals(admin.queryForObject("SELECT COUNT(*) FROM quiz_run r WHERE "+verified,Integer.class),report.path("metrics").path("quiz").path("verifiedRuns").asInt());
                 assertEquals(admin.queryForObject("SELECT COUNT(*) FROM reading_answer",Integer.class),report.path("readingHistory").size());
                 for(var lesson:report.path("lessons")) {assertEquals(6,lesson.path("paths").size());assertEquals(0,lesson.path("paths").get(0).path("evidenceCount").asInt());}
                 var settings=new LinkedHashMap<String,Object>();settings.put("defaultSpeed",1.25);settings.put("showTranslation",false);settings.put("showHints",false);settings.put("shortcutEnabled",false);settings.put("recordingEnabled",false);settings.put("rowVersion",((Number)before.get("row_version")).longValue());

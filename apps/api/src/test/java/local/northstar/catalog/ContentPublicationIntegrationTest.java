@@ -87,7 +87,7 @@ class ContentPublicationIntegrationTest {
         var receipt=commands.attempt("pub-v1-s1-dictation",attempt);assertTrue(receipt.path("result").path("correct").asBoolean());
         var wrong=new local.northstar.exercise.ExerciseController.Attempt(UUID.randomUUID().toString(),"pub-main","pub-v1","pub-v1-s2","I worked tomorrow.",false,true,java.time.Instant.now().toString());
         commands.attempt("pub-v1-s2-dictation",wrong);
-        var reviews=new local.northstar.exercise.QuizReviewController(db,commands);
+        var reviews=new local.northstar.exercise.QuizReviewController(db,commands,new local.northstar.exercise.QuizFault());
         var rating=new local.northstar.exercise.QuizReviewController.ReviewRating(UUID.randomUUID().toString(),"pub-main","pub-v1","pub-v1-s2",1,"good",true,java.time.Instant.now().toString());
         reviews.rate("pub-v1-s2-review",rating);
         oldAttempts=db.queryForList("SELECT * FROM exercise_attempt ORDER BY id");oldReviews=db.queryForList("SELECT * FROM review_result ORDER BY event_id");

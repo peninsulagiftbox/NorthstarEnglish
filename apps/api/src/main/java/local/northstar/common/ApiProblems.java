@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ApiProblems {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ApiProblems.class);
     public static ProblemDetail problem(HttpStatus status, String code, String detail, String path) {
         var problem = ProblemDetail.forStatusAndDetail(status, detail);
         problem.setType(URI.create("urn:northstar:problem:" + code.toLowerCase(java.util.Locale.ROOT)));
@@ -30,6 +31,7 @@ public class ApiProblems {
         if (exception instanceof org.springframework.web.server.ResponseStatusException expected) {
             return problem(HttpStatus.valueOf(expected.getStatusCode().value()), "PRACTICE_REQUEST", expected.getReason(), request.getRequestURI());
         }
+        log.error("Unhandled exception at {}", request.getRequestURI(), exception);
         if (exception instanceof org.springframework.dao.DataAccessException) {
             return problem(HttpStatus.SERVICE_UNAVAILABLE, "DATABASE_UNAVAILABLE", "数据库连接暂不可用，请检查本地服务。", request.getRequestURI());
         }

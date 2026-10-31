@@ -18,7 +18,7 @@ import tools.jackson.databind.json.JsonMapper;
 public class ExportController {
     private final JdbcTemplate db;
     private final JsonMapper json=JsonMapper.builder().build();
-    private static final Set<String> CONTENT=Set.of("sentence_identity","paragraph_identity","version_sentence_map","content_validation","publication_audit","book","lesson","lesson_version","paragraph","sentence","audio_asset","content_license","exercise","knowledge_point","reading_question","reading_option","writing_task","writing_source","quiz_question");
+    private static final Set<String> CONTENT=Set.of("lesson_audio","audio_alignment","sentence_identity","paragraph_identity","version_sentence_map","content_validation","publication_audit","book","lesson","lesson_version","paragraph","sentence","audio_asset","content_license","exercise","knowledge_point","reading_question","reading_option","writing_task","writing_source","quiz_question");
     public ExportController(JdbcTemplate db){this.db=db;}
     private String hash(String value){try{return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8)));}catch(Exception e){throw new IllegalStateException(e);}}
     private ResponseStatusException invalid(){return new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,"数据包格式、版本、归属或内容基线不匹配；未导入任何数据。");}

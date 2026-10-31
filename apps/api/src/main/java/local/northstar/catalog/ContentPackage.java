@@ -23,5 +23,6 @@ public class ContentPackage {
     public java.util.List<Integer> publishedVersions() throws IOException { return demo.publishedVersions(); }
     public int activeVersion() throws IOException { return demo.activeVersion(); }
     public Path checkedAudio(String key, long size, String hash) throws IOException { return audio.checked(key, size, hash); }
+    public long checkedDuration(String key, long size, String hash) throws IOException { return AudioProbe.duration(audio.checked(key,size,hash),hash); }
     public static String sha256(byte[] value) { return DemoContentAdapter.sha256(value); }
 }

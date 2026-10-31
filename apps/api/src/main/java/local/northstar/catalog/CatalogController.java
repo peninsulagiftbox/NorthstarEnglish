@@ -46,15 +46,36 @@ public class CatalogController {
         ObjectNode result = reader.lesson(id, versionId);
         var assets = jdbc.queryForList("SELECT a.id, a.license_id AS licenseId, a.source_kind AS sourceKind, a.storage_key AS storageKey, a.mime_type AS mimeType, a.byte_size AS byteSize, a.duration_ms AS durationMs, a.sha256, a.status FROM audio_asset a WHERE a.lesson_version_id = ? AND (a.lesson_version_id IN (SELECT id FROM lesson_version WHERE lesson_id='demo-01') OR a.license_id IN (SELECT id FROM content_license WHERE review_status='confirmed'))", result.path("versionId").asText());
         Map<String, Map<String, Object>> byId = new LinkedHashMap<>();
-        for (Map<String, Object> asset : assets) byId.put(asset.get("id").toString(), asset);
-        for (JsonNode sentence : result.path("sentences")) {
-            var asset = byId.get(sentence.path("audioAssetId").asText());
-            if (asset == null) throw missingAudio();
-            check(asset);
+        Map<String,Long> durations = new LinkedHashMap<>();
+        for (Map<String, Object> asset : assets) {
             var publicAsset = new LinkedHashMap<>(asset);
             publicAsset.remove("storageKey");
             publicAsset.put("uri", "/api/v1/audio/" + asset.get("id"));
-            ((ObjectNode) sentence).set("audio", mapper.valueToTree(publicAsset));
+            long duration=((Number)asset.get("durationMs")).longValue();
+            try {
+                check(asset);
+                long decoded=content.checkedDuration(asset.get("storageKey").toString(),((Number)asset.get("byteSize")).longValue(),asset.get("sha256").toString());
+                if(decoded+1<duration)throw missingAudio();
+            } catch (CatalogFailure | IOException | IllegalStateException error) {
+                publicAsset.put("status","unavailable"); publicAsset.put("code","AUDIO_UNAVAILABLE");
+            }
+            durations.put(asset.get("id").toString(),duration);
+            byId.put(asset.get("id").toString(),publicAsset);
+        }
+        var segments = mapper.convertValue(result.path("sentences"),new tools.jackson.core.type.TypeReference<List<Map<String,Object>>>() {});
+        try { AudioIntervals.validate(segments,durations); }
+        catch(IllegalArgumentException error) { throw new CatalogFailure(HttpStatus.SERVICE_UNAVAILABLE,"INVALID_CONTENT","句子音频区间或版本关联无效。"); }
+        for (JsonNode sentence : result.path("sentences")) {
+            var asset=byId.get(sentence.path("audioAssetId").asText());
+            ((ObjectNode)sentence).put("assetId",sentence.path("audioAssetId").asText());
+            ((ObjectNode)sentence).set("audio",mapper.valueToTree(asset));
+        }
+        result.set("audioAssets",mapper.valueToTree(byId.values()));
+        var main=jdbc.queryForList("SELECT asset_id FROM lesson_audio WHERE version_id=?",result.path("versionId").asText());
+        if(!main.isEmpty()) {
+            String asset=main.getFirst().get("asset_id").toString();
+            if(!byId.containsKey(asset))throw new CatalogFailure(HttpStatus.SERVICE_UNAVAILABLE,"INVALID_CONTENT","主音轨版本关联无效。");
+            result.put("fullAudioAssetId",asset);
         }
         result.set("licenses", mapper.valueToTree(licensesFor(result.path("versionId").asText())));
         return result;
@@ -76,9 +97,13 @@ public class CatalogController {
     public ResponseEntity<FileSystemResource> audio(@PathVariable String id) {
         var context=jdbc.queryForList("SELECT v.lesson_id,v.id,v.publication_state FROM audio_asset a JOIN lesson_version v ON v.id=a.lesson_version_id JOIN lesson l ON l.id=v.lesson_id JOIN content_license c ON c.id=v.license_id JOIN content_license ac ON ac.id=a.license_id WHERE a.id=? AND l.availability='available' AND (l.id='demo-01' OR (c.review_status='confirmed' AND ac.review_status='confirmed'))",id);
         if(!context.isEmpty() && "withdrawn".equals(context.getFirst().get("publication_state")))VersionAccess.require(jdbc,context.getFirst().get("lesson_id").toString(),context.getFirst().get("id").toString());
-        var values = jdbc.queryForList("SELECT a.storage_key AS storageKey,a.byte_size AS byteSize,a.sha256,a.status FROM audio_asset a JOIN lesson_version v ON v.id=a.lesson_version_id JOIN lesson l ON l.id=v.lesson_id JOIN content_license c ON c.id=v.license_id JOIN content_license ac ON ac.id=a.license_id WHERE a.id=? AND v.publication_state='published' AND l.availability='available' AND (l.id='demo-01' OR (c.review_status='confirmed' AND ac.review_status='confirmed'))", id);
+        var values = jdbc.queryForList("SELECT a.storage_key AS storageKey,a.byte_size AS byteSize,a.sha256,a.status,a.duration_ms AS durationMs FROM audio_asset a JOIN lesson_version v ON v.id=a.lesson_version_id JOIN lesson l ON l.id=v.lesson_id JOIN content_license c ON c.id=v.license_id JOIN content_license ac ON ac.id=a.license_id WHERE a.id=? AND v.publication_state='published' AND l.availability='available' AND (l.id='demo-01' OR (c.review_status='confirmed' AND ac.review_status='confirmed'))", id);
         if (values.isEmpty()) throw new CatalogFailure(HttpStatus.NOT_FOUND, "AUDIO_NOT_FOUND", "音频资源不存在。");
-        var path = check(values.getFirst());
+        var asset=values.getFirst();
+        var path = check(asset);
+        try {
+            if(content.checkedDuration(asset.get("storageKey").toString(),((Number)asset.get("byteSize")).longValue(),asset.get("sha256").toString())+1<((Number)asset.get("durationMs")).longValue())throw missingAudio();
+        } catch(IOException | IllegalStateException error){throw missingAudio();}
         // Spring MVC serves Resource byte ranges, including suffix ranges and 416.
         return ResponseEntity.ok().contentType(MediaType.parseMediaType("audio/mpeg"))
                 .header("Accept-Ranges", "bytes").body(new FileSystemResource(path));

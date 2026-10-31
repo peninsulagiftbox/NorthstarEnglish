@@ -78,7 +78,9 @@ class CatalogIntegrationTest {
             try {
                 admin.update("UPDATE audio_asset SET storage_key='demo-01/v999/audio/01.mp3' WHERE id='demo-01-v1-a01'");
                 assertProblem(client, base + "/audio/demo-01-v1-a01", 503, "AUDIO_UNAVAILABLE");
-                assertProblem(client, base + "/lessons/demo-01?versionId=demo-01-v1", 503, "AUDIO_UNAVAILABLE");
+                var degraded = get(client,base + "/lessons/demo-01?versionId=demo-01-v1",null);
+                assertEquals(200,degraded.statusCode());
+                assertEquals("unavailable",mapper.readTree(degraded.body()).path("sentences").get(0).path("audio").path("status").asText());
             } finally { admin.update("UPDATE audio_asset SET storage_key=? WHERE id='demo-01-v1-a01'", key); }
             try {
                 admin.update("UPDATE audio_asset SET sha256=? WHERE id='demo-01-v1-a01'", "0".repeat(64));
