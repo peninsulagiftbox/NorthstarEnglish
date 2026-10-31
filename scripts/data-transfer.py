@@ -26,7 +26,7 @@ def load_snapshot(path):
     if digest(envelope['payloadJson'].encode()) != envelope['sha256']:
         raise ValueError('校验和不匹配')
     payload = json.loads(envelope['payloadJson'])
-    if payload['project'] != local.IDENTITY or payload['owner'] != 'local' or payload['schemaVersion'] not in {'008', '009.04', '009.05', '009.14', '009.15'}:
+    if payload['project'] != local.IDENTITY or payload['owner'] != 'local' or payload['schemaVersion'] not in {'008', '009.04', '009.05', '009.14', '009.15', '010.06', '011.09'}:
         raise ValueError('版本或归属不匹配')
     return envelope, payload
 
@@ -51,7 +51,13 @@ def main():
     parser.add_argument('--separate-mysql', action='store_true', help='restore only: verified dedicated recovery MySQL instance')
     parser.add_argument('--phase09r', action='store_true', help='use ONLY identity-checked Phase09-R source and restore containers')
     parser.add_argument('--phase10b3', action='store_true', help='use ONLY the UUID-checked Phase10B3 isolated test source; never the personal container')
+    parser.add_argument('--phase10c1', action='store_true', help='use ONLY the UUID-checked Phase10C1 isolated source and new restore schema')
+    parser.add_argument('--phase10c2', action='store_true', help='use ONLY the UUID-checked Phase10C2 isolated source and new restore schema')
     args = parser.parse_args()
+    if args.phase10c2 and (args.phase10c1 or args.phase10b3 or args.phase09r or args.separate_mysql):
+        raise ValueError('Phase10C2隔离模式不能和其他目标模式组合')
+    if args.phase10c1 and (args.phase10b3 or args.phase09r or args.separate_mysql):
+        raise ValueError('Phase10C1隔离模式不能和其他目标模式组合')
     if args.phase10b3 and (args.phase09r or args.separate_mysql):
         raise ValueError('Phase10B3隔离模式不能和其他目标模式组合')
     if args.action == 'backup' and args.separate_mysql:
@@ -61,8 +67,13 @@ def main():
         raise ValueError('仅支持本地回环 API')
     env = local.environment()
     source_container = 'northstar-english-mysql-01'
-    if args.phase10b3:
-        import phase10b3_isolated as isolated
+    if args.phase10b3 or args.phase10c1 or args.phase10c2:
+        if args.phase10c1:
+            import phase10c1_isolated as isolated
+        elif args.phase10c2:
+            import phase10c2_isolated as isolated
+        else:
+            import phase10b3_isolated as isolated
         campaign = isolated.campaign()
         role = (isolated.r.STATE / 'ACTIVE_TEST_ROLE').read_text().strip()
         state = campaign.verify(role)
@@ -92,7 +103,8 @@ def main():
         command = ['docker', 'exec', '-i', container, 'sh', '-c', 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysql -uroot --default-character-set=utf8mb4 -N --batch --raw' + (' ' + schema if schema else '')]
         result = subprocess.run(command, input=query, text=True, capture_output=True, env=env)
         if result.returncode:
-            raise RuntimeError('隔离数据库操作失败；没有覆盖现库，失败目标保留供排查。未输出私人数据。')
+            detail = result.stderr.strip().splitlines()[-1] if os.environ.get('NORTHSTAR_TRANSFER_DEBUG') and result.stderr else ''
+            raise RuntimeError('隔离数据库操作失败；没有覆盖现库，失败目标保留供排查。未输出私人数据。' + detail)
         return result.stdout
     def write(path, data):
         with os.fdopen(os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), 'wb') as f:
@@ -125,7 +137,7 @@ def main():
         print('PASS: JSON + 媒体清单 + 可用录音已校验；不含浏览器未同步缓冲。目录：' + str(args.path))
         return
     envelope, payload = load_snapshot(args.path)
-    destination = source_container if args.phase10b3 else 'northstar-english-mysql-01'
+    destination = source_container if (args.phase10b3 or args.phase10c1 or args.phase10c2) else 'northstar-english-mysql-01'
     if args.phase09r:
         phase09r.verify('restore')
         destination = phase09r.CONTAINERS['restore']
@@ -187,6 +199,19 @@ def main():
     # CREATE DATABASE deliberately has no IF NOT EXISTS, so a race cannot reuse another schema.
     target_sql('CREATE DATABASE `' + target + '` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;')
     target_sql(dump.stdout.decode(), target)
+    # Dumped triggers keep their original definer; that account needs to read the new schema or data load cannot fire its trigger bodies.
+    for definer in target_sql("SELECT DISTINCT definer FROM information_schema.triggers WHERE trigger_schema='" + target + "'").splitlines():
+        if definer:
+            user, host = definer.rsplit('@', 1)
+            target_sql("GRANT SELECT,INSERT,UPDATE,DELETE,TRIGGER ON `" + target + "`.* TO '" + user.replace("'", "''") + "'@'" + host.replace("'", "''") + "'")
+    # Freeze guards reject restoring rows into frozen sets; reload them from information_schema after the data lands.
+    guards = []
+    for name in target_sql("SELECT trigger_name FROM information_schema.triggers WHERE trigger_schema='" + target + "' ORDER BY trigger_name").splitlines():
+        if not name:
+            continue
+        event, table, timing, body = target_sql("SELECT event_manipulation,event_object_table,action_timing,action_statement FROM information_schema.triggers WHERE trigger_schema='" + target + "' AND trigger_name='" + name + "'").split('\t', 3)
+        guards.append('CREATE TRIGGER `' + name + '` ' + timing.strip() + ' ' + event.strip() + ' ON `' + target + '`.`' + table.strip() + '` FOR EACH ROW ' + body.strip())
+        target_sql('DROP TRIGGER `' + target + '`.`' + name + '`')
     commands = ['SET NAMES utf8mb4;', 'SET FOREIGN_KEY_CHECKS=1;', 'START TRANSACTION;']
     lesson_links = []
     for table in order:
@@ -209,6 +234,9 @@ def main():
         commands.append('UPDATE lesson SET current_version_id=' + literal(version) + ' WHERE id=' + literal(lesson) + ';')
     commands.append('COMMIT;')
     target_sql('\n'.join(commands), target)
+    for statement in guards:
+        # Trigger bodies contain semicolons; the CLI needs an explicit delimiter to send them whole.
+        target_sql('DELIMITER //\n' + statement + '//\nDELIMITER ;', target)
     counts_sql = ' UNION ALL '.join("SELECT '" + table + "',COUNT(*) FROM `" + table + "`" for table in payload['tables'])
     counts = dict(line.split('\t') for line in target_sql(counts_sql, target).splitlines())
     for table, data in payload['tables'].items():
@@ -222,7 +250,7 @@ def main():
     # Keep immutable history read-only. Runtime writes use the same table policy as the main instance.
     for table in ('study_resume','user_setting','command_receipt','study_stage','exercise_draft','review_item','vocabulary_favorite','reading_progress','writing_draft','personal_recording','practice_progress','quiz_progress'):
         grants.append(f"GRANT INSERT,UPDATE ON `{target}`.`{table}` TO 'northstar_app'@'%';")
-    for table in ('exercise_attempt','learning_evidence','study_event','review_source','reading_answer','writing_revision','recording_observation','quiz_run','quiz_answer','review_result'):
+    for table in ('exercise_attempt','learning_evidence','study_event','review_source','reading_answer','writing_revision','recording_observation','quiz_run','quiz_answer','quiz_run_item','review_result'):
         grants.append(f"GRANT INSERT ON `{target}`.`{table}` TO 'northstar_app'@'%';")
     target_sql('\n'.join(grants))
     print('PASS: 逐表行数与媒体哈希通过，恢复到全新隔离库 ' + target + '；没有修改当前库。')

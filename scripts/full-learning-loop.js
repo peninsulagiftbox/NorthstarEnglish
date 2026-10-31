@@ -19,6 +19,7 @@ async page => {
  assert(catalog.books.filter(b=>['nce-book-1','nce-book-2','nce-book-3','nce-book-4'].includes(b.id)).length===4,'Four original textbook catalogs retained');
  await page.getByRole('button',{name:'查看实际课程',exact:true}).first().click();
  await page.getByText('本册尚无已导入课程',{exact:true}).waitFor();
+ await page.keyboard.press('Escape'); // The reviewed catalog now uses a native modal.
  assert(await page.locator('.book-card').first().getByRole('link').count()===0,'Empty textbook catalog has no fake study links');
  await page.getByRole('link',{name:'浏览 The Neighborhood Garden',exact:true}).click();await page.getByRole('tab',{name:'课文',exact:true}).waitFor();
  await page.goto(lesson('text'));await page.getByRole('button',{name:'选择并播放句子 6',exact:true}).click();
@@ -70,7 +71,7 @@ async page => {
  stage='quiz';await page.getByRole('tab',{name:'课时测验',exact:true}).click();await page.getByRole('radio').first().waitFor();
  const quizBefore=(await get('/quiz?'+context)).history.length;
  for(const name of ['community garden','On the roof','Them please here.'])await page.getByRole('radio',{name,exact:true}).check();
- await page.getByRole('button',{name:'提交本轮三题',exact:true}).click();await page.getByRole('heading',{name:'本轮结果：1 / 3 题正确',exact:true}).waitFor();
+ await page.getByRole('button',{name:'提交本轮 3 题',exact:true}).click();await page.getByRole('heading',{name:'本轮结果：1 / 3 题正确',exact:true}).waitFor();
  const quiz=(await get('/quiz?'+context)).history;assert(quiz.length===quizBefore+1,'One real quiz run');
  const wrong=quiz[0].answers.find(a=>!a.correct);assert(wrong,'Wrong quiz answer exists');
  stage='review';await page.goto(base+'/review');await page.locator('.review-card').first().waitFor();

@@ -145,6 +145,8 @@ sh scripts/dev-up.sh
 
 Phase 10B-3 的稳定身份、版本映射与显式发布实现及隔离验收见 [阶段报告](docs/progress/PHASE_10B_3.md)。2026-10-29 经用户审核授权，本机个人库已由009.05升级009.15并完成本地前后端部署，见[部署报告](docs/progress/PHASE_10B_3_DEPLOYMENT.md)。其他实例仍须独立核对身份、新鲜备份及同候选隔离恢复，不能直接复用本机迁移授权。独立发布服务不执行DDL；普通Spring启动仍沿用Flyway机制。原学习记录不迁移到新版，历史Demo保留本地测试入口及 `legacy_unassessed` 边界。
 
+Phase 10C-1 音频通用化开发及隔离验证见[阶段报告](docs/progress/PHASE_10C_1.md)：共享音轨、逐句半开区间、整课播放与独立恢复坐标。[最终C01补验](docs/progress/PHASE_10C_1_R_C01.md)已完成240次有效数字输出测量、原生后台及原音轨人工听查签收，并最小修复跨文件倍速重置；C01 PASS、C04 PASS（隔离范围），通过范围限已记录的固定本机捕获路径。个人环境仍运行009.15，未部署本阶段迁移。当前媒体解码验证使用macOS系统`afconvert`；缺少解码器时媒体明确不可用，合法文本仍可读。
+
 ### 修改后重建
 
 先停止服务，避免覆盖运行中的 JAR 或前端构建：
@@ -214,7 +216,7 @@ Phase 02 的内容提取、重复播种、真实 MySQL 约束、媒体 HTTP 与�
 | GET | `/api/v1/lessons` | 当前可用原创课列表 |
 | GET | `/api/v1/books/{id}/lessons?cursor&limit` | 真实册内课程与稳定分页，空册不生成占位课 |
 | GET | `/api/v1/lessons/{id}/versions` | 可读取的版本列表及当前指针标识 |
-| GET | `/api/v1/lessons/{id}?versionId=...` | 当前或指定版本的段落、句子、预置讲解与独立音频 URI |
+| GET | `/api/v1/lessons/{id}?versionId=...` | 当前或指定版本的段落、句子区间、去重音轨、可选主音轨及预置讲解 |
 | GET | `/api/v1/audio/{id}` | 校验后的 MP3，支持 Range / 206 / 416 |
 | GET | `/api/v1/licenses/{id}` | 原创声明、来源及待审查状态 |
 | GET / PUT | `/api/v1/study/resume` | 浏览位置、Tab、选句与显示偏好；If-Match 防覆盖 |

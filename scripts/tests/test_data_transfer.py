@@ -15,7 +15,7 @@ class DataTransferTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as root:
             path=Path(root)/'learning.json'
             payload={'project':transfer.local.IDENTITY,'owner':'local','schemaVersion':'008'}
-            for owner,version,valid in [('local','008',True),('local','009.04',True),('local','009.05',True),('local','009.14',True),('local','009.15',True),('foreign','008',False),('local','999',False),('local','009.03',False)]:
+            for owner,version,valid in [('local','008',True),('local','009.04',True),('local','009.05',True),('local','009.14',True),('local','009.15',True),('local','010.06',True),('local','011.09',True),('foreign','008',False),('local','999',False),('local','009.03',False)]:
                 payload.update(owner=owner,schemaVersion=version)
                 raw=json.dumps(payload)
                 data={'format':'northstar.snapshot.v1','sha256':hashlib.sha256(raw.encode()).hexdigest(),'payloadJson':raw}

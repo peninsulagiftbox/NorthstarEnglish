@@ -104,7 +104,14 @@ paths:
   /reports:
     get:
       operationId: getLearningReport
-      description: Repeatable-read snapshot across all preserved lesson versions. Includes metrics, six paths per version and readingHistory. Browsing is separate from five evidence-based training stages; skip/play/favorite/draft is not an attempt. No language ability scores.
+      description: Repeatable-read snapshot across all preserved lesson versions. Includes metrics, six paths per version, quizScope, per-run quizRuns detail and readingHistory. Filters lessonId/versionId/setId/from/to apply only to quiz metrics and quizRuns (UTC, from inclusive, to exclusive; purpose must be quiz). Quiz metrics use SUM(correct_count)/SUM(total_count) over verified runs only; unverified history is counted but excluded from numerator and denominator. Browsing is separate from five evidence-based training stages; skip/play/favorite/draft is not an attempt. No language ability scores.
+      parameters:
+        - {name: lessonId, in: query, schema: {type: string}}
+        - {name: versionId, in: query, schema: {type: string}}
+        - {name: setId, in: query, schema: {type: string}}
+        - {name: from, in: query, schema: {type: string, format: date-time}, description: UTC inclusive lower bound on quiz_run.submitted_at}
+        - {name: to, in: query, schema: {type: string, format: date-time}, description: UTC exclusive upper bound on quiz_run.submitted_at}
+        - {name: purpose, in: query, schema: {type: string, enum: [quiz]}}
       responses:
         '200':
           description: Actual counts; metrics.dictation includes submitted/exactMatches and independentSubmitted/independentMatches excluding answer_exposed. Reading correct/submitted; recordings recorded/available/deleted; writing versions; quiz correct/total/runs; review due/cards; selfRatings submitted. Zero means no sample, not a fabricated percentage.
@@ -285,6 +292,11 @@ paths:
                         sequence: {type: integer, minimum: 1}
                   availableTasks: {type: array, items: {type: string}}
                   hasWritingTask: {type: boolean}
+                  audioAssets:
+                    type: array
+                    description: Deduplicated same-version assets; never exposes storageKey
+                    items: {$ref: '#/components/schemas/Sentence/properties/audio'}
+                  fullAudioAssetId: {type: string, description: Optional same-version lesson main track}
                   sentences:
                     type: array
                     minItems: 1
@@ -828,17 +840,45 @@ paths:
   /quiz:
     get:
       operationId: getQuiz
-      summary: Three frozen questions without answer keys and all immutable run/answer history
+      summary: Frozen question set (1-100 items) without answer keys, plus immutable run/answer history from per-run snapshots
       parameters:
         - {name: lessonId, in: query, required: true, schema: {type: string}}
         - {name: versionId, in: query, required: true, schema: {type: string}}
+        - {name: setId, in: query, schema: {type: string}}
       responses:
-        '200': {description: questions, state, history with run IDs, correctCount, UTC submittedAt and per-question attempt/option/result snapshots}
+        '200': {description: questions (ordinal/sequence/sentenceId, no answerKey or explanation), setId, setHash, protocolVersion quiz-submit-v2, totalCount, state, history with run IDs, correctCount/totalCount from the run snapshot, verified flag and per-question questionJson/sequence snapshots}
         '422': {description: Course/version mismatch}
+  /quiz/sets/{setId}/attempts:
+    post:
+      operationId: submitQuizSetRun
+      summary: Atomically submit a full frozen set (1-100 choices); one run, one attempt per question, evidence and review sources
+      description: Set and hash must match the frozen exercise_set; protocolVersion must be quiz-submit-v2. Parent eventId is retained on quiz_run; child receipts derive from parent and exercise ID. Same event/payload replays; different payload conflicts. Entire transaction rolls back on any rejection.
+      parameters:
+        - {name: setId, in: path, required: true, schema: {type: string}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [protocolVersion, eventId, lessonId, versionId, setId, setHash, answers, clientOccurredAt]
+              properties:
+                protocolVersion: {type: string, enum: [quiz-submit-v2]}
+                eventId: {type: string, format: uuid}
+                lessonId: {type: string, maxLength: 64}
+                versionId: {type: string, maxLength: 64}
+                setId: {type: string}
+                setHash: {type: string}
+                answers: {type: object, minProperties: 1, maxProperties: 100, additionalProperties: {type: string}, description: Frozen exercise ID to its option ID; every set item required}
+                clientOccurredAt: {type: string, format: date-time}
+      responses:
+        '200': {description: runId, correctCount, totalCount, submittedCount, setId, setHash and per-question result snapshots}
+        '409': {description: Same event with different payload, or set hash changed}
+        '422': {description: Missing/extra questions, invalid option, protocol/set mismatch or course/version mismatch}
   /quiz/attempts:
     post:
       operationId: submitQuizRun
-      summary: Atomically submit all three choices; one run, three attempts and evidence; wrong answers append deduplicated card sources
+      summary: Legacy bridge, frozen demo three-question protocol only; atomically submit all three choices; one run, three attempts and evidence
       description: Parent eventId is retained on quiz_run; stable child UUIDs derive from parent and exercise ID. Same event/payload replays before business validation; different payload conflicts. Redo uses a new parent event. Draft selections are browser IndexedDB only and are not evidence.
       requestBody:
         required: true
@@ -987,7 +1027,11 @@ components:
         showEnglish: {type: boolean}
         showTranslation: {type: boolean}
         playingSentenceId: {type: [string, "null"], maxLength: 64}
-        positionMs: {type: integer, minimum: 0, maximum: 600000}
+        positionMs: {type: integer, minimum: 0, description: "Sentence-relative offset, bounded by endMs-startMs; never asset time"}
+        playbackCoordinate: {type: [string, "null"], enum: [segment_offset_v1, null]}
+        playbackMode: {type: [string, "null"], enum: [segment, full, null]}
+        fullAssetId: {type: [string, "null"], maxLength: 64}
+        assetPositionMs: {type: [integer, "null"], minimum: 0, description: "Only in full mode; same-version main asset absolute time"}
     Book:
       type: object
       required: [id, catalogKey, sequence, title, editionLabel, availability, declaredLessonCount, metadataSource]
@@ -1055,8 +1099,9 @@ components:
         explanation: {type: string}
         focus: {type: string}
         audioAssetId: {type: string}
-        startMs: {type: integer, const: 0}
-        endMs: {type: integer, minimum: 1}
+        assetId: {type: string}
+        startMs: {type: integer, minimum: 0, description: "Inclusive asset time in milliseconds"}
+        endMs: {type: integer, minimum: 1, description: "Exclusive asset time, greater than startMs and bounded by actual media duration"}
         audio:
           type: object
           required: [id, licenseId, sourceKind, mimeType, byteSize, durationMs, sha256, status, uri]
@@ -1068,7 +1113,8 @@ components:
             byteSize: {type: integer, minimum: 1}
             durationMs: {type: integer, minimum: 1}
             sha256: {type: string, pattern: '^[a-f0-9]{64}$'}
-            status: {type: string, const: ready}
+            status: {type: string, enum: [ready, unavailable]}
+            code: {type: string, const: AUDIO_UNAVAILABLE}
             uri: {type: string}
     Problem:
       type: object

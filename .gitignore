@@ -84,3 +84,10 @@ backup*.sql
 
 # Catalog dialog raw UI evidence remains local.
 /docs/handoff/evidence/ui-catalog-dialog-20261029/**
+
+# Phase10C raw runtime evidence stays local.
+/docs/handoff/evidence/phase10c1/**
+!/docs/handoff/evidence/phase10c1/README.md
+/docs/handoff/evidence/phase10c1-r/**
+/docs/handoff/evidence/phase10c2/**
+/docs/handoff/evidence/phase10c-deployment/**
