@@ -36,8 +36,12 @@ export function QuizPanel() {
   const lock = useRef(false), alive = useRef(true);
   useEffect(() => {
     alive.current = true; let active = true;
-    setData(null); setAnswers({}); setResult(null); setPending(null); setLegacyPending(null); setLegacyDraft(null); setIncompatible(false); setReady(false);
-    request<Quiz>(`/quiz?lessonId=${lesson.id}&versionId=${lesson.versionId}`).then(async quiz => {
+    Promise.resolve().then(() => {
+      if (!active) return null;
+      setData(null); setAnswers({}); setResult(null); setPending(null); setLegacyPending(null); setLegacyDraft(null); setIncompatible(false); setReady(false);
+      return request<Quiz>(`/quiz?lessonId=${lesson.id}&versionId=${lesson.versionId}`);
+    }).then(async quiz => {
+      if (!quiz) return;
       if (!active) return;
       setData({ ...quiz, questions: [...quiz.questions].sort((a, b) => a.ordinal - b.ordinal).map(q => ({ ...q, options: shuffleChoices(q.options) })) });
       const key = quiz.setId && quiz.setHash ? scopeKey(lesson.id, lesson.versionId, quiz) : null;
