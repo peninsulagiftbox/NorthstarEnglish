@@ -44,8 +44,13 @@ def execute(run):
     m=load('source_c',b.OLD/'maintenance_backup.py');c=load('isolation_c',b.OLD/'isolated_rehearsal.py');media=load('media_c',b.OLD/'runtime_media_preflight.py')
     cmp=load('comparison_c',ROOT/'scripts/phase10c1_isolated.py')
     env=b.safe_env();b.identity(m,c,env)
-    assert health(8085)['migrationVersion']=='009.15' and health(3100)['migrationVersion']=='009.15'
-    processes=b.services();paths=dict(content=ROOT/'content',recordings=Path.home()/'Library/Application Support/NorthstarEnglish/recordings/northstar_english')
+    assert m.sql('SELECT version FROM flyway_schema_history ORDER BY installed_rank DESC LIMIT 1').strip()=='009.15'
+    if all(local.available(p) for p in (8085,3100)):
+        processes={}
+    else:
+        assert health(8085)['migrationVersion']=='009.15' and health(3100)['migrationVersion']=='009.15'
+        processes=b.services()
+    paths=dict(content=ROOT/'content',recordings=Path.home()/'Library/Application Support/NorthstarEnglish/recordings/northstar_english')
     assert shutil.disk_usage(ROOT).free>4*1024**3
     b.save(private/'previous-services.json',processes);shutil.copyfile(ROOT/'apps/api/target/northstar-api-0.1.0-SNAPSHOT.jar',private/'previous-api.jar')
     result=dict(gitSha=head,status='BLOCKED',sourceMigrationAttempted=False);created=False
@@ -67,7 +72,8 @@ def execute(run):
         local.wait_health('http://127.0.0.1:8085/api/v1/health')
         cli=ROOT/'node_modules/next/dist/bin/next';local.start_process('web',['node',str(cli),'start','--hostname','127.0.0.1','--port','3100'],ROOT/'apps/web',env,str(cli));local.wait_health('http://127.0.0.1:3100/api/v1/health')
     try:
-        for name in ('web','api'):b.stop_record(processes[name]['record'])
+        for name in ('web','api'):
+            if name in processes:b.stop_record(processes[name]['record'])
         assert all(local.available(p) for p in (3100,8085))
         before=m.snapshot();backup=private/'backup';backup.mkdir();b.save(backup/'source-snapshot.json',before)
         clean=copy.deepcopy(before)
