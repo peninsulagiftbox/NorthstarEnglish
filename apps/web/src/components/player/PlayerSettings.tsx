@@ -20,14 +20,14 @@ export function PlayerSettings({ media, controller, sentence, sentenceCount, has
     close.current?.focus({ preventScroll: true });
     return () => previous?.focus({ preventScroll: true });
   }, []);
-  const ready = media.sentenceId === sentence.id && media.duration > 0 && !['loading', 'error'].includes(media.status);
+  const ready = media.mode !== 'full' && media.sentenceId === sentence.id && media.duration > 0 && !['loading', 'error'].includes(media.status);
   const valid = ready && validAB(media.a, media.b, media.duration);
   const hint = media.ab ? media.status === 'playing' ? '正在循环播放所选区间' : 'A–B 已开启，点击底部播放即可复读。' : media.a === null ? '在底部进度条定位起点，然后设置 A。' : media.b === null ? '起点已设置，向后定位并设置 B。' : !valid ? '终点需晚于起点，请向后定位并重新设置 B。' : `已选 ${(media.b! - media.a!).toFixed(2)} 秒，可开启循环。`;
   return <section id="player-settings" className="player-settings" aria-label="播放设置面板">
     <header className="settings-header"><div><h3>播放设置</h3><p>第 {String(sentence.sequence).padStart(2, '0')} 句 <span aria-hidden="true">·</span> {statusLabels[media.status]}</p></div><button ref={close} type="button" className="settings-close" aria-label="关闭" title="关闭播放设置" onClick={onClose}>×</button></header>
     <div className="settings-body">
       <div className="settings-playback"><div className="settings-field-heading"><h4 id="playback-mode-label">播放模式</h4><span>{options.find(o => o.value === media.mode)?.hint}</span></div>
-        <select aria-label="播放模式" value={media.mode} disabled={!controller} onChange={event => controller?.mode(event.target.value as MediaState['mode'])}>{options.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}</select>
+        <select aria-label="播放模式" value={media.mode} disabled={!controller} onChange={event => controller?.mode(event.target.value as MediaState['mode'])}>{[...options, ...(controller?.fullTrack ? [{ value: 'full' as const, label: '整课音轨', hint: '保留片头和句间静音' }] : [])].map(option => <option key={option.value} value={option.value}>{option.label}</option>)}</select>
         <nav className="settings-sentence-nav" aria-label="切换播放句子"><Button aria-label="上一句" disabled={!controller || sentence.sequence <= 1} onClick={() => onMove(-1)}>‹ 上一句</Button><span>{String(sentence.sequence).padStart(2, '0')} <span aria-hidden="true">/</span> {String(sentenceCount).padStart(2, '0')}</span><Button aria-label="下一句" disabled={!controller || sentence.sequence >= sentenceCount} onClick={() => onMove(1)}>下一句 ›</Button></nav>
       </div>
       {media.error && <div className="settings-audio-error" role="alert"><p>{media.error}</p><Button onClick={() => void controller?.playTrack(sentence.id)}>重试播放</Button></div>}
@@ -41,7 +41,7 @@ export function PlayerSettings({ media, controller, sentence, sentenceCount, has
           </>}
         </div>}
       </section>
-      <details className="settings-help"><summary>时间点与复读说明</summary><div><p className="settings-legend"><span><i className="legend-word" /> 单词起点</span><span><i className="legend-sentence" /> 音频起点</span><span><i className="legend-sentence" /> 句末发音结束</span><span><i className="legend-end">终</i> 音频终点</span></p><p>{hasWordTimings ? '单词时间点由合成语音自动提供，尚未经人工逐词校正。' : '当前版本没有单词时间点，仅显示本句起点。'}</p><p>句末大点位于句末标点前最后一个单词的发音结束处。</p><p>A–B 仅在当前句内循环；浏览器后台不保证采样级精度。</p></div></details>
+      <details className="settings-help"><summary>时间点与复读说明</summary><div><p className="settings-legend"><span><i className="legend-word" /> 单词起点</span><span><i className="legend-sentence" /> 音频起点</span><span><i className="legend-sentence" /> 句末发音结束</span><span><i className="legend-end">终</i> 音频终点</span></p><p>{hasWordTimings ? '单词时间点由合成语音自动提供，尚未经人工逐词校正。' : '当前版本没有单词时间点，仅显示本句起点。'}</p><p>句末大点位于句末标点前最后一个单词的发音结束处。</p><p>A–B 仅在当前句内循环；切到后台时逐句播放暂停，返回前台后点击恢复。</p></div></details>
     </div>
   </section>;
 }

@@ -11,7 +11,11 @@ import { lessonHref, resolveContext } from './context';
 import { Button, Message } from '@/components/ui/Primitives';
 import Link from 'next/link';
 
-type Workspace = { preferences: Preferences | null; lesson: Lesson; checkpoint: Checkpoint; update: (patch: Partial<Checkpoint>) => void; sync: string; syncError: boolean; playback: Pick<Checkpoint, "playingSentenceId" | "positionMs">; savePlayback: (id: string, ms: number) => void };
+export type Playback = Pick<Checkpoint, 'playingSentenceId' | 'positionMs' | 'playbackCoordinate' | 'playbackMode' | 'fullAssetId' | 'assetPositionMs'>;
+type Workspace = { preferences: Preferences | null; lesson: Lesson; checkpoint: Checkpoint; update: (patch: Partial<Checkpoint>) => void; sync: string; syncError: boolean; playback: Playback; savePlayback: (value: Playback) => void };
+// A new version must read its CAS revision after this tab's already dispatched write settles.
+// Other tabs still produce an explicit 412; this does not retry or overwrite their checkpoint.
+let pendingResumeWrite: Promise<void> = Promise.resolve();
 const Context = createContext<Workspace | null>(null);
 export function useLesson() { const value = useContext(Context); if (!value) throw new Error('LessonProvider required'); return value; }
 export function LessonProvider({ lessonId, children }: { lessonId: string; children: ReactNode }) {
@@ -21,8 +25,8 @@ export function LessonProvider({ lessonId, children }: { lessonId: string; child
 function VersionedLessonProvider({ lessonId, versionId, children }: { lessonId: string; versionId: string | null; children: ReactNode }) {
   const params = useSearchParams();
   const [loaded, setLoaded] = useState<{ lesson: Lesson; resume: Resume | null; preferences: Preferences | null } | null>(null);
-  const [playback, setPlayback] = useState<Pick<Checkpoint, 'playingSentenceId' | 'positionMs'>>({});
-  const savePlayback = useCallback((id: string, ms: number) => setPlayback(old => old.playingSentenceId === id && old.positionMs === ms ? old : { playingSentenceId: id, positionMs: ms }), []);
+  const [playback, setPlayback] = useState<Playback>({});
+  const savePlayback = useCallback((value: Playback) => setPlayback(old => JSON.stringify(old) === JSON.stringify(value) ? old : value), []);
   const [error, setError] = useState<ApiError | Error | null>(null);
   const [retry, setRetry] = useState(0);
   const [sync, setSync] = useState('正在读取浏览位置…');
@@ -32,7 +36,7 @@ function VersionedLessonProvider({ lessonId, versionId, children }: { lessonId: 
   const queue = useRef<Promise<void>>(Promise.resolve());
   useEffect(() => {
     let active = true;
-    Promise.all([getLesson(lessonId, versionId ?? undefined), getResume().then(resume => ({ resume, failed: false })).catch(() => ({ resume: null, failed: true })), getPreferences().catch(() => null)]).then(([lesson, result, preferences]) => {
+    Promise.all([getLesson(lessonId, versionId ?? undefined), pendingResumeWrite.then(() => getResume()).then(resume => ({ resume, failed: false })).catch(() => ({ resume: null, failed: true })), getPreferences().catch(() => null)]).then(([lesson, result, preferences]) => {
       if (!active) return;
       if (!lesson.sentences.length) { setError(new Error('本课暂无可浏览句子。')); return; }
       revision.current = result.failed ? null : result.resume?.rowVersion ?? 0;
@@ -42,7 +46,7 @@ function VersionedLessonProvider({ lessonId, versionId, children }: { lessonId: 
       const sourceAttempt = new URLSearchParams(window.location.search).get('attempt');
       const sourceQuery = sourceAttempt && /^[0-9a-f-]{36}$/i.test(sourceAttempt) ? `&attempt=${encodeURIComponent(sourceAttempt)}` : '';
       window.history.replaceState(null, '', lessonHref(checkpoint) + sourceQuery);
-      if (result.resume?.versionId === lesson.versionId) setPlayback({ playingSentenceId: result.resume.playingSentenceId, positionMs: result.resume.positionMs });
+      if (result.resume?.versionId === lesson.versionId) setPlayback({ playingSentenceId: result.resume.playingSentenceId, positionMs: result.resume.positionMs, playbackCoordinate: result.resume.playbackCoordinate, playbackMode: result.resume.playbackMode, fullAssetId: result.resume.fullAssetId, assetPositionMs: result.resume.assetPositionMs });
       setLoaded({ lesson, resume: result.resume, preferences });
     }).catch(e => { if (active) setError(e); });
     return () => { active = false; };
@@ -67,6 +71,7 @@ function VersionedLessonProvider({ lessonId, versionId, children }: { lessonId: 
           setSync(e instanceof Error ? e.message : '浏览位置保存失败，请重新载入后重试。'); setSyncError(true);
         }
       });
+      pendingResumeWrite = queue.current;
     }, 350);
     return () => { active = false; clearTimeout(timer); };
   }, [serialized]);

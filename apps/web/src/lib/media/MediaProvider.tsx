@@ -14,22 +14,31 @@ export function MediaProvider({ children }: { children: ReactNode }) {
   const [controller, setController] = useState<AudioController | null>(null);
   const [media, setMedia] = useState(initialMedia);
   useEffect(() => {
-    const player = new AudioController(lesson.sentences.map(s => ({ id: s.id, uri: s.audio.uri })), state => { latestMedia.current = state; setMedia(state); }, audio.current!);
+    const full = lesson.audioAssets?.find(a => a.id === lesson.fullAudioAssetId);
+    const player = new AudioController(lesson.sentences.map(s => ({ id: s.id, uri: s.audio.uri, assetId: s.audio.id, startMs: s.startMs ?? 0, endMs: s.endMs ?? s.audio.durationMs })), state => { latestMedia.current = state; setMedia(state); }, audio.current!, full ? { assetId: full.id, uri: full.uri, durationMs: full.durationMs } : undefined);
     player.speed(preferences?.defaultSpeed ?? 1);
     setController(player);
-    if (playback.playingSentenceId) player.load(playback.playingSentenceId, (playback.positionMs ?? 0) / 1000);
+    if (playback.playbackMode === 'full' && playback.fullAssetId === full?.id) player.loadFull(playback.assetPositionMs ?? 0);
+    else if (playback.playingSentenceId) player.load(playback.playingSentenceId, (playback.positionMs ?? 0) / 1000);
     return () => player.dispose();
     // Restore only once per immutable lesson; subsequent state comes from the element.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lesson]);
   useEffect(() => { controller?.pause(); }, [controller, checkpoint.tab]);
   useEffect(() => {
-    const save = () => { const state = latestMedia.current; if (state.sentenceId && state.duration && state.status !== 'loading') savePlayback(state.sentenceId, Math.floor(state.time * 1000)); };
-    const timer = setInterval(save, 1500); return () => { clearInterval(timer); save(); };
-  }, [savePlayback]);
+    const save = () => {
+      const state = latestMedia.current;
+      if (!state.duration || ['idle', 'loading', 'error'].includes(state.status)) return;
+      savePlayback({ playingSentenceId: state.sentenceId, positionMs: Math.floor(state.segmentOffsetMs), playbackCoordinate: 'segment_offset_v1', playbackMode: state.mode === 'full' ? 'full' : 'segment', fullAssetId: state.mode === 'full' ? state.assetId : null, assetPositionMs: state.mode === 'full' ? Math.floor(state.assetTimeMs) : null });
+    };
+    const visibility = () => { if (document.hidden) { controller?.background(); save(); } };
+    const timer = setInterval(save, 1500);
+    document.addEventListener('visibilitychange', visibility);
+    return () => { clearInterval(timer); document.removeEventListener('visibilitychange', visibility); save(); };
+  }, [controller, savePlayback]);
   useEffect(() => {
-    if (media.sentenceId && media.duration && ['paused', 'ended'].includes(media.status)) savePlayback(media.sentenceId, Math.floor(media.time * 1000));
-  }, [media.sentenceId, media.status, media.time, media.duration, savePlayback]);
+    if (media.duration && media.assetDurationMs && ['paused', 'ended'].includes(media.status)) savePlayback({ playingSentenceId: media.sentenceId, positionMs: Math.floor(media.segmentOffsetMs), playbackCoordinate: 'segment_offset_v1', playbackMode: media.mode === 'full' ? 'full' : 'segment', fullAssetId: media.mode === 'full' ? media.assetId : null, assetPositionMs: media.mode === 'full' ? Math.floor(media.assetTimeMs) : null });
+  }, [media, savePlayback]);
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
       if (preferences?.shortcutEnabled === false || captureBusy || !controller || ignoreShortcut(event)) return;

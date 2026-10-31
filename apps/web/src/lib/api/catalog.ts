@@ -12,9 +12,10 @@ export type BookLesson = LessonSummary & { readable: boolean; publicationState?:
 export type LessonPage = { items: BookLesson[]; nextCursor: string | null };
 export type LessonVersion = { versionId: string; number: number; isCurrent: boolean; readable: boolean; publicationState?: PublicationState; contentReadiness?: ContentReadiness; targetSentenceId?: string; mappingStatus?: string; relation?: string };
 export type Paragraph = { id: string; stableKey: string; identityId?: string; sequence: number };
-export type Sentence = { id: string; identityId?: string; sequence: number; paragraphId?: string; speaker: string; text: string; translation: string; explanation: string; focus: string; audio: { id: string; uri: string; durationMs: number; sourceKind?: AudioSourceKind; sha256?: string; status: string } };
-export type Lesson = LessonSummary & { sentences: Sentence[]; paragraphs?: Paragraph[]; hasHistoricalEvidence?: boolean; explanationLabel: string; audioLabel?: string; availableTasks?: string[]; hasWritingTask?: boolean; licenses?: { sourceRef: string; reviewStatus: string; sourceType: string }[] };
-export type Checkpoint = { lessonId: string; versionId: string; sentenceId: string; tab: string; showEnglish: boolean; showTranslation: boolean; playingSentenceId?: string | null; positionMs?: number };
+export type AudioAsset = { id: string; uri: string; durationMs: number; sourceKind?: AudioSourceKind; sha256?: string; status: string; code?: string };
+export type Sentence = { id: string; identityId?: string; sequence: number; paragraphId?: string; speaker: string; text: string; translation: string; explanation: string; focus: string; assetId?: string; audioAssetId?: string; startMs?: number; endMs?: number; audio: AudioAsset };
+export type Lesson = LessonSummary & { sentences: Sentence[]; audioAssets?: AudioAsset[]; fullAudioAssetId?: string; paragraphs?: Paragraph[]; hasHistoricalEvidence?: boolean; explanationLabel: string; audioLabel?: string; availableTasks?: string[]; hasWritingTask?: boolean; licenses?: { sourceRef: string; reviewStatus: string; sourceType: string }[] };
+export type Checkpoint = { lessonId: string; versionId: string; sentenceId: string; tab: string; showEnglish: boolean; showTranslation: boolean; playingSentenceId?: string | null; positionMs?: number; playbackCoordinate?: 'segment_offset_v1' | null; playbackMode?: 'segment' | 'full' | null; fullAssetId?: string | null; assetPositionMs?: number | null };
 export type Resume = Checkpoint & { sessionId: string; rowVersion: number };
 
 export async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -44,15 +45,31 @@ export function validateLesson(value: unknown, id: string, versionId?: string): 
   const ids = new Set<string>();
   for (const sentence of lesson.sentences) {
     if (!sentence || typeof sentence.id !== 'string' || ids.has(sentence.id) || !Number.isInteger(sentence.sequence)
-        || typeof sentence.text !== 'string' || !sentence.audio || sentence.audio.status !== 'ready'
+        || typeof sentence.text !== 'string' || !sentence.audio || !['ready', 'unavailable'].includes(sentence.audio.status)
         || sentence.audio.uri !== `/api/v1/audio/${sentence.audio.id}`) throw new ApiError('句子或音频关联无效。', 503, 'INVALID_CONTENT');
     if (sentence.identityId !== undefined) {
       if (!sentence.identityId || identities.has(sentence.identityId)) throw new ApiError('版本内稳定身份重复。', 503, 'INVALID_CONTENT');
       identities.add(sentence.identityId);
     }
     if (sentence.audio.sourceKind !== undefined && !['original_tts', 'original_recording', 'licensed_audio'].includes(sentence.audio.sourceKind)) throw new ApiError('音频来源类型无效。', 503, 'INVALID_CONTENT');
+    const start = sentence.startMs ?? 0, end = sentence.endMs ?? sentence.audio.durationMs;
+    if (!Number.isInteger(start) || !Number.isInteger(end) || start < 0 || end <= start || !Number.isInteger(sentence.audio.durationMs) || end > sentence.audio.durationMs
+        || (sentence.assetId !== undefined && sentence.assetId !== sentence.audio.id) || (sentence.audioAssetId !== undefined && sentence.audioAssetId !== sentence.audio.id)) throw new ApiError('句子时间范围无效。', 503, 'INVALID_CONTENT');
     ids.add(sentence.id);
   }
+  const ends = new Map<string, number>();
+  for (const sentence of lesson.sentences) {
+    const start = sentence.startMs ?? 0, end = sentence.endMs ?? sentence.audio.durationMs;
+    if (start < (ends.get(sentence.audio.id) ?? 0)) throw new ApiError('同音轨句子区间重叠或逆序。', 503, 'INVALID_CONTENT');
+    ends.set(sentence.audio.id, end);
+  }
+  if (lesson.audioAssets) {
+    const assets = new Map(lesson.audioAssets.map(a => [a.id, a]));
+    if (assets.size !== lesson.audioAssets.length || lesson.sentences.some(s => {
+      const asset = assets.get(s.audio.id); return !asset || asset.uri !== s.audio.uri || asset.sha256 !== s.audio.sha256 || asset.durationMs !== s.audio.durationMs || asset.status !== s.audio.status;
+    }) || (lesson.fullAudioAssetId && !assets.has(lesson.fullAudioAssetId))) throw new ApiError('音轨清单或主音轨关联无效。', 503, 'INVALID_CONTENT');
+    for (const asset of assets.values()) if (!Number.isInteger(asset.durationMs) || asset.durationMs <= 0 || asset.uri !== `/api/v1/audio/${asset.id}` || !['ready', 'unavailable'].includes(asset.status)) throw new ApiError('音轨清单无效。', 503, 'INVALID_CONTENT');
+  } else if (lesson.fullAudioAssetId) throw new ApiError('主音轨缺少清单。', 503, 'INVALID_CONTENT');
   if (lesson.paragraphs) {
     const paragraphs = new Set(lesson.paragraphs.map(p => p.id));
     if (paragraphs.size !== lesson.paragraphs.length || lesson.sentences.some(s => !s.paragraphId || !paragraphs.has(s.paragraphId))) throw new ApiError('段落关联无效。', 503, 'INVALID_CONTENT');

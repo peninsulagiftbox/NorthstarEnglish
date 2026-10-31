@@ -10,6 +10,10 @@ import type { ReadingQuestionData, ReadingResult } from '@/lib/api/reading';
 
 export function ReadingQuestion({ question, reload }: { question: ReadingQuestionData; reload: () => Promise<void> }) {
   const { lesson, update } = useLesson();
+  const sourceLabel = (sentenceId: string) => {
+    const sentence = lesson.sentences.find(item => item.id === sentenceId);
+    return sentence ? `来源句（第 ${sentence.sequence} 句）` : '来源句';
+  };
   const key = `northstar:reading:${lesson.versionId}:${question.id}`;
   const [options, setOptions] = useState(() => shuffleChoices(question.options));
   const [selected, setSelected] = useState(''), [pending, setPending] = useState<Command | null>(null);
@@ -50,8 +54,8 @@ export function ReadingQuestion({ question, reload }: { question: ReadingQuestio
     <p className="reading-save-status" role="status">{busy ? '正在保存，请稍候…' : '\u00a0'}</p>
     {error && <Message error>{error}</Message>}
     {pending && !busy && <Message>保留了一次待确认提交；重试会沿用原事件，不新建作答。<Button onClick={() => void send(undefined, true)}>重试原提交</Button></Message>}
-    {result && <div className="reading-feedback" ref={feedback} tabIndex={-1} role="status"><h4>{result.correct ? '回答正确' : '本次答错 · 已加入复习来源'}</h4><p>正确选项：<span lang="en">{result.correctText}</span></p><p>第 6 句证据：<mark lang="en">{result.standardText}</mark></p><p>{result.explanation}</p><EvidenceLink sentenceId={result.sentenceId} /></div>}
-    <details className="reading-history"><summary>答题历史（{question.history.length} 次）</summary>{!question.history.length ? <p>还没有正式作答。浏览、收藏、暂停或跳过都不计练习完成。</p> : <ol>{question.history.map((item, index) => { const saved = JSON.parse(item.resultJson) as ReadingResult; return <li key={item.attemptId}><p>{index === question.history.length - 1 ? '首次作答' : '重做'} · {new Date(item.recordedAt).toLocaleString('zh-CN')} · {item.correct ? '正确' : '错误'}</p><p lang="en">你的选择：{question.options.find(o => o.id === item.optionId)?.text}</p><p>第 6 句证据：{saved.standardText}</p><EvidenceLink sentenceId={saved.sentenceId} /></li>; })}</ol>}</details>
+    {result && <div className="reading-feedback" ref={feedback} tabIndex={-1} role="status"><h4>{result.correct ? '回答正确' : '本次答错 · 已加入复习来源'}</h4><p>正确选项：<span lang="en">{result.correctText}</span></p>{result.standardText ? <p>{sourceLabel(result.sentenceId)}：<mark lang="en">{result.standardText}</mark></p> : null}{result.explanation ? <p>{result.explanation}</p> : null}{!result.standardText && !result.explanation && <p>暂无本地预置讲解。</p>}<EvidenceLink sentenceId={result.sentenceId} />{!lesson.sentences.some(item => item.id === result.sentenceId) && <p className="muted">未找到本条来源句的全文上下文。</p>}</div>}
+    <details className="reading-history"><summary>答题历史（{question.history.length} 次）</summary>{!question.history.length ? <p>还没有正式作答。浏览、收藏、暂停或跳过都不计练习完成。</p> : <ol>{question.history.map((item, index) => { const saved = JSON.parse(item.resultJson) as ReadingResult; return <li key={item.attemptId}><p>{index === question.history.length - 1 ? '首次作答' : '重做'} · {new Date(item.recordedAt).toLocaleString('zh-CN')} · {item.correct ? '正确' : '错误'}</p><p lang="en">你的选择：{question.options.find(o => o.id === item.optionId)?.text}</p><p>{saved.standardText ? `${sourceLabel(saved.sentenceId)}：${saved.standardText}` : '本条作答无已保存来源句。'}</p><EvidenceLink sentenceId={saved.sentenceId} /></li>; })}</ol>}</details>
     <p className="boundary">答错也是真实练习；收藏和正确一次均不代表已掌握。可继续浏览或跳过本轮，历史作答会保留。</p>
   </section>;
 }
