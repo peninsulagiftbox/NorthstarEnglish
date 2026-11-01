@@ -26,7 +26,7 @@ def load_snapshot(path):
     if digest(envelope['payloadJson'].encode()) != envelope['sha256']:
         raise ValueError('校验和不匹配')
     payload = json.loads(envelope['payloadJson'])
-    if payload['project'] != local.IDENTITY or payload['owner'] != 'local' or payload['schemaVersion'] not in {'008', '009.04', '009.05', '009.14', '009.15', '010.06', '011.09'}:
+    if payload['project'] != local.IDENTITY or payload['owner'] != 'local' or payload['schemaVersion'] not in {'008', '009.04', '009.05', '009.14', '009.15', '010.06', '011.09', '012.01', '012.02', '012.03', '012.04', '012.05', '012.06', '012.07'}:
         raise ValueError('版本或归属不匹配')
     return envelope, payload
 
@@ -53,7 +53,10 @@ def main():
     parser.add_argument('--phase10b3', action='store_true', help='use ONLY the UUID-checked Phase10B3 isolated test source; never the personal container')
     parser.add_argument('--phase10c1', action='store_true', help='use ONLY the UUID-checked Phase10C1 isolated source and new restore schema')
     parser.add_argument('--phase10c2', action='store_true', help='use ONLY the UUID-checked Phase10C2 isolated source and new restore schema')
+    parser.add_argument('--phase10d', action='store_true', help='use ONLY the UUID-checked Phase10D isolated source and new restore schema')
     args = parser.parse_args()
+    if args.phase10d and (args.phase10c2 or args.phase10c1 or args.phase10b3 or args.phase09r or args.separate_mysql):
+        raise ValueError('Phase10D隔离模式不能和其他目标模式组合')
     if args.phase10c2 and (args.phase10c1 or args.phase10b3 or args.phase09r or args.separate_mysql):
         raise ValueError('Phase10C2隔离模式不能和其他目标模式组合')
     if args.phase10c1 and (args.phase10b3 or args.phase09r or args.separate_mysql):
@@ -67,11 +70,13 @@ def main():
         raise ValueError('仅支持本地回环 API')
     env = local.environment()
     source_container = 'northstar-english-mysql-01'
-    if args.phase10b3 or args.phase10c1 or args.phase10c2:
+    if args.phase10b3 or args.phase10c1 or args.phase10c2 or args.phase10d:
         if args.phase10c1:
             import phase10c1_isolated as isolated
         elif args.phase10c2:
             import phase10c2_isolated as isolated
+        elif args.phase10d:
+            import phase10d_isolated as isolated
         else:
             import phase10b3_isolated as isolated
         campaign = isolated.campaign()
@@ -137,7 +142,7 @@ def main():
         print('PASS: JSON + 媒体清单 + 可用录音已校验；不含浏览器未同步缓冲。目录：' + str(args.path))
         return
     envelope, payload = load_snapshot(args.path)
-    destination = source_container if (args.phase10b3 or args.phase10c1 or args.phase10c2) else 'northstar-english-mysql-01'
+    destination = source_container if (args.phase10b3 or args.phase10c1 or args.phase10c2 or args.phase10d) else 'northstar-english-mysql-01'
     if args.phase09r:
         phase09r.verify('restore')
         destination = phase09r.CONTAINERS['restore']
@@ -250,7 +255,7 @@ def main():
     # Keep immutable history read-only. Runtime writes use the same table policy as the main instance.
     for table in ('study_resume','user_setting','command_receipt','study_stage','exercise_draft','review_item','vocabulary_favorite','reading_progress','writing_draft','personal_recording','practice_progress','quiz_progress'):
         grants.append(f"GRANT INSERT,UPDATE ON `{target}`.`{table}` TO 'northstar_app'@'%';")
-    for table in ('exercise_attempt','learning_evidence','study_event','review_source','reading_answer','writing_revision','recording_observation','quiz_run','quiz_answer','quiz_run_item','review_result'):
+    for table in ('exercise_attempt','learning_evidence','study_event','review_source','reading_answer','writing_revision','recording_observation','quiz_run','quiz_answer','quiz_run_item','review_result','attempt_knowledge'):
         grants.append(f"GRANT INSERT ON `{target}`.`{table}` TO 'northstar_app'@'%';")
     target_sql('\n'.join(grants))
     print('PASS: 逐表行数与媒体哈希通过，恢复到全新隔离库 ' + target + '；没有修改当前库。')
