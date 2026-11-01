@@ -34,9 +34,10 @@ public final class ContentPublication {
     public String snapshot(String version){
         var result=new TreeMap<String,Object>();
         result.put("version",db.queryForList("SELECT id,lesson_id,version_no,license_id,content_sha256,manifest_sha256,payload_json,content_readiness,schema_version FROM lesson_version WHERE id=?",version));
-        for(String table:List.of("paragraph","sentence","audio_asset","exercise","knowledge_point","reading_question","reading_option","writing_task","writing_source","quiz_question","exercise_set","exercise_set_item")) {
-            String where=switch(table){case "paragraph","exercise","knowledge_point","reading_question","writing_task","writing_source","quiz_question","exercise_set","exercise_set_item"->"version_id=?";case "reading_option"->"exercise_id IN (SELECT id FROM exercise WHERE version_id=?)";default->"lesson_version_id=?";};
-            result.put(table,db.queryForList("SELECT * FROM "+table+" WHERE "+where+" ORDER BY "+(table.equals("reading_question")||table.equals("quiz_question")?"exercise_id":table.equals("writing_source")?"task_id,sentence_id":table.equals("exercise_set_item")?"set_id,ordinal":"id"),version));
+        for(String table:List.of("paragraph","sentence","audio_asset","exercise","knowledge_point","reading_question","reading_option","writing_task","writing_source","quiz_question","exercise_set","exercise_set_item","knowledge_occurrence","legacy_knowledge_link","exercise_sentence","exercise_knowledge","knowledge_projection")) {
+            String where=switch(table){case "paragraph","exercise","knowledge_point","reading_question","writing_task","writing_source","quiz_question","exercise_set","exercise_set_item","knowledge_occurrence","legacy_knowledge_link","exercise_sentence","exercise_knowledge","knowledge_projection"->"version_id=?";case "reading_option"->"exercise_id IN (SELECT id FROM exercise WHERE version_id=?)";default->"lesson_version_id=?";};
+            String order=switch(table){case "reading_question","quiz_question"->"exercise_id";case "writing_source"->"task_id,sentence_id";case "exercise_set_item"->"set_id,ordinal";case "legacy_knowledge_link"->"knowledge_point_id";case "exercise_sentence"->"exercise_id,sentence_id";case "exercise_knowledge"->"exercise_id,occurrence_id";case "knowledge_projection"->"version_id";default->"id";};
+            result.put(table,db.queryForList("SELECT * FROM "+table+" WHERE "+where+" ORDER BY "+order,version));
         }
         if("northstar.local.audio.v1".equals(db.queryForObject("SELECT schema_version FROM lesson_version WHERE id=?",String.class,version))) {
             result.put("lesson_audio",db.queryForList("SELECT * FROM lesson_audio WHERE version_id=?",version));
@@ -135,6 +136,15 @@ public final class ContentPublication {
             check(options.size()>=2 && options.size()<=8 && options.contains(question.path("answerKey").asText()),"INVALID_EXERCISE");
         }
         check(db.queryForObject("SELECT COUNT(*) FROM quiz_question WHERE version_id=?",Integer.class,version)<=100,"UNSUPPORTED_QUIZ_SIZE");
+        // Knowledge relations must be a frozen, reviewed projection before a version can validate or publish.
+        int relations=db.queryForObject("SELECT (SELECT COUNT(*) FROM knowledge_occurrence WHERE version_id=?) + (SELECT COUNT(*) FROM legacy_knowledge_link WHERE version_id=?) + (SELECT COUNT(*) FROM exercise_sentence WHERE version_id=?) + (SELECT COUNT(*) FROM exercise_knowledge WHERE version_id=?)",Integer.class,version,version,version,version);
+        boolean projection=db.queryForObject("SELECT COUNT(*) FROM knowledge_projection WHERE version_id=?",Integer.class,version)==1;
+        check(relations==0 || projection,"KNOWLEDGE_PROJECTION_MISSING");
+        if(relations>0) {
+            check(local.northstar.knowledge.KnowledgeRegistrationCli.projectionFrozen(db,version),"KNOWLEDGE_PROJECTION_NOT_FROZEN");
+            check(local.northstar.knowledge.KnowledgeRegistrationCli.relationsHash(db,version).equals(db.queryForObject("SELECT relations_sha256 FROM knowledge_projection WHERE version_id=?",String.class,version)),"KNOWLEDGE_RELATIONS_CHANGED");
+            check(db.queryForObject("SELECT COUNT(*) FROM knowledge_occurrence o JOIN knowledge_concept_revision r ON r.id=o.revision_id WHERE o.version_id=? AND r.review_status<>'confirmed'",Integer.class,version)==0,"KNOWLEDGE_REVISION_UNCONFIRMED");
+        }
     }
     /** Freezes a draft only after successful local basic validation. No lifecycle demotion or revalidation overwrite. */
     public String validate(String lesson,String version,String reviewer){

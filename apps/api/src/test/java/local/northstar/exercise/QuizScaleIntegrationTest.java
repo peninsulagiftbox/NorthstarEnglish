@@ -18,6 +18,7 @@ import tools.jackson.databind.json.JsonMapper;
 class QuizScaleIntegrationTest {
     private final JsonMapper mapper=JsonMapper.builder().build();
     private final HttpClient client=HttpClient.newHttpClient();
+    @Test void singleQuestionSetSubmitsWithVerifiedRun() throws Exception {run(1);}
     @Test void twelveQuestionSetSubmitsWithVerifiedRun() throws Exception {run(12);}
     @Test void hundredQuestionSetSubmitsCompletelyWithoutTruncation() throws Exception {run(100);}
     private void run(int count) throws Exception {

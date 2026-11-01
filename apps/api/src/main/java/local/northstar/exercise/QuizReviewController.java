@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
+import local.northstar.knowledge.KnowledgeSources;
 
 @RestController
 public class QuizReviewController {
@@ -53,7 +54,7 @@ public class QuizReviewController {
         var history=jdbc.queryForList("SELECT id,correct_count AS correctCount,total_count AS totalCount,submitted_count AS submittedCount,set_id AS setId,set_hash AS setHash,exposure_status AS exposureStatus,submitted_at AS submittedAt FROM quiz_run WHERE lesson_id=? AND version_id=? ORDER BY submitted_at DESC,id",lessonId,versionId);
         boolean visible=true;try{context(lessonId,versionId);}catch(RuntimeException inaccessible){visible=false;}
         for(var run:history) {
-            run.put("verified",true);
+            run.put("verified",QuizSets.verifiedRun(jdbc,run.get("id")));
             run.put("answers",visible?jdbc.queryForList("SELECT i.exercise_id AS exerciseId,i.sentence_id AS sentenceId,i.attempt_id AS attemptId,i.option_id AS optionId,i.ordinal,CAST(i.question_json AS CHAR CHARACTER SET utf8mb4) AS questionJson,a.correct,a.result_json AS resultJson,s.sequence_no AS sequence FROM quiz_run_item i JOIN exercise_attempt a ON a.id=i.attempt_id JOIN sentence s ON s.id=i.sentence_id WHERE i.run_id=? ORDER BY i.ordinal",run.get("id")):List.of());
             run.put("contentAvailable",visible);
         }
@@ -103,6 +104,7 @@ public class QuizReviewController {
                 jdbc.update("INSERT INTO learning_evidence(id,attempt_id,event_id) VALUES (?,?,?)",UUID.randomUUID().toString(),attempt,event);
                 var source=questions.stream().filter(q->q.get("exercise_id").equals(id)).findFirst().orElseThrow();
                 jdbc.update("INSERT INTO quiz_run_item(run_id,exercise_id,version_id,sentence_id,set_id,set_hash,ordinal,question_json,attempt_id,option_id) VALUES (?,?,?,?,?,?,?,?,?,?)",run,id,version,sentence,set.get("id"),set.get("set_hash"),source.get("ordinal"),source.get("question_text"),attempt,result.get("optionId"));
+                KnowledgeSources.record(jdbc,mapper,attempt,event,lesson,version,id,sentence,(Boolean)result.get("correct"),"quiz_choice_v1");
                 fault.afterItem(results.indexOf(result)+1,questions.size());
                 if(!(Boolean)result.get("correct")) {
                     String item=point+"-quiz";
@@ -161,7 +163,7 @@ public class QuizReviewController {
     }
     @ExceptionHandler(ExerciseController.Failure.class)
     public ProblemDetail failure(ExerciseController.Failure error,HttpServletRequest request){return commands.failure(error,request);}
-    public record DynamicSubmit(@NotBlank String protocolVersion,@NotBlank String eventId,@NotBlank @Size(max=64) String lessonId,@NotBlank @Size(max=64) String versionId,@NotBlank String setId,@NotBlank String setHash,@NotNull @Size(min=1,max=100) Map<@NotBlank String,@NotBlank String> answers,@NotBlank String clientOccurredAt) {}
+    public record DynamicSubmit(@NotBlank String protocolVersion,@NotBlank String eventId,@NotBlank @Size(max=64) String lessonId,@NotBlank @Size(max=64) String versionId,@NotBlank String setId,@NotBlank String setHash,@NotNull @Size(max=100) Map<@NotBlank String,@NotBlank String> answers,@NotBlank String clientOccurredAt) {}
     public record QuizSubmit(@NotBlank String eventId,@NotBlank @Size(max=64) String lessonId,@NotBlank @Size(max=64) String versionId,@NotNull @Size(min=3,max=3) Map<@NotBlank String,@NotBlank String> answers,@NotBlank String clientOccurredAt) {}
     public record QuizEvent(@NotBlank String eventId,@NotBlank @Size(max=64) String lessonId,@NotBlank @Size(max=64) String versionId,@NotBlank String action,@NotBlank String clientOccurredAt) {}
     public record ReviewRating(@NotBlank String eventId,@NotBlank String lessonId,@NotBlank String versionId,@NotBlank String sentenceId,@Min(1) long rowVersion,@NotBlank String rating,boolean answerRevealed,@NotBlank String clientOccurredAt) {}

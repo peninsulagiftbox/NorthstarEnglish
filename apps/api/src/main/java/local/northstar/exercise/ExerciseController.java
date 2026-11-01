@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import local.northstar.catalog.ContentPackage;
 import local.northstar.common.ApiProblems;
+import local.northstar.knowledge.KnowledgeSources;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.*;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -79,12 +80,18 @@ public class ExerciseController {
             String sentence=row.get("sentence_id").toString(),knowledge=row.get("knowledge_point_id").toString();
             String standard=jdbc.queryForObject("SELECT text FROM sentence WHERE id=?",String.class,sentence);
             boolean correct=value.optionId.equals(question.path("answerKey").asText());
-            var result=Map.of("correct",correct,"correctOptionId",correctOption.path("id").asText(),"correctText",correctOption.path("text").asText(),"sentenceId",sentence,"knowledgePointId",knowledge,"standardText",standard,"explanation","beside 表示 next to；第 6 句直接说明植物应放在蓝色长椅旁边。","algorithmVersion","reading_choice_v1");
+            var result=new LinkedHashMap<String,Object>();
+            result.put("correct",correct);result.put("correctOptionId",correctOption.path("id").asText());result.put("correctText",correctOption.path("text").asText());
+            result.put("sentenceId",sentence);result.put("knowledgePointId",knowledge);result.put("standardText",standard);
+            String explanation=question.path("explanation").asText("");
+            if(!explanation.isBlank()) result.put("explanation",explanation);
+            result.put("algorithmVersion","reading_choice_v1");
             String attempt=UUID.randomUUID().toString(),evidence=UUID.randomUUID().toString();
             jdbc.update("INSERT INTO exercise_attempt(id,event_id,lesson_id,version_id,sentence_id,exercise_id,raw_text,correct,answer_exposed,algorithm_version,result_json,client_occurred_at) VALUES (?,?,?,?,?,?,?,?,TRUE,'reading_choice_v1',?,?)",attempt,value.eventId,value.lessonId,value.versionId,sentence,id,selected.path("text").asText(),correct,mapper.writeValueAsString(result),value.clientOccurredAt);
             jdbc.update("INSERT INTO reading_answer(attempt_id,exercise_id,option_id,version_id,sentence_id) VALUES (?,?,?,?,?)",attempt,id,value.optionId,value.versionId,sentence);
             jdbc.update("INSERT INTO learning_evidence(id,attempt_id,event_id) VALUES (?,?,?)",evidence,attempt,value.eventId);
             jdbc.update("INSERT INTO reading_progress(exercise_id,current_state) VALUES (?,'practiced') ON DUPLICATE KEY UPDATE current_state='practiced'",id);
+            KnowledgeSources.record(jdbc,mapper,attempt,value.eventId,value.lessonId,value.versionId,id,sentence,correct,"reading_choice_v1");
             if(!correct) {
                 jdbc.update("INSERT INTO review_item(id,sentence_id,version_id,target_key,card_kind,knowledge_point_id) VALUES (?,?,?,?,'reading_choice',?) ON DUPLICATE KEY UPDATE due_at=LEAST(due_at,UTC_TIMESTAMP(3)),reps=0,row_version=row_version+1",knowledge+"-reading",sentence,value.versionId,knowledge,knowledge);
                 jdbc.update("INSERT INTO review_source(attempt_id,item_id,reason,sentence_id,version_id) VALUES (?,?,'reading_evidence_mismatch',?,?)",attempt,knowledge+"-reading",sentence,value.versionId);
@@ -124,6 +131,7 @@ public class ExerciseController {
                     attemptId,value.eventId,value.lessonId,value.versionId,value.sentenceId,id,value.text,result.correct(),value.answerExposed,result.algorithmVersion(),mapper.writeValueAsString(result),value.clientOccurredAt);
             jdbc.update("INSERT INTO learning_evidence(id,attempt_id,event_id) VALUES (?,?,?)",evidenceId,attemptId,value.eventId);
             stage(value.sentenceId,value.versionId,"practiced",1);
+            KnowledgeSources.record(jdbc,mapper,attemptId,value.eventId,value.lessonId,value.versionId,id,value.sentenceId,result.correct(),result.algorithmVersion());
             if(!result.correct()) {
                 String itemId=value.sentenceId+"-review";
                 jdbc.update("INSERT INTO review_item(id,sentence_id,version_id,target_key) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE due_at=LEAST(due_at,UTC_TIMESTAMP(3)),reps=0,row_version=row_version+1",itemId,value.sentenceId,value.versionId,value.sentenceId);

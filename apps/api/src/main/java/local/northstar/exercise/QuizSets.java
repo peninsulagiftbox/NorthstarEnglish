@@ -25,6 +25,36 @@ public final class QuizSets {
     public static List<Map<String,Object>> items(JdbcOperations db,String set) {
         return db.queryForList("SELECT i.*,CAST(i.question_json AS CHAR CHARACTER SET utf8mb4) AS question_text,s.sequence_no AS sequence FROM exercise_set_item i JOIN sentence s ON s.id=i.sentence_id WHERE set_id=? ORDER BY ordinal",set);
     }
+    /** Uses the fixed quiz_run alias r in history, detail and aggregate queries. */
+    public static String verifiedRunClause() {
+        return """
+            r.total_count BETWEEN 1 AND 100 AND r.submitted_count=r.total_count
+            AND EXISTS (SELECT 1 FROM exercise_set qs JOIN lesson_version v ON v.id=qs.version_id
+                WHERE qs.id=r.set_id AND qs.version_id=r.version_id AND v.lesson_id=r.lesson_id
+                AND qs.frozen=TRUE AND qs.set_hash=r.set_hash)
+            AND (SELECT COUNT(*) FROM exercise_set_item si WHERE si.set_id=r.set_id)=r.total_count
+            AND (SELECT COUNT(*) FROM quiz_run_item i WHERE i.run_id=r.id)=r.total_count
+            AND (SELECT COUNT(*) FROM quiz_answer b WHERE b.run_id=r.id)=r.total_count
+            AND (SELECT COUNT(DISTINCT a.id) FROM quiz_run_item i
+                JOIN quiz_answer b ON b.run_id=i.run_id AND b.exercise_id=i.exercise_id
+                    AND b.attempt_id=i.attempt_id AND b.version_id=i.version_id
+                    AND b.sentence_id=i.sentence_id AND b.option_id=i.option_id
+                JOIN exercise_attempt a ON a.id=i.attempt_id AND a.exercise_id=i.exercise_id
+                    AND a.version_id=i.version_id AND a.sentence_id=i.sentence_id
+                JOIN exercise_set_item si ON si.set_id=i.set_id AND si.exercise_id=i.exercise_id
+                    AND si.version_id=i.version_id AND si.sentence_id=i.sentence_id
+                WHERE i.run_id=r.id AND i.set_id=r.set_id AND i.set_hash=r.set_hash
+                    AND i.version_id=r.version_id AND a.lesson_id=r.lesson_id
+                    AND i.ordinal=si.ordinal AND i.question_json=si.question_json
+                    AND JSON_CONTAINS(JSON_EXTRACT(i.question_json,'$.options'),JSON_OBJECT('id',i.option_id))
+                    AND a.correct=(i.option_id=JSON_UNQUOTE(JSON_EXTRACT(i.question_json,'$.answerKey'))))=r.total_count
+            AND r.correct_count=(SELECT COALESCE(SUM(a.correct),0) FROM quiz_run_item i
+                JOIN exercise_attempt a ON a.id=i.attempt_id WHERE i.run_id=r.id)
+            """;
+    }
+    public static boolean verifiedRun(JdbcOperations db,Object run) {
+        return db.queryForObject("SELECT COUNT(*) FROM quiz_run r WHERE r.id=? AND "+verifiedRunClause(),Integer.class,run)==1;
+    }
     public static Map<String,Object> load(JdbcOperations db,String version,String id) {
         var rows=id==null?db.queryForList("SELECT * FROM exercise_set WHERE version_id=? AND purpose='practice'",version):db.queryForList("SELECT * FROM exercise_set WHERE id=? AND version_id=?",id,version);
         if(rows.isEmpty())throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,"此版本没有对应测验题集。");

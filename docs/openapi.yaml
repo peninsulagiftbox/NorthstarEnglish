@@ -961,6 +961,46 @@ paths:
         '404': {description: Unknown card}
         '409': {description: Stale rowVersion, future card or conflicting event payload; no extra history}
         '422': {description: Invalid context, rating or missing flip}
+  /knowledge/concepts:
+    get:
+      operationId: listKnowledgeConcepts
+      summary: Paged manually reviewed knowledge concepts that have at least one visible occurrence
+      description: Only occurrences whose lesson is available, version published and license confirmed (or the seeded demo lesson) count. Optional lessonId/versionId narrow the visible occurrence scope.
+      parameters:
+        - {name: lessonId, in: query, schema: {type: string}, description: Restrict to occurrences of this lesson}
+        - {name: versionId, in: query, schema: {type: string}, description: Restrict to occurrences of this lesson version}
+        - {name: cursor, in: query, schema: {type: string}, description: Concept id of the last item on the previous page}
+        - {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 20}}
+      responses:
+        '200':
+          description: items with id, kind, canonicalKey, senseKey, latest confirmed revision displayName, lessonCount; nextCursor when more pages exist
+        '422': {description: Invalid cursor or limit}
+  /knowledge/concepts/{id}:
+    get:
+      operationId: getKnowledgeConcept
+      summary: Latest confirmed revision of one concept with its visible lessons
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      responses:
+        '200':
+          description: Concept identity plus displayName, explanation, reviewer, reviewedAt and lessons array (lessonId, title, versionIds, occurrenceCount); only visible lessons are listed
+        '404': {description: Unknown concept}
+  /knowledge/concepts/{id}/occurrences:
+    get:
+      operationId: listKnowledgeOccurrences
+      summary: Paged occurrences of one concept frozen at registration time
+      description: Rows from withdrawn/unpublished/unlicensed lessons return restricted metadata only (no title, usage, sentence text or attempt counts). Sentence-scope rows additionally carry sequence and sentenceText.
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+        - {name: lessonId, in: query, schema: {type: string}}
+        - {name: versionId, in: query, schema: {type: string}}
+        - {name: cursor, in: query, schema: {type: string}, description: Occurrence id of the last item on the previous page}
+        - {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 20}}
+      responses:
+        '200':
+          description: items with id, scope, versionId, lessonId, visible, restricted and, when visible, title, usage, exerciseCount, wrongAttemptCount, createdAt plus sentence fields for sentence scope; nextCursor when more pages exist
+        '404': {description: Unknown concept or invalid filter id}
+        '422': {description: Invalid cursor or limit}
 components:
   parameters:
     LocalRequest:

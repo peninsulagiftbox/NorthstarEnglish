@@ -2,6 +2,7 @@ package local.northstar.report;
 
 import java.util.*;
 import java.time.Instant;
+import java.sql.Timestamp;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.springframework.http.HttpStatus;
@@ -28,10 +29,10 @@ public class ReportController {
         metrics.put("reading", db.queryForMap("SELECT COUNT(*) AS submitted, COALESCE(SUM(a.correct),0) AS correct FROM reading_answer r JOIN exercise_attempt a ON a.id=r.attempt_id"));
         metrics.put("recordings", db.queryForMap("SELECT COUNT(*) AS recorded, COALESCE(SUM(status='ready'),0) AS available, COALESCE(SUM(status='deleted'),0) AS deleted FROM personal_recording"));
         metrics.put("writing", db.queryForMap("SELECT COUNT(*) AS versions FROM writing_revision"));
-        String filter=quizFilter(lessonId,versionId,setId,fromTime,toTime);
+        var filter=quizFilter(lessonId,versionId,setId,fromTime,toTime);
         var quizRuns=new ArrayList<Map<String,Object>>();
-        for(var run:db.queryForList("SELECT r.id,r.lesson_id AS lessonId,r.version_id AS versionId,r.set_id AS setId,r.set_hash AS setHash,r.correct_count AS correctCount,r.total_count AS totalCount,r.submitted_count AS submittedCount,r.submitted_at AS submittedAt"+(filter.isEmpty()?" FROM quiz_run r":" FROM quiz_run r"+filter)+" ORDER BY r.submitted_at,r.id")) {
-            boolean verified=((Number)run.get("totalCount")).intValue()>0 && run.get("totalCount").equals(run.get("submittedCount")) && db.queryForObject("SELECT COUNT(*) FROM quiz_run_item WHERE run_id=?",Integer.class,run.get("id"))==((Number)run.get("totalCount")).intValue();
+        for(var run:db.queryForList("SELECT r.id,r.lesson_id AS lessonId,r.version_id AS versionId,r.set_id AS setId,r.set_hash AS setHash,r.correct_count AS correctCount,r.total_count AS totalCount,r.submitted_count AS submittedCount,r.submitted_at AS submittedAt FROM quiz_run r"+filter.sql()+" ORDER BY r.submitted_at,r.id",filter.args())) {
+            boolean verified=local.northstar.exercise.QuizSets.verifiedRun(db,run.get("id"));
             run.put("verified",verified);
             if(verified)run.put("accuracy",((Number)run.get("correctCount")).doubleValue()/((Number)run.get("totalCount")).intValue());
             quizRuns.add(run);
@@ -40,6 +41,7 @@ public class ReportController {
         var scope=new LinkedHashMap<String,Object>();
         if(lessonId!=null)scope.put("lessonId",lessonId);if(versionId!=null)scope.put("versionId",versionId);
         if(fromTime!=null)scope.put("from",fromTime.toString());if(toTime!=null)scope.put("to",toTime.toString());
+        if(setId!=null)scope.put("setId",setId);
         scope.put("purpose","quiz");scope.put("timeBasis","UTC,from包含,to不包含");scope.put("appliesTo","仅测验指标与逐run明细；其余指标未筛选。");
         metrics.put("review", db.queryForMap("SELECT COUNT(*) AS cards, COALESCE(SUM(due_at<=UTC_TIMESTAMP(3)),0) AS due FROM review_item"));
         metrics.put("selfRatings", db.queryForMap("SELECT COUNT(*) AS submitted FROM review_result"));
@@ -67,20 +69,22 @@ public class ReportController {
         try {return Instant.parse(value);}
         catch(Exception error) {throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,field+"必须是UTC时间。");}
     }
-    private String quizFilter(String lessonId,String versionId,String setId,Instant fromTime,Instant toTime) {
+    private record QuizFilter(String sql,Object[] args) {}
+    private QuizFilter quizFilter(String lessonId,String versionId,String setId,Instant fromTime,Instant toTime) {
         var clauses=new ArrayList<String>();
-        if(lessonId!=null)clauses.add("r.lesson_id='"+lessonId.replace("'","''")+"'");
-        if(versionId!=null)clauses.add("r.version_id='"+versionId.replace("'","''")+"'");
-        if(setId!=null)clauses.add("r.set_id='"+setId.replace("'","''")+"'");
-        var mysql=java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS").withZone(java.time.ZoneOffset.UTC);
-        if(fromTime!=null)clauses.add("r.submitted_at>= '"+mysql.format(fromTime)+"'");
-        if(toTime!=null)clauses.add("r.submitted_at< '"+mysql.format(toTime)+"'");
-        return clauses.isEmpty()?"":" WHERE "+String.join(" AND ",clauses);
+        var args=new ArrayList<Object>();
+        // Identifiers use ascii_bin; binary parameters avoid Unicode collation errors or lossy ASCII conversion.
+        if(lessonId!=null){clauses.add("r.lesson_id=CAST(? AS BINARY)");args.add(lessonId);}
+        if(versionId!=null){clauses.add("r.version_id=CAST(? AS BINARY)");args.add(versionId);}
+        if(setId!=null){clauses.add("r.set_id=CAST(? AS BINARY)");args.add(setId);}
+        if(fromTime!=null){clauses.add("r.submitted_at>=?");args.add(Timestamp.from(fromTime));}
+        if(toTime!=null){clauses.add("r.submitted_at<?");args.add(Timestamp.from(toTime));}
+        return new QuizFilter(clauses.isEmpty()?"":" WHERE "+String.join(" AND ",clauses),args.toArray());
     }
-    private Map<String,Object> quizMetrics(String filter) {
-        String verifiedClause="r.total_count IS NOT NULL AND r.submitted_count=r.total_count AND (SELECT COUNT(*) FROM quiz_run_item i WHERE i.run_id=r.id)=r.total_count";
-        var all=db.queryForMap("SELECT COUNT(*) AS runs FROM quiz_run r"+(filter.isEmpty()?"":filter));
-        var verified=db.queryForMap("SELECT COUNT(*) AS verifiedRuns,COALESCE(SUM(r.correct_count),0) AS correct,COALESCE(SUM(r.total_count),0) AS total FROM quiz_run r"+(filter.isEmpty()?" WHERE "+verifiedClause:filter+" AND "+verifiedClause));
+    private Map<String,Object> quizMetrics(QuizFilter filter) {
+        String verifiedClause=local.northstar.exercise.QuizSets.verifiedRunClause();
+        var all=db.queryForMap("SELECT COUNT(*) AS runs FROM quiz_run r"+filter.sql(),filter.args());
+        var verified=db.queryForMap("SELECT COUNT(*) AS verifiedRuns,COALESCE(SUM(r.correct_count),0) AS correct,COALESCE(SUM(r.total_count),0) AS total FROM quiz_run r"+(filter.sql().isEmpty()?" WHERE "+verifiedClause:filter.sql()+" AND "+verifiedClause),filter.args());
         long unverified=((Number)all.get("runs")).longValue()-((Number)verified.get("verifiedRuns")).longValue();
         var result=new LinkedHashMap<String,Object>();
         result.put("runs",verified.get("verifiedRuns"));result.put("correct",verified.get("correct"));result.put("total",verified.get("total"));

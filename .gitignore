@@ -91,3 +91,9 @@ backup*.sql
 /docs/handoff/evidence/phase10c1-r/**
 /docs/handoff/evidence/phase10c2/**
 /docs/handoff/evidence/phase10c-deployment/**
+
+# Phase10C-2-R1 raw regression evidence stays local.
+/docs/handoff/evidence/phase10c2-r1/**
+
+# Phase10D raw regression evidence stays local.
+/docs/handoff/evidence/phase10d/**

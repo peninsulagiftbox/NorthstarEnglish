@@ -352,6 +352,15 @@ dialog.modal.drawer { margin:0 0 0 auto; height:100dvh; max-height:100dvh; width
 .reading-history li { padding: 12px 0; border-bottom: 1px solid #e2e7e4; }
 @media(max-width:640px) { .vocabulary-grid { grid-template-columns: 1fr; } }
 
+/* Phase 10D-1: cross-lesson knowledge concepts. */
+.knowledge-concepts { margin-top: 20px; padding: 16px; border: 1px solid #dfe5e2; border-radius: 12px; background: #fbfdfc; }
+.knowledge-concepts h3 { margin: 0 0 10px; font-size: 15px; }
+.knowledge-concepts ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.knowledge-concept { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; width: 100%; text-align: left; border: 1px solid transparent; border-radius: 8px; padding: 8px 10px; background: transparent; cursor: pointer; }
+.knowledge-concept:hover { border-color: #cbd5df; background: #f3f5f7; }
+.knowledge-concept span { color: #53665d; font-size: 12px; }
+.knowledge-occurrences { list-style: none; margin: 8px 0 0; padding: 8px 10px; border-top: 1px dashed #dfe5e2; display: grid; gap: 6px; font-size: 13px; }
+
 /* Phase 06: retain the workspace shell, use native accessible media controls. */
 .writing-editor, .recorder-panel { display:grid; gap:16px; min-width:0; }
 .writing-editor textarea { width:100%; resize:vertical; }
