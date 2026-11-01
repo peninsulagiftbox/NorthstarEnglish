@@ -1,0 +1,70 @@
+{
+  "reviewer": "qa-fixture-reviewer",
+  "versionId": "qa-ver-a1",
+  "concepts": [
+    {
+      "id": "qa-con-bank-fin",
+      "kind": "vocabulary",
+      "canonicalKey": "bank",
+      "senseKey": "bank.money_institution.v1",
+      "revisions": [
+        {"id": "qa-rev-bank-fin-1", "revisionNo": 1, "displayName": "bank（银行/金融机构）",
+         "explanation": "QA 原创：作名词指办理存取款业务的金融机构。", "reviewedAt": "2026-10-31T00:00:00Z"}
+      ]
+    },
+    {
+      "id": "qa-con-lookafter",
+      "kind": "collocation",
+      "canonicalKey": "look after",
+      "senseKey": "look_after.care_for.v1",
+      "revisions": [
+        {"id": "qa-rev-lookafter-1", "revisionNo": 1, "displayName": "look after（照顾）",
+         "explanation": "QA 原创：动词短语，表示负责照料某人或某物。", "reviewedAt": "2026-10-31T00:00:00Z"}
+      ]
+    },
+    {
+      "id": "qa-con-pres-passive",
+      "kind": "grammar",
+      "canonicalKey": "present passive",
+      "senseKey": "present_passive.v1",
+      "revisions": [
+        {"id": "qa-rev-passive-1", "revisionNo": 1, "displayName": "一般现在时被动语态",
+         "explanation": "QA 原创：am/is/are + 过去分词构成的一般现在时被动结构。", "reviewedAt": "2026-10-31T00:00:00Z"}
+      ]
+    },
+    {
+      "id": "qa-con-so-that",
+      "kind": "pattern",
+      "canonicalKey": "so that",
+      "senseKey": "so_that.purpose.v1",
+      "revisions": [
+        {"id": "qa-rev-sothat-1", "revisionNo": 1, "displayName": "so that（引导目的状语）",
+         "explanation": "QA 原创：从属连词，引导表示目的的从句。", "reviewedAt": "2026-10-31T00:00:00Z"}
+      ]
+    }
+  ],
+  "occurrences": [
+    {"id": "qa-occ-a-bank", "revisionId": "qa-rev-bank-fin-1", "scope": "sentence",
+     "paragraphId": "qa-para-a1", "sentenceId": "qa-sa-003",
+     "usage": {"note": "QA 原创：名词，银行网点含义"}},
+    {"id": "qa-occ-a-lookafter", "revisionId": "qa-rev-lookafter-1", "scope": "sentence",
+     "paragraphId": "qa-para-a1", "sentenceId": "qa-sa-005",
+     "usage": {"note": "QA 原创：照顾蔬菜幼苗"}},
+    {"id": "qa-occ-a-passive", "revisionId": "qa-rev-passive-1", "scope": "sentence",
+     "paragraphId": "qa-para-a2", "sentenceId": "qa-sa-008",
+     "usage": {"note": "QA 原创：is watered 被动结构"}},
+    {"id": "qa-occ-a-sothat", "revisionId": "qa-rev-sothat-1", "scope": "lesson",
+     "usage": {"note": "QA 原创：全课多处出现 so that 目的句式"}}
+  ],
+  "legacyLinks": [],
+  "exerciseSentences": [
+    {"exerciseId": "qa-ex-read-multi", "sentenceId": "qa-sa-003", "role": "primary"},
+    {"exerciseId": "qa-ex-read-multi", "sentenceId": "qa-sa-008", "role": "supporting"},
+    {"exerciseId": "qa-ex-dict-1", "sentenceId": "qa-sa-003", "role": "primary"}
+  ],
+  "exerciseKnowledge": [
+    {"exerciseId": "qa-ex-read-multi", "occurrenceId": "qa-occ-a-bank", "role": "target"},
+    {"exerciseId": "qa-ex-read-multi", "occurrenceId": "qa-occ-a-passive", "role": "support"},
+    {"exerciseId": "qa-ex-dict-1", "occurrenceId": "qa-occ-a-bank", "role": "target"}
+  ]
+}

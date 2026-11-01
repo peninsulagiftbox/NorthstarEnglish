@@ -1,0 +1,24 @@
+{
+  "comment": "QA 原创 canonicalKey 矩阵。expected 为按 KnowledgeConcepts.canonicalKey 语义推定的 Java 归一化结果；error 为期望 422 错误码。EXEC 时逐例驱动登记并在隔离 MySQL 验证唯一性语义一致。",
+  "cases": [
+    {"case": "plain_word", "input": "bank", "expected": "bank"},
+    {"case": "phrase_spaces", "input": "look after", "expected": "look after"},
+    {"case": "collapse_multi_space", "input": "look   after", "expected": "look after"},
+    {"case": "trim_edges", "input": "  look after  ", "expected": "look after"},
+    {"case": "tab_ascii_ws", "input": "look\tafter", "expected": "look after"},
+    {"case": "nbsp_not_folded", "input": "look\u00a0after", "expected": "look\u00a0after", "note": "QA-BUG-002：Java \\s+ 不匹配 NBSP，设计条款要求 Unicode 空白折叠，EXEC 须实测确认"},
+    {"case": "nbsp_edge", "input": "\u00a0bank", "expected": "\u00a0bank", "note": "QA-BUG-002：首部 NBSP 不被 trim"},
+    {"case": "apostrophe_straight", "input": "don't", "expected": "don't"},
+    {"case": "apostrophe_curly", "input": "don\u2019t", "expected": "don\u2019t", "note": "直/弯撇号保留为不同键，不合并"},
+    {"case": "hyphen", "input": "well-known", "expected": "well-known"},
+    {"case": "case_sensitive", "input": "Bank", "expected": "Bank", "note": "与 bank 为不同键（utf8mb4_0900_bin + 不转小写）"},
+    {"case": "nfc_input", "input": "caf\u00e9", "expected": "caf\u00e9"},
+    {"case": "nfd_folded_to_nfc", "input": "cafe\u0301", "expected": "caf\u00e9", "note": "NFD 归一后与 NFC 输入同键，第二条登记应触发 1062 唯一冲突"},
+    {"case": "chinese", "input": "存钱", "expected": "存钱"},
+    {"case": "sql_injection_literal", "input": "bank'; DROP TABLE knowledge_concept--", "expected": "bank'; DROP TABLE knowledge_concept--", "note": "字面存储，绑定参数，无结构化影响"},
+    {"case": "empty", "input": "", "error": "KNOWLEDGE_KEY_REQUIRED"},
+    {"case": "null", "input": null, "error": "KNOWLEDGE_KEY_REQUIRED"},
+    {"case": "spaces_only", "input": "   ", "error": "KNOWLEDGE_KEY_REQUIRED"},
+    {"case": "over_255_codepoints", "input": "x\u4e00", "repeat": 200, "expectedLength": 400, "error": "KNOWLEDGE_KEY_TOO_LONG", "note": "400 码点超限；另测 255 码点合法、256 码点拒绝"}
+  ]
+}

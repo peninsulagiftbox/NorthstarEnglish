@@ -1,0 +1,92 @@
+--- V012_01 raw bytes ---
+-- Global concepts are separate from per-sentence knowledge_point rows; sense_key prevents merging homonyms.
+CREATE TABLE knowledge_concept (
+  id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin PRIMARY KEY,
+  kind VARCHAR(24) NOT NULL,
+  canonical_key VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_bin NOT NULL,
+  sense_key VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  created_at DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)),
+  CONSTRAINT ck_knowledge_kind CHECK (kind IN ('vocabulary','grammar','collocation','pattern')),
+  UNIQUE KEY uq_concept_identity(kind,canonical_key,sense_key)
+);
+CREATE TABLE knowledge_concept_revision (
+  id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin PRIMARY KEY,
+  concept_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  revision_no INT NOT NULL,
+  display_name VARCHAR(255) NOT NULL,
+  explanation TEXT NOT NULL,
+  source_ref VARCHAR(255) NOT NULL,
+  reviewer VARCHAR(128) NOT NULL,
+  review_status VARCHAR(24) NOT NULL,
+  reviewed_at DATETIME(3) NULL,
+  created_at DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)),
+  CONSTRAINT ck_revision_no CHECK (revision_no >= 1),
+  CONSTRAINT ck_revision_status CHECK (review_status IN ('pending_review','confirmed','rejected')),
+  CONSTRAINT ck_revision_confirmed CHECK ((review_status='confirmed') = (reviewed_at IS NOT NULL)),
+  UNIQUE KEY uq_concept_revision(concept_id,revision_no),
+  FOREIGN KEY(concept_id) REFERENCES knowledge_concept(id)
+);
+-- Revisions are append-only; displayed semantics can only change through a new reviewed revision.
+DELIMITER //
+CREATE TRIGGER knowledge_revision_no_update BEFORE UPDATE ON knowledge_concept_revision FOR EACH ROW
+BEGIN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Knowledge concept revisions are append-only'; END//
+CREATE TRIGGER knowledge_revision_no_delete BEFORE DELETE ON knowledge_concept_revision FOR EACH ROW
+BEGIN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Knowledge concept revisions are append-only'; END//
+DELIMITER ;
+--- V012_02 raw bytes ---
+-- Composite key lets occurrence references verify the sentence/paragraph belongs to the same version.
+ALTER TABLE sentence
+ ADD UNIQUE KEY uq_sentence_paragraph(id,lesson_version_id,paragraph_id);
+CREATE TABLE knowledge_occurrence (
+  id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin PRIMARY KEY,
+  concept_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  revision_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  lesson_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  version_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  scope VARCHAR(16) NOT NULL,
+  paragraph_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL,
+  sentence_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL,
+  -- NULL-bearing unique keys never dedupe in MySQL; the guard collapses each scope to one comparable location.
+  location_guard VARCHAR(80) CHARACTER SET ascii COLLATE ascii_bin
+    GENERATED ALWAYS AS (CASE scope WHEN 'lesson' THEN 'L' WHEN 'paragraph' THEN CONCAT('P:',paragraph_id) ELSE CONCAT('S:',sentence_id) END) STORED,
+  usage_json JSON NOT NULL,
+  created_at DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)),
+  CONSTRAINT ck_occurrence_scope CHECK (
+    (scope='lesson' AND paragraph_id IS NULL AND sentence_id IS NULL)
+    OR (scope='paragraph' AND paragraph_id IS NOT NULL AND sentence_id IS NULL)
+    OR (scope='sentence' AND paragraph_id IS NOT NULL AND sentence_id IS NOT NULL)),
+  UNIQUE KEY uq_occurrence_context(id,version_id,concept_id),
+  UNIQUE KEY uq_occurrence_location(version_id,revision_id,location_guard),
+  FOREIGN KEY(concept_id) REFERENCES knowledge_concept(id),
+  FOREIGN KEY(revision_id) REFERENCES knowledge_concept_revision(id),
+  FOREIGN KEY(version_id,lesson_id) REFERENCES lesson_version(id,lesson_id),
+  FOREIGN KEY(paragraph_id,version_id) REFERENCES paragraph(id,version_id),
+  FOREIGN KEY(sentence_id,version_id,paragraph_id) REFERENCES sentence(id,lesson_version_id,paragraph_id)
+);
+--- V012_07 raw bytes ---
+-- Frozen per-attempt knowledge sources; generated inside the attempt transaction, never from client input.
+CREATE TABLE attempt_knowledge (
+  attempt_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  occurrence_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  exercise_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  version_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  concept_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  revision_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  sentence_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  role VARCHAR(16) NOT NULL,
+  source_json JSON NOT NULL,
+  source_sha256 CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  recorded_at DATETIME(3) NOT NULL DEFAULT (UTC_TIMESTAMP(3)),
+  CONSTRAINT ck_attempt_knowledge_role CHECK (role IN ('target','support')),
+  PRIMARY KEY(attempt_id,occurrence_id),
+  UNIQUE KEY uq_attempt_knowledge_context(attempt_id,occurrence_id,exercise_id,version_id),
+  FOREIGN KEY(attempt_id,exercise_id,version_id,sentence_id) REFERENCES exercise_attempt(id,exercise_id,version_id,sentence_id),
+  FOREIGN KEY(exercise_id,occurrence_id,version_id,concept_id) REFERENCES exercise_knowledge(exercise_id,occurrence_id,version_id,concept_id)
+);
+-- Attempt snapshots are learning evidence; immutability is enforced by the database, not only by convention.
+DELIMITER //
+CREATE TRIGGER attempt_knowledge_no_update BEFORE UPDATE ON attempt_knowledge FOR EACH ROW
+BEGIN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Attempt knowledge snapshots are immutable'; END//
+CREATE TRIGGER attempt_knowledge_no_delete BEFORE DELETE ON attempt_knowledge FOR EACH ROW
+BEGIN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Attempt knowledge snapshots are immutable'; END//
+DELIMITER ;

@@ -1,0 +1,46 @@
+{
+  "reviewer": "qa-fixture-reviewer",
+  "versionId": "qa-ver-b1",
+  "concepts": [
+    {
+      "id": "qa-con-bank-riv",
+      "kind": "vocabulary",
+      "canonicalKey": "bank",
+      "senseKey": "bank.river_edge.v1",
+      "revisions": [
+        {"id": "qa-rev-bank-riv-1", "revisionNo": 1, "displayName": "bank（河岸）",
+         "explanation": "QA 原创：作名词指河流两侧的岸。", "reviewedAt": "2026-10-31T00:00:00Z"}
+      ]
+    },
+    {
+      "id": "qa-con-takeup",
+      "kind": "vocabulary",
+      "canonicalKey": "take up",
+      "senseKey": "take_up.start_hobby.v1",
+      "revisions": [
+        {"id": "qa-rev-takeup-1", "revisionNo": 1, "displayName": "take up（开始从事）",
+         "explanation": "QA 原创：动词短语，指开始一项爱好或活动。", "reviewedAt": "2026-10-31T00:00:00Z"}
+      ]
+    }
+  ],
+  "occurrences": [
+    {"id": "qa-occ-b-bank", "revisionId": "qa-rev-bank-riv-1", "scope": "sentence",
+     "paragraphId": "qa-para-b2", "sentenceId": "qa-sb-011",
+     "usage": {"note": "QA 原创：河岸含义，与 A 课银行义同形不同义"}},
+    {"id": "qa-occ-b-lookafter", "revisionId": "qa-rev-lookafter-1", "scope": "sentence",
+     "paragraphId": "qa-para-b1", "sentenceId": "qa-sb-004",
+     "usage": {"note": "QA 原创：跨课同义项，复用 A 课概念与修订"}},
+    {"id": "qa-occ-b-takeup", "revisionId": "qa-rev-takeup-1", "scope": "sentence",
+     "paragraphId": "qa-para-b3", "sentenceId": "qa-sb-020",
+     "usage": {"note": "QA 原创：开始学吉他"}}
+  ],
+  "legacyLinks": [],
+  "exerciseSentences": [
+    {"exerciseId": "qa-ex-quiz-multi", "sentenceId": "qa-sb-004", "role": "primary"},
+    {"exerciseId": "qa-ex-quiz-multi", "sentenceId": "qa-sb-020", "role": "supporting"}
+  ],
+  "exerciseKnowledge": [
+    {"exerciseId": "qa-ex-quiz-multi", "occurrenceId": "qa-occ-b-lookafter", "role": "target"},
+    {"exerciseId": "qa-ex-quiz-multi", "occurrenceId": "qa-occ-b-takeup", "role": "target"}
+  ]
+}
