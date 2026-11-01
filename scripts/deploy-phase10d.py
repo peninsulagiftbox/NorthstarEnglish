@@ -87,7 +87,7 @@ def execute(run):
         b.save(backup/'media-manifest.json',inventories)
         assert m.snapshot()==before
         c.PRIVATE=private/'rehearsal';c.PRIVATE.mkdir();c.OUT=out/'rehearsal';c.OUT.mkdir();c.NAMESPACE='northstar-d-release-'+run.lower();c.BACKUP=backup;c.PATCHED_JAR=jar
-        port=3420
+        port=3380
         while not c.available(port):port+=1
         assert port<3440;c.ROLES=['reserved'+str(i) for i in range(port-3313)]+['fresh']
         c.create('fresh');created=True;c.prepare_files('fresh');c.restore('fresh')
