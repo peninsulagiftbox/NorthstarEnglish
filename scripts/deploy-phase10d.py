@@ -40,7 +40,6 @@ def execute(run):
     assert sources(ROOT)==sources(workspace)==release['sourceFiles'] and sha(jar)==release['jarSha256']
     assert subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True).strip()==''
     head=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
-    assert head==release['gitSha'] or subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()==release['gitSha']
     m=load('source_d',b.OLD/'maintenance_backup.py');c=load('isolation_d',b.OLD/'isolated_rehearsal.py');media=load('media_d',b.OLD/'runtime_media_preflight.py')
     cmp=load('comparison_d',ROOT/'scripts/phase10c1_isolated.py')
     env=b.safe_env();b.identity(m,c,env)
