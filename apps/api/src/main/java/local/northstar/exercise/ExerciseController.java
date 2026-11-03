@@ -92,6 +92,7 @@ public class ExerciseController {
             jdbc.update("INSERT INTO learning_evidence(id,attempt_id,event_id) VALUES (?,?,?)",evidence,attempt,value.eventId);
             jdbc.update("INSERT INTO reading_progress(exercise_id,current_state) VALUES (?,'practiced') ON DUPLICATE KEY UPDATE current_state='practiced'",id);
             KnowledgeSources.record(jdbc,mapper,attempt,value.eventId,value.lessonId,value.versionId,id,sentence,correct,"reading_choice_v1");
+            local.northstar.knowledge.ConceptReviewSources.record(jdbc,attempt);
             if(!correct) {
                 jdbc.update("INSERT INTO review_item(id,sentence_id,version_id,target_key,card_kind,knowledge_point_id) VALUES (?,?,?,?,'reading_choice',?) ON DUPLICATE KEY UPDATE due_at=LEAST(due_at,UTC_TIMESTAMP(3)),reps=0,row_version=row_version+1",knowledge+"-reading",sentence,value.versionId,knowledge,knowledge);
                 jdbc.update("INSERT INTO review_source(attempt_id,item_id,reason,sentence_id,version_id) VALUES (?,?,'reading_evidence_mismatch',?,?)",attempt,knowledge+"-reading",sentence,value.versionId);
@@ -132,6 +133,7 @@ public class ExerciseController {
             jdbc.update("INSERT INTO learning_evidence(id,attempt_id,event_id) VALUES (?,?,?)",evidenceId,attemptId,value.eventId);
             stage(value.sentenceId,value.versionId,"practiced",1);
             KnowledgeSources.record(jdbc,mapper,attemptId,value.eventId,value.lessonId,value.versionId,id,value.sentenceId,result.correct(),result.algorithmVersion());
+            local.northstar.knowledge.ConceptReviewSources.record(jdbc,attemptId);
             if(!result.correct()) {
                 String itemId=value.sentenceId+"-review";
                 jdbc.update("INSERT INTO review_item(id,sentence_id,version_id,target_key) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE due_at=LEAST(due_at,UTC_TIMESTAMP(3)),reps=0,row_version=row_version+1",itemId,value.sentenceId,value.versionId,value.sentenceId);

@@ -86,6 +86,10 @@ class KnowledgeSourcesIntegrationTest {
         assertThrows(org.springframework.dao.DataAccessException.class,()->admin.update(
             "INSERT INTO exercise_knowledge(exercise_id,occurrence_id,version_id,concept_id,role) VALUES ('kc-quiz','oc-bank-a',?,'kn-bank-fin','target')",CV),
             "exercise knowledge must reject cross-version occurrences");
+        assertThrows(org.springframework.dao.DataAccessException.class,()->admin.update(
+            "INSERT INTO knowledge_occurrence(id,concept_id,revision_id,lesson_id,version_id,scope,paragraph_id,sentence_id,usage_json) VALUES ('oc-fk-cross','kn-fk','rv-bank-fin',?,?,?,?,?)",C,CV,CV+"-p1",CV+"-s1","{}"),
+            "occurrence revision must belong to the occurrence concept");
+        assertEquals(0,admin.queryForObject("SELECT COUNT(*) FROM knowledge_occurrence WHERE id='oc-fk-cross'",Integer.class));
         assertEquals(0,admin.queryForObject("SELECT COUNT(*) FROM exercise_knowledge WHERE version_id=?",Integer.class,CV));
     }
 
@@ -389,6 +393,11 @@ class KnowledgeSourcesIntegrationTest {
             admin.update("DELETE FROM knowledge_occurrence WHERE version_id=?",demoVersion);
             admin.update("DELETE FROM knowledge_projection WHERE version_id=?",demoVersion);
         }
+        // Wrong attempts now auto-record concept review cards; their rows must go before the knowledge concepts.
+        String concepts="('kn-bank-fin','kn-bank-riv','kn-beside','kn-inspite-c','kn-inspite-p','kn-look-after','kn-there-is','kn-fk')";
+        admin.update("DELETE FROM concept_review_result WHERE card_id IN (SELECT id FROM concept_review_card WHERE concept_id IN "+concepts+")");
+        admin.update("DELETE s FROM concept_review_source s JOIN concept_review_card c ON c.id=s.card_id WHERE c.concept_id IN "+concepts);
+        admin.update("DELETE FROM concept_review_card WHERE concept_id IN "+concepts);
         admin.update("DELETE r FROM knowledge_concept_revision r JOIN knowledge_concept c ON c.id=r.concept_id WHERE c.id IN ('kn-bank-fin','kn-bank-riv','kn-beside','kn-inspite-c','kn-inspite-p','kn-look-after','kn-there-is','kn-fk')");
         admin.update("DELETE FROM knowledge_concept WHERE id IN ('kn-bank-fin','kn-bank-riv','kn-beside','kn-inspite-c','kn-inspite-p','kn-look-after','kn-there-is','kn-fk')");
         for(String id:List.of(A,B,C)) {
@@ -407,6 +416,7 @@ class KnowledgeSourcesIntegrationTest {
     }
 
     private void learningCleanup(String attemptWhere) {
+        admin.update("DELETE s FROM concept_review_source s JOIN exercise_attempt a ON a.id=s.attempt_id WHERE "+attemptWhere);
         admin.update("DELETE ak FROM attempt_knowledge ak JOIN exercise_attempt a ON a.id=ak.attempt_id WHERE "+attemptWhere);
         for(var table:List.of("review_source","learning_evidence","reading_answer","quiz_run_item","quiz_answer"))
             admin.update("DELETE t FROM "+table+" t JOIN exercise_attempt a ON a.id=t.attempt_id WHERE "+attemptWhere);

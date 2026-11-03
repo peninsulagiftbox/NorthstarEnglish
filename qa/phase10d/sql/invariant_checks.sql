@@ -38,6 +38,12 @@ SELECT (SELECT COUNT(*) FROM knowledge_point) kp,
 SELECT id,due_at,reps,row_version FROM review_item ORDER BY id;
 
 -- I-06 legacy 映射源探针（EXEC 时确定 demo knowledge_point id）
+
+-- I-11 occurrence 修订与概念同属检测（R-QA-011 监控；V012_08 起由 fk_occurrence_revision_concept 兜底）
+-- EXPECT: count=0
+SELECT COUNT(*) AS cross_concept_occurrences FROM knowledge_occurrence o
+LEFT JOIN knowledge_concept_revision r ON r.id=o.revision_id
+WHERE r.id IS NULL OR r.concept_id<>o.concept_id;
 SELECT kp.id,kp.lesson_id,kp.version_id,kp.sentence_id FROM knowledge_point kp JOIN lesson l ON l.id=kp.lesson_id WHERE l.id='demo-01' ORDER BY kp.id LIMIT 5;
 
 -- I-07 撤回版本无新学习证据

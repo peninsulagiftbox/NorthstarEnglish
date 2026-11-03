@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Authorized local 011.09 -> 012.07 release: fresh backup, isolated rehearsal, then source.
+"""Authorized local 011.09 -> 012.11 release: fresh backup, isolated rehearsal, then source.
 Never restores over the personal database; keeps backups, failed rehearsal resources and previous runtimes.
 """
 import copy, datetime, hashlib, json, os, shutil, subprocess, sys, urllib.request
@@ -96,10 +96,10 @@ def execute(run):
         iso=dict(env,MYSQL_PORT=str(state['port']),DB_PASSWORD=cred['app'],DB_MIGRATION_PASSWORD=cred['migrator'],NORTHSTAR_CONTENT_ROOT=str(c.PRIVATE/'fresh/content'),NORTHSTAR_RECORDING_ROOT=str(c.PRIVATE/'fresh/recordings'))
         grants('fresh');migrate(iso,'rehearsal-migrate')
         app_grants('fresh');after_iso=c.snapshot('fresh','upgraded');cmp.compare_old(before,after_iso)
-        assert c.sql('fresh','SELECT version FROM flyway_schema_history ORDER BY installed_rank DESC LIMIT 1',readonly=True).stdout.decode().strip()=='012.07'
+        assert c.sql('fresh','SELECT version FROM flyway_schema_history ORDER BY installed_rank DESC LIMIT 1',readonly=True).stdout.decode().strip()=='012.11'
         handle=c.start_api('fresh',True)
         try:
-            assert health(handle[2])['migrationVersion']=='012.07';health(handle[2],'/quiz?lessonId=demo-01&versionId=demo-01-v2');health(handle[2],'/knowledge/concepts')
+            assert health(handle[2])['migrationVersion']=='012.11';health(handle[2],'/quiz?lessonId=demo-01&versionId=demo-01-v2');health(handle[2],'/knowledge/concepts')
         finally:c.end_api('fresh',handle)
         assert c.snapshot('fresh','after-restart')==after_iso
         b.save(out/'rehearsal-PASS.json',dict(status='PASS',oldCellsExact=True,candidateRestartExact=True))
@@ -110,13 +110,13 @@ def execute(run):
         (ROOT/'apps/web/.next').rename(private/'previous-web-build');shutil.copytree(workspace/'apps/web/.next',ROOT/'apps/web/.next');shutil.copyfile(jar,ROOT/'apps/api/target/northstar-api-0.1.0-SNAPSHOT.jar')
         start_personal()
         for port in (8085,3100):
-            assert health(port)['migrationVersion']=='012.07'
+            assert health(port)['migrationVersion']=='012.11'
             for path in ('/books','/lessons/demo-01','/quiz?lessonId=demo-01&versionId=demo-01-v2','/reports','/knowledge/concepts'):
                 health(port,path)
         assert m.snapshot()==after
         for name in ('web','api'):b.stop_record(b.read(ROOT/'.local'/ (name+'.json')))
-        start_personal();assert health(8085)['migrationVersion']=='012.07' and health(3100)['migrationVersion']=='012.07';assert m.snapshot()==after
-        result.update(status='PASS',version='012.07',oldCellsExact=True,twoRestartsExact=True,mediaExact=True,jarSha256=sha(jar),webBuildId=(ROOT/'apps/web/.next/BUILD_ID').read_text().strip(),backup=str(backup.relative_to(ROOT)))
+        start_personal();assert health(8085)['migrationVersion']=='012.11' and health(3100)['migrationVersion']=='012.11';assert m.snapshot()==after
+        result.update(status='PASS',version='012.11',oldCellsExact=True,twoRestartsExact=True,mediaExact=True,jarSha256=sha(jar),webBuildId=(ROOT/'apps/web/.next/BUILD_ID').read_text().strip(),backup=str(backup.relative_to(ROOT)))
     except Exception:
         if not result['sourceMigrationAttempted'] and 'before' in locals() and m.snapshot()==before:
             start_personal();result['oldServicesRestored']=True

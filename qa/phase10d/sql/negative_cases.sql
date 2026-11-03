@@ -78,6 +78,18 @@ VALUES ('qa-rev-neg-15','qa-con-bank-fin',2,'x','x','qa','qa','confirmed',NULL);
 
 -- ===== N-16 伪造客户端 conceptId：正式提交 API body 携带 conceptId =====
 -- EXPECT: HTTP 层忽略该参数；attempt_knowledge 只含 exercise_knowledge 冻结关系；对账 I-03
+
+-- ===== N-17 缺陷复现 R-QA-011：occurrence 概念与修订分属不同概念（concept A 配 B 的修订） =====
+-- 自包含夹具：不依赖 QA 种子课程；锚定已存在的 demo-01-v2（projection 未冻结时）。
+INSERT INTO knowledge_concept(id,kind,canonical_key,sense_key) VALUES
+  ('qa8n-con-a','vocabulary','qa8gate-neg','qa8n.a'),
+  ('qa8n-con-b','vocabulary','qa8gate-neg','qa8n.b');
+INSERT INTO knowledge_concept_revision(id,concept_id,revision_no,display_name,explanation,source_ref,reviewer,review_status,reviewed_at)
+VALUES ('qa8n-rev-b','qa8n-con-b',1,'b','x','qa8n','automation-sources','confirmed',UTC_TIMESTAMP(3));
+-- EXPECT(V012_08 起): 1452 (fk_occurrence_revision_concept)；修复前可插入（探针阶段已实证）
+INSERT INTO knowledge_occurrence(id,concept_id,revision_id,lesson_id,version_id,scope,paragraph_id,sentence_id,usage_json)
+VALUES ('qa8n-occ-cross','qa8n-con-a','qa8n-rev-b','demo-01','demo-01-v2','lesson',NULL,NULL,'{}');
+SELECT COUNT(*) AS cross_inserted FROM knowledge_occurrence WHERE id='qa8n-occ-cross';
 -- （由 HTTP 契约测试执行，非 SQL）
 
 -- ===== N-17 撤回版本新建 attempt =====

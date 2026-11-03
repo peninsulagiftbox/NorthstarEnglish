@@ -1,0 +1,3 @@
+# Phase 10D-2-R1 candidate file list integrity
+# hash_of_candidate-sha256.txt (lines 5+, sha256 of the exact file bytes): 087f849df28d66d1c80d48e5328322c3c385c152ea3ea65313e87b5f4703b787
+# count: 27 files (manifest files excluded to avoid self-referential hashes)

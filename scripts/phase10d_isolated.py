@@ -26,7 +26,8 @@ def env(c,role,schema='northstar_english'):
 
 def grant(c,role,schema='northstar_english'):
     if schema=='northstar_english':base.grant(c,role)
-    c.sql(role,"GRANT SELECT ON "+schema+".* TO 'northstar_app'@'%'; GRANT INSERT ON "+schema+".quiz_run_item TO 'northstar_app'@'%'; GRANT INSERT ON "+schema+".attempt_knowledge TO 'northstar_app'@'%';")
+    c.sql(role,"GRANT SELECT ON "+schema+".* TO 'northstar_app'@'%'; GRANT INSERT ON "+schema+".quiz_run_item TO 'northstar_app'@'%'; GRANT INSERT ON "+schema+".attempt_knowledge TO 'northstar_app'@'%';"
+        +" GRANT INSERT,UPDATE,DELETE ON "+schema+".concept_review_card TO 'northstar_app'@'%'; GRANT INSERT ON "+schema+".concept_review_source TO 'northstar_app'@'%'; GRANT INSERT ON "+schema+".concept_review_result TO 'northstar_app'@'%';")
 
 def snap(c,role,tag):
     path=c.PRIVATE/role/(tag+'.json')
@@ -62,7 +63,7 @@ def start(c,role,initialize=False,schema='northstar_english',content=None):
             if p.poll() is not None:raise RuntimeError('Isolated API exited; private log retained')
             try:
                 with urllib.request.urlopen(f'http://127.0.0.1:{port}/api/v1/health',timeout=1) as response:health=json.load(response)
-                if health['migrationVersion']=='012.07':
+                if health['migrationVersion']=='012.11':
                     if not initialize:
                         return handle
                     for _ in range(150):
@@ -81,7 +82,8 @@ def start(c,role,initialize=False,schema='northstar_english',content=None):
 def main():
     action=sys.argv[1];c=campaign()
     if action=='migrations':
-        for role in ('upgrade','empty'):
+        roles=('upgrade','empty') if len(sys.argv)<3 else (sys.argv[2],)
+        for role in roles:
             if not (c.PRIVATE/role/'state.json').exists():
                 c.create(role)
             else:
@@ -98,15 +100,18 @@ def main():
                 else:
                     before=json.loads((c.PRIVATE/role/'fixed-backup.json').read_text());baseline=snap(c,role,'v01006');base.compare_old(before,baseline)
             else:before=baseline=None
-            if '012.07' not in history:migrate(c,role,initialize=role=='empty')
+            if role!='upgrade':
+                exists=c.sql(role,"SHOW TABLES LIKE 'flyway_schema_history'",readonly=True).stdout.decode().strip()
+                history=c.sql(role,'SELECT version FROM flyway_schema_history WHERE success=1 ORDER BY installed_rank',readonly=True).stdout.decode() if exists else ''
+            if '012.11' not in history:migrate(c,role,initialize=history.strip()=='')
             grant(c,role)
             if baseline:
-                after=snap(c,role,'v01207')
+                after=snap(c,role,'v01211')
                 base.compare_old(baseline,after)
             needs_initialize=role=='empty' and c.sql(role,'SELECT COUNT(*) FROM lesson_version',readonly=True).stdout.decode().strip()=='0'
-            h=start(c,role,needs_initialize);c.end_api(role,h);first=snap(c,role,'first-start')
-            h=start(c,role);c.end_api(role,h);assert first==snap(c,role,'second-start')
-            c.save(c.OUT/(role+'-acceptance.json'),dict(status='PASS',oldCellsExact=True,restartsExact=True,targetVersion='012.07'),exclusive=False)
+            h=start(c,role,needs_initialize);c.end_api(role,h);first=snap(c,role,'first-start-01211')
+            h=start(c,role);c.end_api(role,h);assert first==snap(c,role,'second-start-01211')
+            c.save(c.OUT/(role+'-acceptance.json'),dict(status='PASS',oldCellsExact=True,restartsExact=True,targetVersion='012.11'),exclusive=False)
             c.stop(role)
     elif action=='start-db':
         role=sys.argv[2];d=c.verify(role);c.call('start-owned-'+role,[c.DOCKER,'start',d['containerId']]);print(role)
@@ -124,7 +129,8 @@ def main():
         c.sql(role,"REVOKE ALL PRIVILEGES ON northstar_phase01_test.* FROM 'northstar_app'@'%';")
         for line in json.loads((base.BASE/'recovery-20261027/a1/grants.json').read_text())['app'].splitlines():
             if 'northstar_phase01_test' in line:c.sql(role,line+';')
-        c.sql(role,"GRANT SELECT ON northstar_phase01_test.* TO 'northstar_app'@'%'; GRANT SELECT ON northstar_phase01_test.lesson_audio TO 'northstar_app'@'%'; GRANT SELECT ON northstar_phase01_test.audio_alignment TO 'northstar_app'@'%'; GRANT INSERT ON northstar_phase01_test.quiz_run_item TO 'northstar_app'@'%'; GRANT INSERT ON northstar_phase01_test.attempt_knowledge TO 'northstar_app'@'%';")
+        c.sql(role,"GRANT SELECT ON northstar_phase01_test.* TO 'northstar_app'@'%'; GRANT SELECT ON northstar_phase01_test.lesson_audio TO 'northstar_app'@'%'; GRANT SELECT ON northstar_phase01_test.audio_alignment TO 'northstar_app'@'%'; GRANT INSERT ON northstar_phase01_test.quiz_run_item TO 'northstar_app'@'%'; GRANT INSERT ON northstar_phase01_test.attempt_knowledge TO 'northstar_app'@'%';"
+            +" GRANT INSERT,UPDATE,DELETE ON northstar_phase01_test.concept_review_card TO 'northstar_app'@'%'; GRANT INSERT ON northstar_phase01_test.concept_review_source TO 'northstar_app'@'%'; GRANT INSERT ON northstar_phase01_test.concept_review_result TO 'northstar_app'@'%';")
         for table in ('knowledge_concept','knowledge_concept_revision','knowledge_occurrence','legacy_knowledge_link','exercise_sentence','exercise_knowledge','knowledge_projection'):
             c.sql(role,"GRANT INSERT,UPDATE,DELETE ON northstar_phase01_test."+table+" TO 'northstar_app'@'%'")
         h=start(c,role,schema='northstar_phase01_test',content=test_content);c.end_api(role,h)
@@ -133,6 +139,19 @@ def main():
         e=env(c,'empty','northstar_phase01_test');e['NORTHSTAR_DB_TEST']='1'
         e['NORTHSTAR_CONTENT_ROOT']=str(r.STATE/'database'/'test-content')
         r.record(sys.argv[2],sys.argv[3:],env=e,cwd=r.COPY)
+    elif action=='run-tests-main':
+        # Release-gate evidence must come from the frozen candidate checkout, not the build copy.
+        e=env(c,'empty','northstar_phase01_test');e['NORTHSTAR_DB_TEST']='1'
+        e['NORTHSTAR_CONTENT_ROOT']=str(r.STATE/'database'/'test-content')
+        r.record(sys.argv[2],sys.argv[3:],env=e,cwd=r.ROOT)
+    elif action=='gate-sql':
+        role,name,schema,path,who=sys.argv[2:7]
+        d=c.verify(role);ensure_db(c,role)
+        cred=json.loads((c.PRIVATE/role/'credentials.json').read_text())
+        user={'app':'northstar_app','migrator':'northstar_migrator','root':'root'}[who]
+        e=r.environment();e['MYSQL_PWD']=cred[{'app':'app','migrator':'migrator','root':'root'}[who]]
+        r.record(name,['sh','-c','MYSQL_PWD="$MYSQL_PWD" /usr/local/mysql/bin/mysql --protocol=TCP -h127.0.0.1 -P'
+            +str(d['port'])+' -u'+user+' -D'+schema+' --force --comments < '+path],env=e,cwd=r.ROOT)
     elif action=='web-build':
         e=env(c,'empty','northstar_phase01_test')
         r.record('web-build-d1',['sh','-c','cd apps/web && npm run build'],env={**r.environment(),'API_PORT':e['API_PORT']},cwd=r.COPY)
@@ -153,7 +172,7 @@ def main():
                 try:
                     with urllib.request.urlopen(f"http://127.0.0.1:{e['API_PORT']}/api/v1/health",timeout=1) as response:
                         health=json.load(response)
-                        if health['migrationVersion']=='012.07' and response.headers.get('X-Northstar-Test-Database')=='true':break
+                        if health['migrationVersion']=='012.11' and response.headers.get('X-Northstar-Test-Database')=='true':break
                 except OSError:pass
                 time.sleep(.3)
             else:raise RuntimeError('serve API readiness timeout')

@@ -105,6 +105,7 @@ public class QuizReviewController {
                 var source=questions.stream().filter(q->q.get("exercise_id").equals(id)).findFirst().orElseThrow();
                 jdbc.update("INSERT INTO quiz_run_item(run_id,exercise_id,version_id,sentence_id,set_id,set_hash,ordinal,question_json,attempt_id,option_id) VALUES (?,?,?,?,?,?,?,?,?,?)",run,id,version,sentence,set.get("id"),set.get("set_hash"),source.get("ordinal"),source.get("question_text"),attempt,result.get("optionId"));
                 KnowledgeSources.record(jdbc,mapper,attempt,event,lesson,version,id,sentence,(Boolean)result.get("correct"),"quiz_choice_v1");
+                local.northstar.knowledge.ConceptReviewSources.record(jdbc,attempt);
                 fault.afterItem(results.indexOf(result)+1,questions.size());
                 if(!(Boolean)result.get("correct")) {
                     String item=point+"-quiz";

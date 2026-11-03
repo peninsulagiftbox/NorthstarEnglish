@@ -1,0 +1,464 @@
+package local.northstar.knowledge;
+
+import static org.junit.jupiter.api.Assertions.*;
+import java.net.URI;
+import java.net.http.*;
+import java.time.*;
+import java.util.*;
+import java.util.concurrent.*;
+import local.northstar.NorthstarApplication;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.jdbc.core.JdbcTemplate;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+
+/** Cross-lesson concept review: sources only from real wrong attempts, CAS rating, visibility on real MySQL. */
+@EnabledIfEnvironmentVariable(named="NORTHSTAR_DB_TEST",matches="1")
+class ConceptReviewIntegrationTest {
+    private static final String A="cr-a",B="cr-b",AV="cr-a-v1",BV="cr-b-v1";
+    private static final String CONCEPT="cr-bank-fin",RIVER="cr-bank-riv",REVISION="rv-cr-bank";
+    private static final String GUARD="Frozen knowledge relations are immutable";
+    private static final String[] TRIGGERS={"concept_review_result_no_update","concept_review_result_no_delete",
+        "knowledge_projection_no_insert","knowledge_projection_no_update","knowledge_projection_no_delete",
+        "occurrence_no_insert","occurrence_no_update","occurrence_no_delete","legacy_link_no_insert","legacy_link_no_update","legacy_link_no_delete",
+        "exercise_sentence_no_insert","exercise_sentence_no_update","exercise_sentence_no_delete",
+        "exercise_knowledge_no_insert","exercise_knowledge_no_update","exercise_knowledge_no_delete",
+        "knowledge_revision_no_update","knowledge_revision_no_delete",
+        "attempt_knowledge_no_update","attempt_knowledge_no_delete",
+        "quiz_set_no_delete","quiz_item_no_delete"};
+    private final JsonMapper mapper=JsonMapper.builder().build();
+    private final HttpClient http=HttpClient.newHttpClient();
+    private JdbcTemplate admin;private String base;
+
+    @Test void conceptCardsCollectCrossLessonSourcesAndRateWithCas() throws Exception {
+        assertEquals("northstar_phase01_test",System.getenv("DB_NAME"));
+        assertNotEquals("3308",System.getenv("MYSQL_PORT"));
+        var app=new SpringApplicationBuilder(NorthstarApplication.class).run("--server.port=0");
+        Throwable primary=null;
+        try {
+            admin=new JdbcTemplate(app.getBean(org.flywaydb.core.Flyway.class).getConfiguration().getDataSource());
+            assertEquals(System.getenv("NORTHSTAR_EXPECTED_DB_UUID"),admin.queryForObject("SELECT @@server_uuid",String.class));
+            base="http://127.0.0.1:"+app.getEnvironment().getRequiredProperty("local.server.port")+"/api/v1";
+            fixture(A,1,4,Map.of(3,"The bank opens beside the garden gate."));
+            fixture(B,1,3,Map.of(2,"The bank keeps the town's money safe."));
+            exercises();
+            var cli=app.getBean(KnowledgeRegistrationCli.class);
+            assertEquals("REGISTERED",cli.register(mapper.readTree(registerA())).get("code"));
+            assertEquals("REGISTERED",cli.register(mapper.readTree(registerB())).get("code"));
+            String card=collectSources();
+            replayAndAppend(card);
+            sqlNegatives();
+            var before=scheduleSnapshot();
+            rateWithCas(card);
+            selfRatingStaysObjective(before,card);
+            visibility(card);
+        } catch (Exception | Error error) {
+            primary=error; throw error;
+        } finally {
+            try { app.close(); } catch (RuntimeException | Error closeError) { if(primary==null) throw closeError; primary.addSuppressed(closeError); }
+            try { cleanup(); } catch (RuntimeException | Error cleanupError) { if(primary==null) throw cleanupError; primary.addSuppressed(cleanupError); }
+        }
+    }
+
+    private String collectSources() throws Exception {
+        attemptReading("cr-read-1",A,AV,"cr1-a",UUID.randomUUID().toString());
+        var cards=admin.queryForList("SELECT id FROM concept_review_card WHERE concept_id=? AND owner_key='local'",CONCEPT);
+        assertEquals(1,cards.size(),"two registrations of one concept must not create two cards");
+        String card=cards.getFirst().get("id").toString();
+        assertEquals(1,sources(card).size());
+        attemptReading("cr-read-2",B,BV,"cr2-a",UUID.randomUUID().toString());
+        assertEquals(1,admin.queryForObject("SELECT COUNT(*) FROM concept_review_card WHERE concept_id=?",Integer.class,CONCEPT));
+        assertEquals(2,sources(card).size());
+        var rows=sources(card);
+        assertNotEquals(rows.get(0).get("version_id"),rows.get(1).get("version_id"),"sources must keep their real lesson versions");
+        return card;
+    }
+
+    private void replayAndAppend(String card) throws Exception {
+        var beforeCards=admin.queryForList("SELECT id,due_at,reps,row_version,status FROM concept_review_card ORDER BY id");
+        // A new eventId with a fresh payload is a new business command: its real wrong attempt appends the third source.
+        String replayEvent=UUID.randomUUID().toString();
+        String replayBody="""
+            {"eventId":"%s","lessonId":"%s","versionId":"%s","optionId":"%s","clientOccurredAt":"2026-11-01T00:00:00Z"}
+            """.formatted(replayEvent,A,AV,"cr1-a");
+        var first=json(send("/reading/cr-read-1/attempts",replayBody));
+        assertFalse(first.path("result").path("correct").asBoolean(),first.toString());
+        String replayAttemptId=first.path("attemptId").asText();
+        assertEquals(3,sources(card).size());
+        // Identical eventId and identical payload replay the stored response without any new record.
+        var replayed=json(send("/reading/cr-read-1/attempts",replayBody));
+        assertEquals(replayAttemptId,replayed.path("attemptId").asText(),"replay returns the stored response");
+        assertEquals(1,admin.queryForObject("SELECT COUNT(*) FROM command_receipt WHERE event_id=?",Integer.class,replayEvent));
+        assertEquals(3,sources(card).size(),"identical replay must not append another source");
+        // Same eventId with a different payload conflicts instead of replaying.
+        assertEquals(409,send("/reading/cr-read-1/attempts","""
+            {"eventId":"%s","lessonId":"%s","versionId":"%s","optionId":"cr1-c","clientOccurredAt":"2026-11-01T00:00:00Z"}
+            """.formatted(replayEvent,A,AV)).statusCode());
+        assertEquals(3,sources(card).size());
+        assertEquals(1,admin.queryForObject("SELECT COUNT(*) FROM command_receipt WHERE event_id=?",Integer.class,replayEvent));
+        // A further distinct real wrong attempt appends the fourth source.
+        String fourth=UUID.randomUUID().toString();
+        String dictationBody="""
+            {"eventId":"%s","lessonId":"%s","versionId":"%s","sentenceId":"%s","text":"zz qqq","answerExposed":false,"audioPlayed":true,"clientOccurredAt":"%s"}
+            """.formatted(fourth,A,AV,AV+"-s3",Instant.now().toString());
+        var attempt=json(send("/exercises/"+AV+"-s3-dictation/attempts",dictationBody));
+        assertFalse(attempt.path("result").path("correct").asBoolean());
+        assertEquals(4,sources(card).size(),"a fourth real attempt appends its own source");
+        assertEquals(1,admin.queryForObject("SELECT COUNT(*) FROM attempt_knowledge ak JOIN exercise_attempt a ON a.id=ak.attempt_id WHERE a.event_id=?",Integer.class,fourth));
+        assertEquals(beforeCards,admin.queryForList("SELECT id,due_at,reps,row_version,status FROM concept_review_card ORDER BY id"),
+            "appending sources must not touch concept-card due/reps/row_version");
+        var riverCards=admin.queryForList("SELECT id FROM concept_review_card WHERE concept_id=?",RIVER);
+        assertEquals(0,riverCards.size());
+        // Two concurrent distinct events for one fresh concept must converge on a single card and keep both attempts.
+        var pool=Executors.newFixedThreadPool(2);
+        try {
+            var left=pool.submit(()->send("/reading/cr-read-3/attempts",readingBody(UUID.randomUUID().toString(),B,BV,"cr3-a")));
+            var right=pool.submit(()->send("/reading/cr-read-3/attempts",readingBody(UUID.randomUUID().toString(),B,BV,"cr3-a")));
+            assertEquals(200,left.get().statusCode(),left.get().body());
+            assertEquals(200,right.get().statusCode(),right.get().body());
+        } finally {pool.shutdownNow();}
+        assertEquals(1,admin.queryForObject("SELECT COUNT(*) FROM concept_review_card WHERE concept_id=?",Integer.class,RIVER));
+        String river=admin.queryForObject("SELECT id FROM concept_review_card WHERE concept_id=?",String.class,RIVER);
+        assertEquals(2,sources(river).size(),"both concurrent attempts keep their sources");
+        assertNotEquals(admin.queryForObject("SELECT id FROM concept_review_card WHERE concept_id=?",String.class,RIVER),card,
+            "different sense keys must not share a card");
+    }
+
+    private void sqlNegatives() {
+        String card=admin.queryForObject("SELECT id FROM concept_review_card WHERE concept_id=?",String.class,CONCEPT);
+        String river=admin.queryForObject("SELECT id FROM concept_review_card WHERE concept_id=?",String.class,RIVER);
+        var attempt=admin.queryForMap("SELECT ak.attempt_id,ak.occurrence_id,ak.exercise_id,ak.version_id FROM attempt_knowledge ak WHERE ak.exercise_id='cr-read-1' AND ak.version_id=? ORDER BY ak.attempt_id LIMIT 1",AV);
+        assertThrows(org.springframework.dao.DataAccessException.class,()->admin.update(
+            "INSERT INTO concept_review_source(card_id,attempt_id,occurrence_id,exercise_id,version_id,concept_id) VALUES (?,?,?,?,?,'cr-bank-riv')",
+            card,attempt.get("attempt_id"),attempt.get("occurrence_id"),attempt.get("exercise_id"),attempt.get("version_id")),
+            "source concept must match the frozen attempt snapshot");
+        assertThrows(org.springframework.dao.DataAccessException.class,()->admin.update(
+            "INSERT INTO concept_review_source(card_id,attempt_id,occurrence_id,exercise_id,version_id,concept_id) VALUES (?,?,?,?,?,?)",
+            river,attempt.get("attempt_id"),attempt.get("occurrence_id"),attempt.get("exercise_id"),attempt.get("version_id"),CONCEPT),
+            "a card must not adopt another concept's attempt evidence");
+        assertThrows(org.springframework.dao.DataAccessException.class,()->admin.update(
+            "INSERT INTO concept_review_source(card_id,attempt_id,occurrence_id,exercise_id,version_id,concept_id) VALUES (?,?,?,?,?,?)",
+            card,attempt.get("attempt_id"),attempt.get("occurrence_id"),attempt.get("exercise_id"),BV,CONCEPT),
+            "source exercise/version must come from the attempt itself");
+        assertThrows(org.springframework.dao.DataAccessException.class,()->admin.update(
+            "INSERT INTO concept_review_source(card_id,attempt_id,occurrence_id,exercise_id,version_id,concept_id) VALUES (?,?,?,?,?,?)",
+            card,UUID.randomUUID().toString(),attempt.get("occurrence_id"),attempt.get("exercise_id"),attempt.get("version_id"),CONCEPT),
+            "sources must reference a real attempt");
+        assertEquals(sources(card).size(),admin.queryForObject("SELECT COUNT(*) FROM concept_review_source WHERE card_id=?",Integer.class,card));
+    }
+
+    private void rateWithCas(String card) throws Exception {
+        long rowVersion=admin.queryForObject("SELECT row_version FROM concept_review_card WHERE id=?",Long.class,card);
+        assertEquals(1,rowVersion);
+        var result=json(send("/concept-reviews/"+card+"/results",rating(UUID.randomUUID().toString(),rowVersion,"good",true)));
+        assertEquals(rowVersion+1,result.path("rowVersion").asLong());
+        assertEquals("simple_v1",result.path("schedulerVersion").asText());
+        assertEquals(1,admin.queryForObject("SELECT COUNT(*) FROM concept_review_result WHERE card_id=?",Integer.class,card));
+        assertEquals(1,admin.queryForObject("SELECT reps FROM concept_review_card WHERE id=?",Integer.class,card));
+        String replayEvent=result.path("eventId").asText();
+        var replay=json(send("/concept-reviews/"+card+"/results",rating(replayEvent,rowVersion,"good",true)));
+        assertEquals(result.path("nextDueAt").asText(),replay.path("nextDueAt").asText());
+        assertEquals(1,admin.queryForObject("SELECT COUNT(*) FROM concept_review_result WHERE card_id=?",Integer.class,card));
+        assertEquals(409,send("/concept-reviews/"+card+"/results",rating(replayEvent,rowVersion,"again",true)).statusCode(),
+            "same event with a different payload must conflict");
+        assertEquals(409,send("/concept-reviews/"+card+"/results",rating(UUID.randomUUID().toString(),rowVersion,"good",true)).statusCode(),
+            "stale rowVersion must conflict");
+        assertEquals(422,send("/concept-reviews/"+card+"/results",rating(UUID.randomUUID().toString(),rowVersion+1,"hard",true)).statusCode(),
+            "unknown ratings stay rejected");
+        assertEquals(422,send("/concept-reviews/"+card+"/results",rating(UUID.randomUUID().toString(),rowVersion+1,"good",false)).statusCode(),
+            "rating requires the revealed answer");
+        assertEquals(409,send("/concept-reviews/"+card+"/results",rating(UUID.randomUUID().toString(),rowVersion+1,"good",true)).statusCode(),
+            "a freshly scheduled card is not due yet");
+        // Fixture time control: pull the card due again so the next request reaches the rating transaction.
+        admin.update("UPDATE concept_review_card SET due_at=UTC_TIMESTAMP(3) WHERE id=?",card);
+        // QA-D02-BUG-002 negative: a deterministic unique-key conflict is a non-retryable 500, never a 503.
+        String midEvent=UUID.randomUUID().toString();
+        admin.update("INSERT INTO command_receipt(event_id,payload_hash) VALUES ('cr-pre','x')");
+        admin.update("INSERT INTO concept_review_result(event_id,card_id,rating,previous_due_at,next_due_at,previous_row_version,client_occurred_at) "
+            +"VALUES ('cr-pre',?, 'good',(SELECT due_at FROM concept_review_card WHERE id=?),UTC_TIMESTAMP(3),?,'x')",card,card,rowVersion+1);
+        var failed=send("/concept-reviews/"+card+"/results",rating(midEvent,rowVersion+1,"good",true));
+        assertEquals(500,failed.statusCode(),failed.body());
+        var problem=json(failed);
+        assertEquals("DATA_CONFLICT",problem.path("code").asText());
+        assertFalse(problem.path("retryable").asBoolean(),"deterministic constraint errors must not be retryable");
+        assertEquals(rowVersion+1,admin.queryForObject("SELECT row_version FROM concept_review_card WHERE id=?",Long.class,card),
+            "failed transactions must not advance the card");
+        assertEquals(0,admin.queryForObject("SELECT COUNT(*) FROM command_receipt WHERE event_id=?",Integer.class,midEvent));
+        assertEquals(1,admin.queryForObject("SELECT COUNT(*) FROM concept_review_result WHERE card_id=? AND event_id<>'cr-pre'",Integer.class,card),
+            "the failed transaction must not record a result; the pre-inserted conflict fixture row remains");
+        concurrent(admin.queryForObject("SELECT id FROM concept_review_card WHERE concept_id=?",String.class,RIVER),1);
+    }
+
+    private void concurrent(String card,long rowVersion) throws Exception {
+        var pool=Executors.newFixedThreadPool(2);
+        try {
+            var first=pool.submit(()->send("/concept-reviews/"+card+"/results",rating(UUID.randomUUID().toString(),rowVersion,"good",true)));
+            var second=pool.submit(()->send("/concept-reviews/"+card+"/results",rating(UUID.randomUUID().toString(),rowVersion,"good",true)));
+            int a=first.get().statusCode(),b=second.get().statusCode();
+            assertTrue((a==200&&b==409)||(a==409&&b==200),a+","+b);
+            assertEquals(1,admin.queryForObject("SELECT COUNT(*) FROM concept_review_result WHERE card_id=?",Integer.class,card),
+                "exactly one concurrent rating wins the CAS and records a result");
+            assertEquals(rowVersion+1,admin.queryForObject("SELECT row_version FROM concept_review_card WHERE id=?",Long.class,card));
+            assertEquals(1,admin.queryForObject("SELECT reps FROM concept_review_card WHERE id=?",Integer.class,card));
+        } finally {pool.shutdownNow();}
+    }
+
+    private void selfRatingStaysObjective(Map<String,Object> before,String card) throws Exception {
+        assertEquals(0,admin.queryForObject("SELECT COUNT(*) FROM concept_review_result WHERE rating NOT IN ('again','good')",Integer.class));
+        var due=json(send("/concept-reviews/due?all=true&limit=100",null));
+        assertTrue(due.path("items").size()>=2);
+        var page=json(send("/concept-reviews/due?all=true&limit=1",null));
+        assertEquals(1,page.path("items").size(),page.toString());
+        assertTrue(page.has("nextCursor"));
+        assertEquals(1,json(send("/concept-reviews/due?all=true&limit=1&cursor="+page.path("nextCursor").asText(),null)).path("items").size(),
+            "cursor pagination must not skip cards");
+        assertEquals(before.get("reviewItem"),oldReviewItems(),"old sentence cards must stay untouched");
+        assertEquals(before.get("reviewResult"),admin.queryForList("SELECT * FROM review_result ORDER BY event_id"));
+        assertEquals(before.get("attempts"),admin.queryForObject("SELECT COUNT(*) FROM exercise_attempt",Integer.class),
+            "self-rating must not create exercise attempts");
+        assertEquals(before.get("runs"),admin.queryForObject("SELECT COUNT(*) FROM quiz_run",Integer.class));
+    }
+
+    private void visibility(String card) throws Exception {
+        admin.update("UPDATE lesson SET availability='withdrawn' WHERE id=?",B);
+        var page=json(send("/concept-reviews/"+card+"/sources?limit=100",null));
+        int visible=0;
+        for(var source:page.path("items")) {
+            if(source.path("lessonId").asText().equals(B)) {
+                assertTrue(source.path("restricted").asBoolean());
+                assertFalse(source.has("lessonTitle"));assertFalse(source.has("sentenceText"));assertFalse(source.has("exerciseKind"));
+            } else {assertFalse(source.path("restricted").asBoolean());assertTrue(source.has("lessonTitle"));visible++;}
+        }
+        assertEquals(visible,json(send("/concept-reviews/"+card,null)).path("visibleSourceCount").asInt(),
+            "aggregates must exclude hidden sources");
+        var river=admin.queryForObject("SELECT id FROM concept_review_card WHERE concept_id=?",String.class,RIVER);
+        assertEquals(0,json(send("/concept-reviews/"+river,null)).path("visibleSourceCount").asInt());
+        assertEquals(200,send("/concept-reviews/"+river+"/sources?limit=1",null).statusCode(),"a full restricted page must stay readable");
+        String attempt=admin.queryForObject("SELECT attempt_id FROM concept_review_source WHERE card_id=? ORDER BY attempt_id LIMIT 1",String.class,card);
+        for(String invalid:List.of("bad",""+attempt+":",attempt+":"+"a".repeat(37),attempt+":bad%27id"))
+            assertEquals(422,send("/concept-reviews/"+card+"/sources?cursor="+invalid,null).statusCode());
+        sourcePages(card,"1");
+        admin.update("UPDATE lesson SET availability='available' WHERE id=?",B);
+        for(int i=0;i<20;i++) attemptReading("cr-read-1",A,AV,"cr1-a",UUID.randomUUID().toString());
+        admin.update("UPDATE lesson SET availability='withdrawn' WHERE id IN (?,?)",A,B);
+        try {
+            sourcePages(card,"1");
+            sourcePages(card,"20");
+            sourcePages(card,null);
+            sourcePages(card,Integer.toString(sources(card).size()));
+            assertEquals(0,json(send("/concept-reviews/"+card,null)).path("visibleSourceCount").asInt());
+        } finally {
+            admin.update("UPDATE lesson SET availability='available' WHERE id IN (?,?)",A,B);
+        }
+    }
+
+    private void sourcePages(String card,String pageSize) throws Exception {
+        var expected=new HashSet<String>();
+        for(var source:sources(card)) expected.add(source.get("attempt_id")+":"+source.get("occurrence_id"));
+        var seen=new HashSet<String>();
+        String cursor=null;
+        do {
+            String path="/concept-reviews/"+card+"/sources?"+(pageSize==null?"":"limit="+pageSize+"&");
+            if(cursor!=null) path+="cursor="+cursor;
+            var response=send(path,null);
+            assertEquals(200,response.statusCode(),response.body());
+            var page=json(response);
+            for(var source:page.path("items")) {
+                assertTrue(seen.add(source.path("attemptId").asText()+":"+source.path("occurrenceId").asText()),"source repeated across pages");
+                if(source.path("restricted").asBoolean()) {
+                    var allowed=Set.of("attemptId","occurrenceId","lessonId","versionId","recordedAt","visible","restricted");
+                    for(var field:source.properties()) assertTrue(allowed.contains(field.getKey()),"restricted field leaked: "+field.getKey());
+                    assertFalse(source.path("visible").asBoolean());
+                }
+            }
+            String next=page.path("nextCursor").isNull()?null:page.path("nextCursor").asText();
+            if(next!=null) assertTrue(cursor==null || next.compareTo(cursor)>0,"cursor must advance");
+            cursor=next;
+            assertTrue(seen.size()<=expected.size(),"pagination must terminate");
+        } while(cursor!=null);
+        assertEquals(expected,seen,"pagination must preserve every source");
+    }
+
+    private List<Map<String,Object>> sources(String card) {
+        return admin.queryForList("SELECT attempt_id,occurrence_id,exercise_id,version_id,concept_id FROM concept_review_source WHERE card_id=? ORDER BY attempt_id",card);
+    }
+    private Map<String,Object> scheduleSnapshot() {
+        var snapshot=new LinkedHashMap<String,Object>();
+        snapshot.put("card",admin.queryForList("SELECT id,due_at,reps,row_version,status FROM concept_review_card ORDER BY id"));
+        snapshot.put("reviewItem",oldReviewItems());
+        snapshot.put("reviewResult",admin.queryForList("SELECT * FROM review_result ORDER BY event_id"));
+        snapshot.put("attempts",admin.queryForObject("SELECT COUNT(*) FROM exercise_attempt",Integer.class));
+        snapshot.put("runs",admin.queryForObject("SELECT COUNT(*) FROM quiz_run",Integer.class));
+        return snapshot;
+    }
+    private List<Map<String,Object>> oldReviewItems() {
+        return admin.queryForList("SELECT id,due_at,reps,row_version,status FROM review_item WHERE id IN ('cr-kp-3-reading','cr-kp-2-reading','cr-kp-3b-reading') ORDER BY id");
+    }
+    private String rating(String event,long rowVersion,String rating,boolean revealed) {
+        return """
+            {"eventId":"%s","rowVersion":%d,"rating":"%s","answerRevealed":%s,"clientOccurredAt":"2026-11-01T00:00:00Z"}
+            """.formatted(event,rowVersion,rating,revealed);
+    }
+    private void attemptReading(String exercise,String lesson,String version,String optionId,String event) throws Exception {
+        var response=send("/reading/"+exercise+"/attempts",readingBody(event,lesson,version,optionId));
+        assertEquals(200,response.statusCode(),response.body());
+        assertFalse(json(response).path("result").path("correct").asBoolean());
+    }
+    private String readingBody(String event,String lesson,String version,String optionId) {
+        return """
+            {"eventId":"%s","lessonId":"%s","versionId":"%s","optionId":"%s","clientOccurredAt":"%s"}
+            """.formatted(event,lesson,version,optionId,Instant.now().toString());
+    }
+    private String registerA() {
+        return """
+            {"versionId":"%s","reviewer":"automation-review","concepts":[
+              {"id":"cr-bank-fin","kind":"vocabulary","canonicalKey":"bank","senseKey":"cr-money","revisions":[{"id":"rv-cr-bank","revisionNo":1,"displayName":"bank — financial institution","explanation":"存款与银行机构含义（D02夹具）","sourceRef":"fixture","reviewStatus":"confirmed","reviewedAt":"2026-11-01T00:00:00Z"}]}],
+             "occurrences":[{"id":"cr-oc-bank-a","revisionId":"rv-cr-bank","scope":"sentence","sentenceId":"%s-s3","usage":{}}],
+             "exerciseSentences":[
+              {"exerciseId":"cr-read-1","sentenceId":"%s-s3","role":"primary"},
+              {"exerciseId":"%s-s3-dictation","sentenceId":"%s-s3","role":"primary"}],
+             "exerciseKnowledge":[
+              {"exerciseId":"cr-read-1","occurrenceId":"cr-oc-bank-a","role":"target"},
+              {"exerciseId":"%s-s3-dictation","occurrenceId":"cr-oc-bank-a","role":"target"}]}
+            """.formatted(AV,AV,AV,AV,AV,AV,AV);
+    }
+    private String registerB() {
+        return """
+            {"versionId":"%s","reviewer":"automation-review","concepts":[
+              {"id":"cr-bank-riv","kind":"vocabulary","canonicalKey":"bank","senseKey":"cr-river","revisions":[{"id":"rv-cr-river","revisionNo":1,"displayName":"bank — riverside","explanation":"河岸含义（D02夹具）","sourceRef":"fixture","reviewStatus":"confirmed","reviewedAt":"2026-11-01T00:00:00Z"}]}],
+             "occurrences":[
+              {"id":"cr-oc-bank-b","revisionId":"rv-cr-bank","scope":"sentence","sentenceId":"%s-s2","usage":{}},
+              {"id":"cr-oc-riv","revisionId":"rv-cr-river","scope":"sentence","sentenceId":"%s-s3","usage":{}}],
+             "exerciseSentences":[
+              {"exerciseId":"cr-read-2","sentenceId":"%s-s2","role":"primary"},
+              {"exerciseId":"cr-read-3","sentenceId":"%s-s3","role":"primary"}],
+             "exerciseKnowledge":[
+              {"exerciseId":"cr-read-2","occurrenceId":"cr-oc-bank-b","role":"target"},
+              {"exerciseId":"cr-read-3","occurrenceId":"cr-oc-riv","role":"target"}]}
+            """.formatted(BV,BV,BV,BV,BV);
+    }
+    private void exercises() {
+        admin.update("INSERT INTO knowledge_point(id,lesson_id,version_id,sentence_id,term,meaning,usage_note,example_text) VALUES ('cr-kp-3',?,?,?,'bank','bank','bank','bank')",A,AV,AV+"-s3");
+        admin.update("INSERT INTO knowledge_point(id,lesson_id,version_id,sentence_id,term,meaning,usage_note,example_text) VALUES ('cr-kp-2',?,?,?,'bank','bank','bank','bank')",B,BV,BV+"-s2");
+        admin.update("INSERT INTO knowledge_point(id,lesson_id,version_id,sentence_id,term,meaning,usage_note,example_text) VALUES ('cr-kp-3b',?,?,?,'bank','bank','bank','bank')",B,BV,BV+"-s3");
+        admin.update("INSERT INTO exercise(id,lesson_id,version_id,sentence_id,kind,algorithm_version) VALUES ('cr-read-1',?,?,?,'reading_choice','reading_choice_v1')",A,AV,AV+"-s3");
+        admin.update("INSERT INTO exercise(id,lesson_id,version_id,sentence_id,kind,algorithm_version) VALUES (?, ?,?,?,'dictation','english_token_v1')",AV+"-s3-dictation",A,AV,AV+"-s3");
+        admin.update("INSERT INTO exercise(id,lesson_id,version_id,sentence_id,kind,algorithm_version) VALUES ('cr-read-2',?,?,?,'reading_choice','reading_choice_v1')",B,BV,BV+"-s2");
+        admin.update("INSERT INTO exercise(id,lesson_id,version_id,sentence_id,kind,algorithm_version) VALUES ('cr-read-3',?,?,?,'reading_choice','reading_choice_v1')",B,BV,BV+"-s3");
+        readingQuestion("cr-read-1","cr-kp-3",AV,"s3","cr1-b","bank 金融含义。","cr1-a","cr1-b","cr1-c");
+        readingQuestion("cr-read-2","cr-kp-2",BV,"s2","cr2-b","bank 金融含义。","cr2-a","cr2-b","cr2-c");
+        readingQuestion("cr-read-3","cr-kp-3b",BV,"s3","cr3-b","river bank 河岸含义。","cr3-a","cr3-b","cr3-c");
+    }
+    private void readingQuestion(String exercise,String point,String version,String suffix,String answerKey,String explanation,String... options) {
+        var payload=mapper.createObjectNode().put("id",exercise).put("prompt","选择正确含义").put("answerKey",answerKey).put("explanation",explanation);
+        var array=payload.putArray("options");
+        for(String option:options)array.add(mapper.createObjectNode().put("id",option).put("text",option+" text"));
+        admin.update("INSERT INTO reading_question(exercise_id,version_id,sentence_id,knowledge_point_id,payload_json) VALUES (?,?,?,?,?)",exercise,version,version+"-"+suffix,point,payload.toString());
+        for(String option:options)admin.update("INSERT INTO reading_option(id,exercise_id) VALUES (?,?)",option,exercise);
+    }
+    private void fixture(String id,int paragraphs,int count,Map<Integer,String> texts) throws Exception {
+        byte[] tone=java.nio.file.Files.readAllBytes(java.nio.file.Path.of(Objects.requireNonNull(System.getenv("NORTHSTAR_TEST_AUDIO"))));
+        admin.update("INSERT INTO content_license(id,source_type,source_ref,review_status,details_json) VALUES (?,'original',?,'confirmed','{}')",id+"-license","self-authored concept-review fixture "+id+" text and synthetic tone");
+        admin.update("INSERT INTO lesson(id,slug,kind,availability) VALUES (?,?,'original_demo','available')",id,id);
+        String version=id+"-v1";
+        var payload=mapper.createObjectNode().put("id",id).put("versionId",version).put("title","Concept Review Fixture "+id.toUpperCase())
+            .put("explanationLabel","本地预置测试讲解").put("audioLabel","原创合成测试音 · 非朗读/非发音示范");
+        String hash=local.northstar.catalog.ContentPackage.sha256(payload.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        admin.update("INSERT INTO lesson_version(id,lesson_id,version_no,license_id,content_sha256,manifest_sha256,payload_json,publication_state,release_ready) VALUES (?,?,1,?,?,?,?,'published',TRUE)",
+            version,id,id+"-license",hash,hash,payload.toString());
+        admin.update("UPDATE lesson SET current_version_id=? WHERE id=?",version,id);
+        for(int n=1;n<=paragraphs;n++) {
+            String identity=UUID.randomUUID().toString();
+            admin.update("INSERT INTO paragraph_identity(id,lesson_id,registry_key) VALUES (?,?,?)",identity,id,identity);
+            admin.update("INSERT INTO paragraph(id,version_id,stable_key,sequence_no,lesson_id,identity_id) VALUES (?,?,?,?,?,?)",version+"-p"+n,version,"paragraph-"+n,n,id,identity);
+        }
+        for(int n=1;n<=count;n++) {
+            String identity=UUID.randomUUID().toString();
+            admin.update("INSERT INTO sentence_identity(id,lesson_id,registry_key) VALUES (?,?,?)",identity,id,identity);
+            String asset=version+"-a"+n,key=id+"/version-1/sounds/utterance-"+n+".mp3";
+            java.nio.file.Path target=java.nio.file.Path.of(System.getenv("NORTHSTAR_CONTENT_ROOT"),key);
+            java.nio.file.Files.createDirectories(target.getParent());java.nio.file.Files.write(target,tone);
+            admin.update("INSERT INTO audio_asset(id,lesson_version_id,license_id,source_kind,storage_key,mime_type,byte_size,duration_ms,sha256,status) VALUES (?,?,?,'original_tts',?,'audio/mpeg',?,2000,?,'ready')",
+                asset,version,id+"-license",key,tone.length,local.northstar.catalog.ContentPackage.sha256(tone));
+            admin.update("INSERT INTO sentence(id,lesson_id,lesson_version_id,stable_key,sequence_no,speaker,text,translation,explanation,focus,audio_asset_id,start_ms,end_ms,paragraph_id,identity_id) VALUES (?,?,?,?,?,'Tester',?,'原创测试句','本地预置讲解','test',?,0,2000,?,?)",
+                version+"-s"+n,id,version,"line-"+n,n,texts.getOrDefault(n,"Test line "+n+" of "+id+"."),asset,version+"-p1",identity);
+        }
+    }
+    private void cleanup() {
+        for(var trigger:TRIGGERS)admin.execute("DROP TRIGGER IF EXISTS "+trigger);
+        var ratingReceipts=admin.queryForList("SELECT event_id FROM concept_review_result WHERE card_id IN (SELECT id FROM concept_review_card WHERE concept_id IN ('cr-bank-fin','cr-bank-riv'))",String.class);
+        var attemptReceipts=admin.queryForList("SELECT event_id FROM exercise_attempt WHERE lesson_id IN ('cr-a','cr-b')",String.class);
+        admin.update("DELETE FROM concept_review_result WHERE event_id='cr-pre' OR card_id IN (SELECT id FROM concept_review_card WHERE concept_id IN ('cr-bank-fin','cr-bank-riv'))");
+        admin.update("DELETE s FROM concept_review_source s JOIN concept_review_card c ON c.id=s.card_id WHERE c.concept_id IN ('cr-bank-fin','cr-bank-riv')");
+        admin.update("DELETE FROM concept_review_card WHERE concept_id IN ('cr-bank-fin','cr-bank-riv')");
+        for(var id:ratingReceipts)admin.update("DELETE FROM command_receipt WHERE event_id=?",id);
+        admin.update("DELETE FROM command_receipt WHERE event_id='cr-pre'");
+        for(String version:List.of(AV,BV)) learningCleanup("a.version_id='"+version+"'");
+        for(var id:attemptReceipts)admin.update("DELETE FROM command_receipt WHERE event_id=?",id);
+        admin.update("DELETE FROM study_stage WHERE version_id IN (?,?)",AV,BV);
+        admin.update("DELETE FROM reading_progress WHERE exercise_id IN ('cr-read-1','cr-read-2','cr-read-3')");
+        admin.update("DELETE FROM review_item WHERE id IN ('cr-kp-3-reading','cr-kp-2-reading','cr-kp-3b-reading')");
+        for(String version:List.of(AV,BV)) {
+            admin.update("DELETE FROM review_item WHERE version_id=?",version);
+            admin.update("DELETE FROM exercise_knowledge WHERE version_id=?",version);
+            admin.update("DELETE FROM exercise_sentence WHERE version_id=?",version);
+            admin.update("DELETE FROM knowledge_occurrence WHERE version_id=?",version);
+            admin.update("DELETE FROM knowledge_projection WHERE version_id=?",version);
+            admin.update("DELETE FROM reading_option WHERE exercise_id IN (SELECT id FROM exercise WHERE version_id=?)",version);
+            admin.update("DELETE FROM reading_question WHERE version_id=?",version);
+            admin.update("DELETE FROM exercise WHERE version_id=?",version);
+            admin.update("DELETE FROM knowledge_point WHERE version_id=?",version);
+        }
+        admin.update("DELETE r FROM knowledge_concept_revision r JOIN knowledge_concept c ON c.id=r.concept_id WHERE c.id IN ('cr-bank-fin','cr-bank-riv')");
+        admin.update("DELETE FROM knowledge_concept WHERE id IN ('cr-bank-fin','cr-bank-riv')");
+        for(String id:List.of(A,B)) {
+            String version=id+"-v1";
+            admin.update("UPDATE lesson SET current_version_id=NULL WHERE id=?",id);
+            admin.update("DELETE FROM sentence WHERE lesson_version_id=?",version);
+            admin.update("DELETE FROM sentence_identity WHERE lesson_id=?",id);
+            admin.update("DELETE FROM audio_asset WHERE lesson_version_id=?",version);
+            admin.update("DELETE FROM paragraph WHERE version_id=?",version);
+            admin.update("DELETE FROM paragraph_identity WHERE lesson_id=?",id);
+            admin.update("DELETE FROM lesson_version WHERE id=?",version);
+            admin.update("DELETE FROM lesson WHERE id=?",id);
+            admin.update("DELETE FROM content_license WHERE id=?",id+"-license");
+        }
+        recreateTriggers();
+    }
+    private void recreateTriggers() {
+        admin.execute("CREATE TRIGGER concept_review_result_no_update BEFORE UPDATE ON concept_review_result FOR EACH ROW BEGIN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Concept review results are immutable'; END");
+        admin.execute("CREATE TRIGGER concept_review_result_no_delete BEFORE DELETE ON concept_review_result FOR EACH ROW BEGIN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Concept review results are immutable'; END");
+        admin.execute("CREATE TRIGGER knowledge_revision_no_update BEFORE UPDATE ON knowledge_concept_revision FOR EACH ROW BEGIN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Knowledge concept revisions are append-only'; END");
+        admin.execute("CREATE TRIGGER knowledge_revision_no_delete BEFORE DELETE ON knowledge_concept_revision FOR EACH ROW BEGIN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Knowledge concept revisions are append-only'; END");
+        admin.execute("CREATE TRIGGER attempt_knowledge_no_update BEFORE UPDATE ON attempt_knowledge FOR EACH ROW BEGIN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Attempt knowledge snapshots are immutable'; END");
+        admin.execute("CREATE TRIGGER attempt_knowledge_no_delete BEFORE DELETE ON attempt_knowledge FOR EACH ROW BEGIN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Attempt knowledge snapshots are immutable'; END");
+        admin.execute("CREATE TRIGGER quiz_set_no_delete BEFORE DELETE ON exercise_set FOR EACH ROW BEGIN IF OLD.frozen THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Frozen quiz set is immutable'; END IF; END");
+        admin.execute("CREATE TRIGGER quiz_item_no_delete BEFORE DELETE ON exercise_set_item FOR EACH ROW BEGIN IF (SELECT frozen FROM exercise_set WHERE id=OLD.set_id) THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Frozen quiz items are immutable'; END IF; END");
+        admin.execute("CREATE TRIGGER knowledge_projection_no_insert BEFORE INSERT ON knowledge_projection FOR EACH ROW BEGIN IF NEW.frozen THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Projection freezes only after relations are registered'; END IF; END");
+        admin.execute("CREATE TRIGGER knowledge_projection_no_update BEFORE UPDATE ON knowledge_projection FOR EACH ROW BEGIN IF OLD.frozen THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Frozen knowledge projection is immutable'; END IF; END");
+        admin.execute("CREATE TRIGGER knowledge_projection_no_delete BEFORE DELETE ON knowledge_projection FOR EACH ROW BEGIN IF OLD.frozen THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Frozen knowledge projection is immutable'; END IF; END");
+        admin.execute("CREATE TRIGGER occurrence_no_insert BEFORE INSERT ON knowledge_occurrence FOR EACH ROW BEGIN IF (SELECT frozen FROM knowledge_projection WHERE version_id=NEW.version_id) THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='"+GUARD+"'; END IF; END");
+        admin.execute("CREATE TRIGGER occurrence_no_update BEFORE UPDATE ON knowledge_occurrence FOR EACH ROW BEGIN IF (SELECT frozen FROM knowledge_projection WHERE version_id=OLD.version_id) OR (SELECT frozen FROM knowledge_projection WHERE version_id=NEW.version_id) THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='"+GUARD+"'; END IF; END");
+        admin.execute("CREATE TRIGGER occurrence_no_delete BEFORE DELETE ON knowledge_occurrence FOR EACH ROW BEGIN IF (SELECT frozen FROM knowledge_projection WHERE version_id=OLD.version_id) THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='"+GUARD+"'; END IF; END");
+        for(var table:List.of("legacy_knowledge_link","exercise_sentence","exercise_knowledge")) {
+            String stem=table.equals("legacy_knowledge_link")?"legacy_link":table;
+            admin.execute("CREATE TRIGGER "+stem+"_no_insert BEFORE INSERT ON "+table+" FOR EACH ROW BEGIN IF (SELECT frozen FROM knowledge_projection WHERE version_id=NEW.version_id) THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='"+GUARD+"'; END IF; END");
+            admin.execute("CREATE TRIGGER "+stem+"_no_update BEFORE UPDATE ON "+table+" FOR EACH ROW BEGIN IF (SELECT frozen FROM knowledge_projection WHERE version_id=OLD.version_id) OR (SELECT frozen FROM knowledge_projection WHERE version_id=NEW.version_id) THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='"+GUARD+"'; END IF; END");
+            admin.execute("CREATE TRIGGER "+stem+"_no_delete BEFORE DELETE ON "+table+" FOR EACH ROW BEGIN IF (SELECT frozen FROM knowledge_projection WHERE version_id=OLD.version_id) THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='"+GUARD+"'; END IF; END");
+        }
+    }
+    private void learningCleanup(String attemptWhere) {
+        admin.update("DELETE ak FROM attempt_knowledge ak JOIN exercise_attempt a ON a.id=ak.attempt_id WHERE "+attemptWhere);
+        for(var table:List.of("review_source","learning_evidence","reading_answer"))
+            admin.update("DELETE t FROM "+table+" t JOIN exercise_attempt a ON a.id=t.attempt_id WHERE "+attemptWhere);
+        admin.update("DELETE FROM exercise_attempt WHERE "+attemptWhere.replace("a.",""));
+    }
+    private JsonNode json(HttpResponse<String> response) throws Exception {return mapper.readTree(response.body());}
+    private HttpResponse<String> send(String path,String body) throws Exception {
+        return http.send(HttpRequest.newBuilder(URI.create(base+path)).header("Origin","http://127.0.0.1:3196")
+            .header("X-Northstar-Request","local-workspace").header("Content-Type","application/json")
+            .method(body==null?"GET":"POST",body==null?HttpRequest.BodyPublishers.noBody():HttpRequest.BodyPublishers.ofString(body)).build(),HttpResponse.BodyHandlers.ofString());
+    }
+}
