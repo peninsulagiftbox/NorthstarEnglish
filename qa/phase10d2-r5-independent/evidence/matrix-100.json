@@ -1,0 +1,44 @@
+{
+  "expected": 100,
+  "checks": [
+    {
+      "label": "initial-due",
+      "count": 100
+    },
+    {
+      "label": "all",
+      "count": 100
+    },
+    {
+      "label": "refresh",
+      "count": 100
+    },
+    {
+      "label": "switch-due",
+      "count": 100
+    },
+    {
+      "label": "reopen",
+      "count": 100
+    },
+    {
+      "label": "outbox replay after reopen",
+      "count": 99
+    },
+    {
+      "label": "late page after mode switch",
+      "count": 99
+    },
+    {
+      "label": "page-error-retry",
+      "count": 100
+    }
+  ],
+  "errors": [],
+  "rating": {
+    "cardId": "ccb3dde1-704e-434e-8d2c-5957a87949a4",
+    "eventId": "25e5c218-6654-4ee6-bd63-77355893b87d",
+    "rowVersion": 2
+  },
+  "result": "PASS"
+}

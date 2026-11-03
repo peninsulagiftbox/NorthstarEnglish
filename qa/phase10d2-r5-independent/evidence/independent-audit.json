@@ -1,0 +1,11 @@
+{
+  "results": {
+    "counts": "101\t183\t1\t100\t83",
+    "illegal_sources": "0",
+    "orphan_sources": "0",
+    "duplicate_cards": "0",
+    "duplicate_result_version": "0",
+    "cross_concept_occurrence": "0"
+  },
+  "result": "PASS"
+}
