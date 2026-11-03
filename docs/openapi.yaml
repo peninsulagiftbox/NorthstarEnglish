@@ -1001,6 +1001,62 @@ paths:
           description: items with id, scope, versionId, lessonId, visible, restricted and, when visible, title, usage, exerciseCount, wrongAttemptCount, createdAt plus sentence fields for sentence scope; nextCursor when more pages exist
         '404': {description: Unknown concept or invalid filter id}
         '422': {description: Invalid cursor or limit}
+  /concept-reviews/due:
+    get:
+      operationId: listConceptReviews
+      summary: Paged pending cross-lesson concept review cards
+      description: Cards are identified by owner, concept, promptKind and protocolVersion; lesson versions never change card identity. Rows are ordered by dueAt then id with a composite (dueAt,id) cursor.
+      parameters:
+        - {name: all, in: query, schema: {type: boolean, default: false}, description: Include not-yet-due cards}
+        - {name: cursor, in: query, schema: {type: string}, description: Composite dueAt:id cursor of the last item on the previous page}
+        - {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 20}}
+      responses:
+        '200':
+          description: items with id, due, dueAt, reps, rowVersion, promptKind, protocolVersion, schedulerVersion, concept fields (conceptId, kind, canonicalKey, senseKey, latest confirmed displayName and explanation) and visibleSourceCount; nextCursor when more pages exist
+        '422': {description: Invalid cursor or limit}
+  /concept-reviews/{id}:
+    get:
+      operationId: getConceptReview
+      summary: One concept review card with scheduling state and latest confirmed concept revision
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      responses:
+        '200': {description: Same card fields as the due list plus createdAt and visibleSourceCount}
+        '404': {description: Unknown card}
+  /concept-reviews/{id}/sources:
+    get:
+      operationId: listConceptReviewSources
+      summary: Paged real attempt sources of one concept card with course visibility rules
+      description: Every source is database-linked to the frozen attempt_knowledge snapshot of the same concept. Rows from withdrawn/unavailable/unlicensed lessons return restricted identity metadata only (no title, sentence text, exercise or media references) and never leak through counts.
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+        - {name: cursor, in: query, schema: {type: string}, description: Composite attemptId:occurrenceId cursor of the last item on the previous page}
+        - {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 20}}
+      responses:
+        '200':
+          description: items with attemptId, occurrenceId, lessonId, versionId, recordedAt, visible and restricted; visible rows additionally carry lessonTitle, exerciseKind, correct, scope and sentence fields
+        '404': {description: Unknown card}
+        '422': {description: Invalid cursor or limit}
+  /concept-reviews/{id}/results:
+    post:
+      operationId: rateConceptReview
+      summary: CAS self-rating that advances card scheduling; never generates objective attempts or scores
+      description: Requires the current rowVersion and a revealed answer; only again/good ratings are accepted. The (card_id, previous_row_version) unique key makes concurrent rating at most-once; identical eventId retries replay the first response and different payloads conflict.
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      responses:
+        '200': {description: eventId, nextDueAt, rowVersion, origin, schedulerVersion}
+        '404': {description: Unknown card}
+        '409': {description: CAS conflict, not-yet-due card, or idempotency payload conflict}
+        '422': {description: Invalid rating, missing answer reveal, or bad timestamp}
+    get:
+      operationId: listConceptReviewResults
+      summary: Immutable self-rating history of one concept card
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: string}}
+      responses:
+        '200': {description: items with eventId, rating, origin, previousDueAt, nextDueAt, previousRowVersion, recordedAt}
+        '404': {description: Unknown card}
 components:
   parameters:
     LocalRequest:

@@ -26,7 +26,7 @@ def load_snapshot(path):
     if digest(envelope['payloadJson'].encode()) != envelope['sha256']:
         raise ValueError('校验和不匹配')
     payload = json.loads(envelope['payloadJson'])
-    if payload['project'] != local.IDENTITY or payload['owner'] != 'local' or payload['schemaVersion'] not in {'008', '009.04', '009.05', '009.14', '009.15', '010.06', '011.09', '012.01', '012.02', '012.03', '012.04', '012.05', '012.06', '012.07'}:
+    if payload['project'] != local.IDENTITY or payload['owner'] != 'local' or payload['schemaVersion'] not in {'008', '009.04', '009.05', '009.14', '009.15', '010.06', '011.09', '012.01', '012.02', '012.03', '012.04', '012.05', '012.06', '012.07', '012.08', '012.09', '012.10', '012.11'}:
         raise ValueError('版本或归属不匹配')
     return envelope, payload
 
@@ -189,6 +189,10 @@ def main():
         table, parent = line.split('\t')
         if table != parent and not (table == 'lesson' and parent == 'lesson_version'):
             dependencies.setdefault(table, set()).add(parent)
+    generated_columns = {}
+    for line in sql("SELECT table_name,column_name FROM information_schema.columns WHERE table_schema='" + source + "' AND extra LIKE '%GENERATED%'").splitlines():
+        table, column = line.split('\t')
+        generated_columns.setdefault(table, set()).add(column)
     pending = set(payload['tables'])
     order = []
     while pending:
@@ -223,7 +227,7 @@ def main():
         data = payload['tables'][table]
         if not re.fullmatch(r'[a-z_]+', table) or not all(re.fullmatch(r'[a-z][a-z0-9_]*', c) for c in data['columns']):
             raise ValueError('无效表结构')
-        generated = {'target_uniqueness_key'} if table == 'version_sentence_map' else set()
+        generated = generated_columns.get(table, set())
         restored_columns = [c for c in data['columns'] if c not in generated]
         rows = data['rows']
         if table == 'writing_revision':
@@ -253,9 +257,9 @@ def main():
         write(root / path.name, path.read_bytes())
     grants = [f"GRANT SELECT ON `{target}`.* TO 'northstar_app'@'%'; GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER,INDEX,REFERENCES ON `{target}`.* TO 'northstar_migrator'@'%';"]
     # Keep immutable history read-only. Runtime writes use the same table policy as the main instance.
-    for table in ('study_resume','user_setting','command_receipt','study_stage','exercise_draft','review_item','vocabulary_favorite','reading_progress','writing_draft','personal_recording','practice_progress','quiz_progress'):
+    for table in ('study_resume','user_setting','command_receipt','study_stage','exercise_draft','review_item','vocabulary_favorite','reading_progress','writing_draft','personal_recording','practice_progress','quiz_progress','concept_review_card'):
         grants.append(f"GRANT INSERT,UPDATE ON `{target}`.`{table}` TO 'northstar_app'@'%';")
-    for table in ('exercise_attempt','learning_evidence','study_event','review_source','reading_answer','writing_revision','recording_observation','quiz_run','quiz_answer','quiz_run_item','review_result','attempt_knowledge'):
+    for table in ('exercise_attempt','learning_evidence','study_event','review_source','reading_answer','writing_revision','recording_observation','quiz_run','quiz_answer','quiz_run_item','review_result','attempt_knowledge','concept_review_source','concept_review_result'):
         grants.append(f"GRANT INSERT ON `{target}`.`{table}` TO 'northstar_app'@'%';")
     target_sql('\n'.join(grants))
     print('PASS: 逐表行数与媒体哈希通过，恢复到全新隔离库 ' + target + '；没有修改当前库。')

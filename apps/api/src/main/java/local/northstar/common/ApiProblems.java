@@ -32,8 +32,17 @@ public class ApiProblems {
             return problem(HttpStatus.valueOf(expected.getStatusCode().value()), "PRACTICE_REQUEST", expected.getReason(), request.getRequestURI());
         }
         log.error("Unhandled exception at {}", request.getRequestURI(), exception);
-        if (exception instanceof org.springframework.dao.DataAccessException) {
-            return problem(HttpStatus.SERVICE_UNAVAILABLE, "DATABASE_UNAVAILABLE", "数据库连接暂不可用，请检查本地服务。", request.getRequestURI());
+        if (exception instanceof org.springframework.dao.DataAccessException db) {
+            // Deadlocks, lock waits, timeouts and pooled-connection outages are transient; constraint,
+            // grammar and mapping errors are deterministic and must not invite blind client retries.
+            if (db instanceof org.springframework.dao.TransientDataAccessException
+                || db instanceof org.springframework.dao.DataAccessResourceFailureException) {
+                return problem(HttpStatus.SERVICE_UNAVAILABLE, "DATABASE_UNAVAILABLE", "数据库连接暂不可用，请检查本地服务。", request.getRequestURI());
+            }
+            if (db instanceof org.springframework.dao.DataIntegrityViolationException) {
+                return problem(HttpStatus.INTERNAL_SERVER_ERROR, "DATA_CONFLICT", "请求与当前数据状态冲突，未产生变更；请检查请求内容或刷新后重试。", request.getRequestURI());
+            }
+            return problem(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "本地服务发生错误，请检查日志后重试。", request.getRequestURI());
         }
         if (exception instanceof org.springframework.web.ErrorResponse error) {
             HttpStatus status = HttpStatus.valueOf(error.getStatusCode().value());
