@@ -1,0 +1,14 @@
+{
+  "head": "a5084cb4442a7b78afad5c920459c22f02f679ce",
+  "branch": "main",
+  "manifestSha256": "ae4fb16befec1dcb25699f084d7582f49ab118cacdd7bf70bf0c65af34fd3784",
+  "inputCount": 385,
+  "jar": "output/review/northstar-phase10d2-p1-candidate.jar",
+  "jarSha256": "771a72e8ea66304ebfb2e4b5e873d759c60a176fc2dd09fdfe31648da7ff92c6",
+  "qaFixtureCopy": {
+    "from": "qa/phase10d-final-r4/FinalQaFixture.java",
+    "to": "apps/api/src/test/java/local/northstar/knowledge/FinalQaFixture.java",
+    "sha256": "2bf25bf857e7d6d42cf786b4a2fb0db7446f894d6001f413f16602821fe7efc8"
+  },
+  "sourceCopy": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r4/source"
+}

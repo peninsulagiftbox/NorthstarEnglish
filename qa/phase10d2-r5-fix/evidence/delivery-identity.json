@@ -1,0 +1,15 @@
+{
+  "deliveryManifestSha256": "31a9a13065af5113a56929a2ba1aa5856f32228124b34750079fef7087683eb7",
+  "deliveryCount": 219,
+  "deliveryScope": "all uncommitted and untracked files at closeout, excluding the local evidence directory",
+  "excludedLocalPaths": [
+    "qa/phase10d2-r5-fix/evidence/",
+    "output/",
+    ".local/"
+  ],
+  "evidenceFileCount": 132,
+  "frozenInputsUnchangedDuringRun": 219,
+  "webBuildId": "SuZ-zEmOT_iOi5QX-oa9O",
+  "runtimeJarSha256": "771a72e8ea66304ebfb2e4b5e873d759c60a176fc2dd09fdfe31648da7ff92c6",
+  "r5FailureEvidence": "qa/phase10d-final-r5/evidence"
+}

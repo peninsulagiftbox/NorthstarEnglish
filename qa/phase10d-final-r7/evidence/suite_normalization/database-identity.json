@@ -1,0 +1,13 @@
+{
+  "name": "northstar-qa-final-r7-suite-normalization-20261104",
+  "containerId": "14bb1dcc4dd71bef0ddfd24e99d5d527bf662cb6468ec83978e686c86ea299c9",
+  "port": 3393,
+  "schema": "northstar_phase01_test",
+  "version": "8.4.9",
+  "uuid": "c62c1a21-d854-11f1-818d-aa7768bd014a",
+  "volume": "northstar-qa-final-r7-suite-normalization-20261104-data",
+  "appAccount": "northstar_app",
+  "migratorAccount": "northstar_migrator",
+  "content": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r7/suite_normalization/content",
+  "recordings": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r7/suite_normalization/recordings"
+}

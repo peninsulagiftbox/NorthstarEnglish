@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "file": "V012_04__exercise_sentence.sql",
+  "committedDDLIdentified": true,
+  "historyUnchanged": true,
+  "oldCellsExact": true,
+  "failedTargetRetained": true
+}

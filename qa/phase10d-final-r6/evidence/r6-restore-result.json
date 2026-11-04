@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "sourceContainer": "d70d64bb54801f6ef31edfd225340f0ce3097d8952d5fbee689ed5e2c49896fe",
+  "sourceUuid": "085adf79-d796-11f1-aedc-1a5123ebe7f1",
+  "sourceSchema": "northstar_phase01_test",
+  "targetSchema": "northstar_restore_20261103145918",
+  "backupSha256": "cb72416fffb28fc16cfbb72663c8e76713e99c0b3cf9852fadfd1a11372f3773",
+  "backupPathPrivate": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r6/r6-backup-20261103145918",
+  "counts": {
+    "knowledge_concept": 2,
+    "knowledge_concept_revision": 2,
+    "knowledge_occurrence": 3,
+    "exercise_knowledge": 4,
+    "attempt_knowledge": 8,
+    "concept_review_card": 1,
+    "concept_review_source": 8,
+    "concept_review_result": 4,
+    "review_item": 3,
+    "review_result": 1
+  },
+  "generatedColumn": "location_guard",
+  "generatedValuesEqual": true,
+  "targetRowsSha256": {
+    "knowledge_concept": "6241f37e7665a373921efbfee0aa76a9688e5bd010018d177e2558b0426168db",
+    "knowledge_concept_revision": "637dd209079d2ec9204c0a3675d0dd728b7c0f91d4e1c30fea5831f3befc8637",
+    "knowledge_occurrence": "d21ff28c232e357c417cfa3ce5bb4c7e33ad842c16da4d9b9123b5f189b6cc7f",
+    "exercise_knowledge": "59862986bc282839ee780bb2840ae2d2b125df311acdbbcbc5b1ebda1410cde9",
+    "attempt_knowledge": "c09e2cd680c5340ebff699fc2701f5eb4a538b156c4f36766ebdcfabe314e092",
+    "concept_review_card": "14435e106ae4fa9cd90822dbc34919d58fc83a98b264628004ffb7a70432bf17",
+    "concept_review_source": "cc239fead19cd1f9263d1709707fe84d781545982839fd90dfed50cef65822e8",
+    "concept_review_result": "a6c13acdce7e36915c89eda1d1d1910c6397026e95daa572b4686cf509261db2",
+    "review_item": "cb21ab755cc846361157fd409e61c0176f38237d41c1bc27dbe18b2f2c3d6ffa",
+    "review_result": "0d30740b156fb6a7c59d8e91f09842b74b940b48f1e1af5f5fd753bf6ebcd9da"
+  }
+}

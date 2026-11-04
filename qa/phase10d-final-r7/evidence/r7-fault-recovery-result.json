@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "failedTargetUuid": "723297ee-d824-11f1-acb4-d211006696ae",
+  "restoredTargetUuid": "f3749106-d824-11f1-9c2f-5e9e4cc1312d",
+  "restoredVolume": "northstar-qa-final-r7-fault-recovery-20261104-data",
+  "backupSha256": "b4145270c1edbcff655beb1bdbf1a3fa6a5556ddd9ad530f37c598bde1c01e58",
+  "flywayVersion": "012.11",
+  "oldRowsUnchanged": true,
+  "lessonApiRead": true
+}

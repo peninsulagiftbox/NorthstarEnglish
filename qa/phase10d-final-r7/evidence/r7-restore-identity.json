@@ -1,0 +1,12 @@
+{
+  "name": "northstar-qa-final-r7-restore-20261104",
+  "containerId": "e4bf55af01e3f46c86c52c30e6cb1c89b05375df1cdf85f70de6e8c0892d307c",
+  "volume": "northstar-qa-final-r7-restore-20261104-data",
+  "port": 3386,
+  "uuid": "2b242be2-d824-11f1-baec-767a5e58531a",
+  "mysqlVersion": "8.4.9",
+  "sourceUuid": "35965c3f-d823-11f1-be71-b6b8e525f6a4",
+  "sourceVolume": "northstar-qa-final-r7-source-20261104-data",
+  "sourcePort": 3385,
+  "mediaRoot": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r7/independent-restore/recordings"
+}

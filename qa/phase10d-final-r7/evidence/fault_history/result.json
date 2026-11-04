@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "faultTargetUuid": "723297ee-d824-11f1-acb4-d211006696ae",
+  "faultTargetVolume": "northstar-qa-final-r7-fault-history-20261104-data",
+  "migration": "012.10",
+  "ddlCommitted": true,
+  "historyRegistered": false,
+  "firstExitCode": 1,
+  "retryExitCode": 1,
+  "oldRowsUnchanged": true,
+  "recovery": "restore pre-fault backup into a fresh target; never repair this target"
+}

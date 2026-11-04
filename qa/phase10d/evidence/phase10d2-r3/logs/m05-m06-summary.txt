@@ -1,0 +1,11 @@
+M05 upgrade-acceptance: {  "status": "PASS",  "oldCellsExact": true,  "restartsExact": true,  "targetVersion": "012.11"}
+M05 empty-acceptance: {  "status": "PASS",  "oldCellsExact": true,  "restartsExact": true,  "targetVersion": "012.11"}
+M06 fault-ddl: {  "status": "PASS",  "file": "V012_01__knowledge_concept.sql",  "committedDDLIdentified": true,  "historyUnchanged": true,  "oldCellsExact": true,  "failedTargetRetained": true}
+M06 fault-dml: {  "status": "PASS",  "file": "V012_02__knowledge_occurrence.sql",  "committedDDLIdentified": true,  "historyUnchanged": true,  "oldCellsExact": true,  "failedTargetRetained": true}
+M06 fault-history: {  "status": "PASS",  "file": "V012_03__legacy_knowledge_link.sql",  "committedDDLIdentified": true,  "historyUnchanged": true,  "oldCellsExact": true,  "failedTargetRetained": true}
+M06 fault-04: {  "status": "PASS",  "file": "V012_04__exercise_sentence.sql",  "committedDDLIdentified": true,  "historyUnchanged": true,  "oldCellsExact": true,  "failedTargetRetained": true}
+M06 fault-05: {  "status": "PASS",  "file": "V012_05__exercise_knowledge.sql",  "committedDDLIdentified": true,  "historyUnchanged": true,  "oldCellsExact": true,  "failedTargetRetained": true}
+M06 fault-06: {  "status": "PASS",  "file": "V012_06__knowledge_projection.sql",  "committedDDLIdentified": true,  "historyUnchanged": true,  "oldCellsExact": true,  "failedTargetRetained": true}
+M06 fault-07: {  "status": "PASS",  "file": "V012_07__attempt_knowledge.sql",  "committedDDLIdentified": true,  "historyUnchanged": true,  "oldCellsExact": true,  "failedTargetRetained": true}
+All 9 acceptance files regenerated under frozen JAR cc4f31ae... on 2026-11-01 20:56-21:02 (+08).
+Previous copies archived in migrations/pre-r3-backup/.

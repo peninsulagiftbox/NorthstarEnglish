@@ -1,0 +1,23 @@
+{
+  "root": "/Users/wangshiqi/Project/NorthstarEnglish",
+  "api": "http://127.0.0.1:8192/api/v1",
+  "web": "http://127.0.0.1:3199",
+  "cardId": "77870150-2afa-4ee1-a9dd-87f4c021e333",
+  "apiPid": 88276,
+  "webPid": 88383,
+  "jarSha256": "771a72e8ea66304ebfb2e4b5e873d759c60a176fc2dd09fdfe31648da7ff92c6",
+  "buildId": "fxpqzia8rPru49bVZ_KIY",
+  "database": {
+    "name": "northstar-qa-final-r5-20261102",
+    "containerId": "882d9dba76cd22190c7bef8c73e8e91f66091c6a70ff5a2875ddbab1cf9234ea",
+    "port": 3382,
+    "schema": "northstar_phase01_test",
+    "version": "8.4.9",
+    "uuid": "3c213ff3-d6d4-11f1-9124-068c3e69d404",
+    "volume": "northstar-qa-final-r5-20261102-data",
+    "appAccount": "northstar_app",
+    "migratorAccount": "northstar_migrator",
+    "content": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r5/content",
+    "recordings": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r5/recordings"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "migration": "012.02",
+  "statement1": "ALTER TABLE sentence ADD UNIQUE KEY uq_sentence_paragraph",
+  "statement1Committed": true,
+  "statement2": "CREATE TABLE knowledge_occurrence",
+  "statement2Committed": false,
+  "statement2KilledOnServer": "67",
+  "historyRegistered": false,
+  "processStop": "server-side KILL then client SIGKILL",
+  "javaExitCode": -9,
+  "injectLog": "inject.log",
+  "injectLogSha256": "7a28f248d90e96574d5e38a3def90c0116738ed2c1fd3fc0d4a18918fbcd4085",
+  "databaseUuid": "ff5cf9b2-d86e-11f1-83e1-ca0879245a24",
+  "oldRowsUnchanged": true,
+  "faultTargetPreserved": true
+}

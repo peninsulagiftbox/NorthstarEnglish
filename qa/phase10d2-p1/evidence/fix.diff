@@ -1,0 +1,82 @@
+--- R1/apps/api/src/main/java/local/northstar/exercise/ConceptReviewController.java
++++ P1/apps/api/src/main/java/local/northstar/exercise/ConceptReviewController.java
+@@ -33,7 +33,7 @@
+     }
+     private String cursor(String value) {
+         if(value==null || value.isEmpty()) return null;
+-        if(!value.matches("[0-9a-fA-F-]{36}:[0-9a-fA-F-]{36}")) throw invalid("分页游标无效。");
++        if(!value.matches("[0-9a-fA-F-]{36}:[A-Za-z0-9_-]{1,36}")) throw invalid("分页游标无效。");
+         return value;
+     }
+     private String[] cardCursor(String value) {
+@@ -114,6 +114,8 @@
+             +"JOIN lesson l ON l.id=a.lesson_id JOIN lesson_version v ON v.id=a.version_id AND v.lesson_id=l.id JOIN content_license lc ON lc.id=v.license_id "
+             +"LEFT JOIN sentence os ON os.id=o.sentence_id AND os.lesson_version_id=o.version_id "
+             +"WHERE s.card_id=?"+filter+" ORDER BY s.attempt_id,s.occurrence_id LIMIT ?",append(args,size));
++        // Restricted rows lose their internal cursor key during response-field pruning.
++        String nextCursor=rows.size()==size?rows.getLast().get("cursorKey").toString():null;
+         var items=new ArrayList<Map<String,Object>>();
+         for(var row:rows) {
+             Object visibleValue=row.remove("visible");
+@@ -127,7 +129,7 @@
+         }
+         var result=new LinkedHashMap<String,Object>();
+         result.put("items",items);
+-        result.put("nextCursor",rows.size()==size?rows.getLast().get("cursorKey").toString():null);
++        result.put("nextCursor",nextCursor);
+         return result;
+     }
+     @PostMapping("/api/v1/concept-reviews/{id}/results")
+--- R1/apps/api/src/test/java/local/northstar/knowledge/ConceptReviewIntegrationTest.java
++++ P1/apps/api/src/test/java/local/northstar/knowledge/ConceptReviewIntegrationTest.java
+@@ -235,7 +235,50 @@
+             "aggregates must exclude hidden sources");
+         var river=admin.queryForObject("SELECT id FROM concept_review_card WHERE concept_id=?",String.class,RIVER);
+         assertEquals(0,json(send("/concept-reviews/"+river,null)).path("visibleSourceCount").asInt());
++        assertEquals(200,send("/concept-reviews/"+river+"/sources?limit=1",null).statusCode(),"a full restricted page must stay readable");
++        String attempt=admin.queryForObject("SELECT attempt_id FROM concept_review_source WHERE card_id=? ORDER BY attempt_id LIMIT 1",String.class,card);
++        for(String invalid:List.of("bad",""+attempt+":",attempt+":"+"a".repeat(37),attempt+":bad%27id"))
++            assertEquals(422,send("/concept-reviews/"+card+"/sources?cursor="+invalid,null).statusCode());
++        sourcePages(card,"1");
+         admin.update("UPDATE lesson SET availability='available' WHERE id=?",B);
++        for(int i=0;i<20;i++) attemptReading("cr-read-1",A,AV,"cr1-a",UUID.randomUUID().toString());
++        admin.update("UPDATE lesson SET availability='withdrawn' WHERE id IN (?,?)",A,B);
++        try {
++            sourcePages(card,"1");
++            sourcePages(card,"20");
++            sourcePages(card,null);
++            sourcePages(card,Integer.toString(sources(card).size()));
++            assertEquals(0,json(send("/concept-reviews/"+card,null)).path("visibleSourceCount").asInt());
++        } finally {
++            admin.update("UPDATE lesson SET availability='available' WHERE id IN (?,?)",A,B);
++        }
++    }
++
++    private void sourcePages(String card,String pageSize) throws Exception {
++        var expected=new HashSet<String>();
++        for(var source:sources(card)) expected.add(source.get("attempt_id")+":"+source.get("occurrence_id"));
++        var seen=new HashSet<String>();
++        String cursor=null;
++        do {
++            String path="/concept-reviews/"+card+"/sources?"+(pageSize==null?"":"limit="+pageSize+"&");
++            if(cursor!=null) path+="cursor="+cursor;
++            var response=send(path,null);
++            assertEquals(200,response.statusCode(),response.body());
++            var page=json(response);
++            for(var source:page.path("items")) {
++                assertTrue(seen.add(source.path("attemptId").asText()+":"+source.path("occurrenceId").asText()),"source repeated across pages");
++                if(source.path("restricted").asBoolean()) {
++                    var allowed=Set.of("attemptId","occurrenceId","lessonId","versionId","recordedAt","visible","restricted");
++                    for(var field:source.properties()) assertTrue(allowed.contains(field.getKey()),"restricted field leaked: "+field.getKey());
++                    assertFalse(source.path("visible").asBoolean());
++                }
++            }
++            String next=page.path("nextCursor").isNull()?null:page.path("nextCursor").asText();
++            if(next!=null) assertTrue(cursor==null || next.compareTo(cursor)>0,"cursor must advance");
++            cursor=next;
++            assertTrue(seen.size()<=expected.size(),"pagination must terminate");
++        } while(cursor!=null);
++        assertEquals(expected,seen,"pagination must preserve every source");
+     }
+ 
+     private List<Map<String,Object>> sources(String card) {

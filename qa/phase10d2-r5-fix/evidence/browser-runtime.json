@@ -1,0 +1,21 @@
+{
+  "root": "/Users/wangshiqi/Project/NorthstarEnglish",
+  "api": "http://127.0.0.1:8194/api/v1",
+  "web": "http://127.0.0.1:3201",
+  "buildId": "SuZ-zEmOT_iOi5QX-oa9O",
+  "jarSha256": "771a72e8ea66304ebfb2e4b5e873d759c60a176fc2dd09fdfe31648da7ff92c6",
+  "database": {
+    "name": "northstar-qa-final-r5fix-20261103",
+    "containerId": "6f6192256384f1d7b49ed5f505e155e26f96136cb366fcc336465000ba435752",
+    "port": 3380,
+    "schema": "northstar_phase01_test",
+    "version": "8.4.9",
+    "uuid": "160a0a24-d741-11f1-825b-2e0319a9d1eb",
+    "volume": "northstar-qa-final-r5fix-20261103-data",
+    "appAccount": "northstar_app",
+    "migratorAccount": "northstar_migrator",
+    "content": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r5fix/content",
+    "recordings": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r5fix/recordings"
+  },
+  "bankCardId": "2c1c68ae-d43a-41b2-b4b8-6b752e3eafaa"
+}

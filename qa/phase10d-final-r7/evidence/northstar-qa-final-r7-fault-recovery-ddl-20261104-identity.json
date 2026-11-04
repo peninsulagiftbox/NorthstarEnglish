@@ -1,0 +1,12 @@
+{
+  "name": "northstar-qa-final-r7-fault-recovery-ddl-20261104",
+  "containerId": "aa45ea317f88e36ca619201654954f50d0ae38d201a87ce730915988dfc0f519",
+  "volume": "northstar-qa-final-r7-fault-recovery-ddl-20261104-data",
+  "port": 3398,
+  "uuid": "7de02817-d86f-11f1-84b7-4e3824fa2fb9",
+  "mysqlVersion": "8.4.9",
+  "sourceUuid": "ff5cf9b2-d86e-11f1-83e1-ca0879245a24",
+  "sourceVolume": "northstar-qa-final-r7-fault-ddl2-20261104-data",
+  "sourcePort": 3395,
+  "mediaRoot": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r7/fault-recovery-ddl/recordings"
+}

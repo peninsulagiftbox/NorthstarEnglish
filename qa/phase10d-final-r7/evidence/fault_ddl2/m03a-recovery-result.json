@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "failedTargetUuid": "ff5cf9b2-d86e-11f1-83e1-ca0879245a24",
+  "restoredTargetUuid": "7de02817-d86f-11f1-84b7-4e3824fa2fb9",
+  "restoredVolume": "northstar-qa-final-r7-fault-recovery-ddl-20261104-data",
+  "backupSha256": "7c7f71776432681d699e1b8b77f82e62c33afea6e52a29c3696807841f23c9bf",
+  "flywayVersion": "012.11",
+  "oldRowsUnchanged": true,
+  "newEventId": "2ea204b0-9fa1-4352-a18d-b4d230bee615",
+  "replaySameReceipt": true,
+  "lessonApiRead": true
+}

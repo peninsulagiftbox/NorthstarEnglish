@@ -1,0 +1,22 @@
+{
+  "apiPid": 52751,
+  "webPid": 52883,
+  "api": "http://127.0.0.1:8191/api/v1",
+  "web": "http://127.0.0.1:3198",
+  "jarSha256": "771a72e8ea66304ebfb2e4b5e873d759c60a176fc2dd09fdfe31648da7ff92c6",
+  "buildId": "dfgGpBMsE_A5ulue2ALhf",
+  "database": {
+    "name": "northstar-qa-final-r4-20261102",
+    "containerId": "5cf01895ef81d5056cbff6f96e2ad656d87f216ac5182027fa9ce572e93a6212",
+    "port": 3380,
+    "schema": "northstar_phase01_test",
+    "version": "8.4.9",
+    "uuid": "7da41d23-d6ab-11f1-b67f-f6c0385d516f",
+    "volume": "northstar-qa-final-r4-20261102-data",
+    "appAccount": "northstar_app",
+    "migratorAccount": "northstar_migrator",
+    "content": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r4/content",
+    "recordings": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r4/recordings"
+  },
+  "source": "main working tree"
+}

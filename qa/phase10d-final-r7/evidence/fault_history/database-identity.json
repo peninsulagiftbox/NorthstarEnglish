@@ -1,0 +1,13 @@
+{
+  "name": "northstar-qa-final-r7-fault-history-20261104",
+  "containerId": "61c58317c75866997a94d53e03493b5caed012ad22a164c447d493a045728fb4",
+  "port": 3387,
+  "schema": "northstar_phase01_test",
+  "version": "8.4.9",
+  "uuid": "723297ee-d824-11f1-acb4-d211006696ae",
+  "volume": "northstar-qa-final-r7-fault-history-20261104-data",
+  "appAccount": "northstar_app",
+  "migratorAccount": "northstar_migrator",
+  "content": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r7/fault-history/content",
+  "recordings": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r7/fault-history/recordings"
+}

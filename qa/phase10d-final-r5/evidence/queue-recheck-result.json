@@ -1,0 +1,1158 @@
+{
+  "pageErrors": [],
+  "networkErrors": [
+    {
+      "url": "http://127.0.0.1:3199/api/v1/study/resume",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:3199/lesson/demo-01?version=demo-01-v2&tab=dictation&sentence=demo-01-v2-s06&_rsc=NM3RCj8WHosWiiB6",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/study/resume",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:3199/lesson/demo-01?version=demo-01-v2&tab=dictation&sentence=demo-01-v2-s06&_rsc=qBXTdSFKEB3agYBi",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:3199/lesson/demo-01?version=demo-01-v2&tab=dictation&sentence=demo-01-v2-s06&_rsc=NM3RCj8WHosWiiB6",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:3199/lesson/demo-01?_rsc=qBXTdSFKEB3agYBi",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:3199/lesson/qa-r5-queue?version=qa-r5-queue-v1&tab=dictation&sentence=qa-r5-queue-v1-s20&_rsc=NM3RCj8WHosWiiB6",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:3199/lesson/qa-r5-queue?version=qa-r5-queue-v1&tab=dictation&sentence=qa-r5-queue-v1-s21&_rsc=NM3RCj8WHosWiiB6",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    }
+  ],
+  "responses": [
+    {
+      "url": "http://127.0.0.1:3199/api/v1/study/resume",
+      "status": 204
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/due?all=true",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/due?all=true",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/reviews/due?all=true",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/d59129bd-6b60-4c8d-bef7-aacbb34c07d3/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/5368439f-64f2-4cd2-a1b5-d08bec4a99a2/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/5eb41b71-610e-4437-a99a-a1b59302b39c/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/77870150-2afa-4ee1-a9dd-87f4c021e333/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/1cbe23f7-5117-450b-864b-fa6494f4b698/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/deaee1e5-7601-40a9-95ad-ab0bb2c07f20/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/3a382277-bcac-4628-a8f3-f8af6961dd8a/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/b5748b19-1f1b-41e6-9535-71ce9e56b9ad/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/4296bf66-54f4-4944-8472-d8eaa1d4a11a/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/98d85819-5db5-4461-af9c-5efc35ef7995/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/200e70d0-9ff8-4cd4-8f9b-d6afcf2c1964/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/7d81e8f8-4898-421b-8038-c3d0fbcc6fb4/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/ed88d013-1873-4021-bf94-edd812364f31/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/1ee612dd-9dbd-4db9-b4a7-82690f33d27c/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/a2ae229b-4dc3-4beb-b818-0080355c8288/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/ca9f6756-0422-4c48-b1d7-92751bf22765/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/bb14f888-a6af-40ae-a683-824c26504bfd/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/7b20bbc4-58ba-439b-a550-e8dff53afb21/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/17c06ff6-e069-4c77-ac8b-d78a9d88127c/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/6f05129a-1b2b-4d41-b073-c8997d8249e8/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/due?all=true",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/study/resume",
+      "status": 204
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/due?all=true",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/d59129bd-6b60-4c8d-bef7-aacbb34c07d3/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/5368439f-64f2-4cd2-a1b5-d08bec4a99a2/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/deaee1e5-7601-40a9-95ad-ab0bb2c07f20/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/77870150-2afa-4ee1-a9dd-87f4c021e333/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/5eb41b71-610e-4437-a99a-a1b59302b39c/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/1cbe23f7-5117-450b-864b-fa6494f4b698/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/3a382277-bcac-4628-a8f3-f8af6961dd8a/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/b5748b19-1f1b-41e6-9535-71ce9e56b9ad/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/1ee612dd-9dbd-4db9-b4a7-82690f33d27c/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/4296bf66-54f4-4944-8472-d8eaa1d4a11a/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/200e70d0-9ff8-4cd4-8f9b-d6afcf2c1964/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/98d85819-5db5-4461-af9c-5efc35ef7995/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/ed88d013-1873-4021-bf94-edd812364f31/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/7d81e8f8-4898-421b-8038-c3d0fbcc6fb4/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/7b20bbc4-58ba-439b-a550-e8dff53afb21/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/ca9f6756-0422-4c48-b1d7-92751bf22765/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/bb14f888-a6af-40ae-a683-824c26504bfd/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/reviews/due?all=true",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/a2ae229b-4dc3-4beb-b818-0080355c8288/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/17c06ff6-e069-4c77-ac8b-d78a9d88127c/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/6f05129a-1b2b-4d41-b073-c8997d8249e8/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/due?all=true",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/d59129bd-6b60-4c8d-bef7-aacbb34c07d3/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/5368439f-64f2-4cd2-a1b5-d08bec4a99a2/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/deaee1e5-7601-40a9-95ad-ab0bb2c07f20/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/77870150-2afa-4ee1-a9dd-87f4c021e333/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/1cbe23f7-5117-450b-864b-fa6494f4b698/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/5eb41b71-610e-4437-a99a-a1b59302b39c/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/3a382277-bcac-4628-a8f3-f8af6961dd8a/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/b5748b19-1f1b-41e6-9535-71ce9e56b9ad/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/4296bf66-54f4-4944-8472-d8eaa1d4a11a/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/98d85819-5db5-4461-af9c-5efc35ef7995/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/200e70d0-9ff8-4cd4-8f9b-d6afcf2c1964/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/1ee612dd-9dbd-4db9-b4a7-82690f33d27c/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/7d81e8f8-4898-421b-8038-c3d0fbcc6fb4/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/ed88d013-1873-4021-bf94-edd812364f31/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/a2ae229b-4dc3-4beb-b818-0080355c8288/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/7b20bbc4-58ba-439b-a550-e8dff53afb21/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/bb14f888-a6af-40ae-a683-824c26504bfd/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/ca9f6756-0422-4c48-b1d7-92751bf22765/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/6f05129a-1b2b-4d41-b073-c8997d8249e8/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/17c06ff6-e069-4c77-ac8b-d78a9d88127c/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/due?all=true",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/d59129bd-6b60-4c8d-bef7-aacbb34c07d3/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/deaee1e5-7601-40a9-95ad-ab0bb2c07f20/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/5eb41b71-610e-4437-a99a-a1b59302b39c/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/5368439f-64f2-4cd2-a1b5-d08bec4a99a2/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/77870150-2afa-4ee1-a9dd-87f4c021e333/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/1cbe23f7-5117-450b-864b-fa6494f4b698/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/b5748b19-1f1b-41e6-9535-71ce9e56b9ad/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/3a382277-bcac-4628-a8f3-f8af6961dd8a/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/4296bf66-54f4-4944-8472-d8eaa1d4a11a/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/1ee612dd-9dbd-4db9-b4a7-82690f33d27c/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/98d85819-5db5-4461-af9c-5efc35ef7995/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/200e70d0-9ff8-4cd4-8f9b-d6afcf2c1964/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/7d81e8f8-4898-421b-8038-c3d0fbcc6fb4/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/ed88d013-1873-4021-bf94-edd812364f31/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/bb14f888-a6af-40ae-a683-824c26504bfd/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/a2ae229b-4dc3-4beb-b818-0080355c8288/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/ca9f6756-0422-4c48-b1d7-92751bf22765/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/7b20bbc4-58ba-439b-a550-e8dff53afb21/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/17c06ff6-e069-4c77-ac8b-d78a9d88127c/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3199/api/v1/concept-reviews/6f05129a-1b2b-4d41-b073-c8997d8249e8/sources",
+      "status": 200
+    }
+  ],
+  "attempts": [
+    {
+      "action": "initial-all",
+      "conceptCardCount": 20,
+      "names": [
+        "bank — financial institution",
+        "QA garden seed",
+        "QA garden gate",
+        "QA garden path",
+        "QA garden tree",
+        "QA garden leaf",
+        "QA garden root",
+        "QA garden rain",
+        "QA garden sun",
+        "QA garden bird",
+        "QA garden pond",
+        "QA garden soil",
+        "QA garden bench",
+        "QA garden flower",
+        "QA garden grass",
+        "QA garden stone",
+        "QA garden fence",
+        "QA garden water",
+        "QA garden basket",
+        "QA garden bucket"
+      ],
+      "missing": [
+        {
+          "id": "8b42234a-775c-4c28-8b42-7180e6589322",
+          "conceptId": "qa-r5-c20",
+          "name": "QA garden apple",
+          "rowVersion": 1,
+          "due": 1
+        },
+        {
+          "id": "3b41d4f6-28a1-49c3-a4d7-a0e619f4e430",
+          "conceptId": "qa-r5-c21",
+          "name": "QA garden pear",
+          "rowVersion": 1,
+          "due": 1
+        }
+      ],
+      "buttons": [
+        "概念卡到期复习（20）",
+        "全部概念卡",
+        "刷新概念卡",
+        "翻开答案",
+        "加载更多来源",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案"
+      ]
+    },
+    {
+      "action": "refresh-all",
+      "conceptCardCount": 20,
+      "names": [
+        "bank — financial institution",
+        "QA garden seed",
+        "QA garden gate",
+        "QA garden path",
+        "QA garden tree",
+        "QA garden leaf",
+        "QA garden root",
+        "QA garden rain",
+        "QA garden sun",
+        "QA garden bird",
+        "QA garden pond",
+        "QA garden soil",
+        "QA garden bench",
+        "QA garden flower",
+        "QA garden grass",
+        "QA garden stone",
+        "QA garden fence",
+        "QA garden water",
+        "QA garden basket",
+        "QA garden bucket"
+      ],
+      "missing": [
+        {
+          "id": "8b42234a-775c-4c28-8b42-7180e6589322",
+          "conceptId": "qa-r5-c20",
+          "name": "QA garden apple",
+          "rowVersion": 1,
+          "due": 1
+        },
+        {
+          "id": "3b41d4f6-28a1-49c3-a4d7-a0e619f4e430",
+          "conceptId": "qa-r5-c21",
+          "name": "QA garden pear",
+          "rowVersion": 1,
+          "due": 1
+        }
+      ],
+      "buttons": [
+        "概念卡到期复习（20）",
+        "全部概念卡",
+        "刷新概念卡",
+        "翻开答案",
+        "加载更多来源",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案"
+      ]
+    },
+    {
+      "action": "reload-all",
+      "conceptCardCount": 20,
+      "names": [
+        "bank — financial institution",
+        "QA garden seed",
+        "QA garden gate",
+        "QA garden path",
+        "QA garden tree",
+        "QA garden leaf",
+        "QA garden root",
+        "QA garden rain",
+        "QA garden sun",
+        "QA garden bird",
+        "QA garden pond",
+        "QA garden soil",
+        "QA garden bench",
+        "QA garden flower",
+        "QA garden grass",
+        "QA garden stone",
+        "QA garden fence",
+        "QA garden water",
+        "QA garden basket",
+        "QA garden bucket"
+      ],
+      "missing": [
+        {
+          "id": "8b42234a-775c-4c28-8b42-7180e6589322",
+          "conceptId": "qa-r5-c20",
+          "name": "QA garden apple",
+          "rowVersion": 1,
+          "due": 1
+        },
+        {
+          "id": "3b41d4f6-28a1-49c3-a4d7-a0e619f4e430",
+          "conceptId": "qa-r5-c21",
+          "name": "QA garden pear",
+          "rowVersion": 1,
+          "due": 1
+        }
+      ],
+      "buttons": [
+        "概念卡到期复习（20）",
+        "全部概念卡",
+        "刷新概念卡",
+        "翻开答案",
+        "加载更多来源",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案"
+      ]
+    },
+    {
+      "action": "due-only",
+      "conceptCardCount": 20,
+      "names": [
+        "bank — financial institution",
+        "QA garden seed",
+        "QA garden gate",
+        "QA garden path",
+        "QA garden tree",
+        "QA garden leaf",
+        "QA garden root",
+        "QA garden rain",
+        "QA garden sun",
+        "QA garden bird",
+        "QA garden pond",
+        "QA garden soil",
+        "QA garden bench",
+        "QA garden flower",
+        "QA garden grass",
+        "QA garden stone",
+        "QA garden fence",
+        "QA garden water",
+        "QA garden basket",
+        "QA garden bucket"
+      ],
+      "missing": [
+        {
+          "id": "8b42234a-775c-4c28-8b42-7180e6589322",
+          "conceptId": "qa-r5-c20",
+          "name": "QA garden apple",
+          "rowVersion": 1,
+          "due": 1
+        },
+        {
+          "id": "3b41d4f6-28a1-49c3-a4d7-a0e619f4e430",
+          "conceptId": "qa-r5-c21",
+          "name": "QA garden pear",
+          "rowVersion": 1,
+          "due": 1
+        }
+      ],
+      "buttons": [
+        "概念卡到期复习（20）",
+        "全部概念卡",
+        "刷新概念卡",
+        "翻开答案",
+        "加载更多来源",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案",
+        "翻开答案"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "items": [
+        {
+          "id": "77870150-2afa-4ee1-a9dd-87f4c021e333",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:33.99",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "cr-bank-fin",
+          "kind": "vocabulary",
+          "canonicalKey": "bank",
+          "senseKey": "cr-money",
+          "displayName": "bank — financial institution",
+          "explanation": "存款与银行机构含义（D02夹具）",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "d59129bd-6b60-4c8d-bef7-aacbb34c07d3",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:35.12",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c1",
+          "kind": "vocabulary",
+          "canonicalKey": "seed",
+          "senseKey": "garden-object",
+          "displayName": "QA garden seed",
+          "explanation": "原创花园测试词义：seed",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "5368439f-64f2-4cd2-a1b5-d08bec4a99a2",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:35.161",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c2",
+          "kind": "vocabulary",
+          "canonicalKey": "gate",
+          "senseKey": "garden-object",
+          "displayName": "QA garden gate",
+          "explanation": "原创花园测试词义：gate",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "deaee1e5-7601-40a9-95ad-ab0bb2c07f20",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:35.197",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c3",
+          "kind": "vocabulary",
+          "canonicalKey": "path",
+          "senseKey": "garden-object",
+          "displayName": "QA garden path",
+          "explanation": "原创花园测试词义：path",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "5eb41b71-610e-4437-a99a-a1b59302b39c",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:35.242",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c4",
+          "kind": "vocabulary",
+          "canonicalKey": "tree",
+          "senseKey": "garden-object",
+          "displayName": "QA garden tree",
+          "explanation": "原创花园测试词义：tree",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "1cbe23f7-5117-450b-864b-fa6494f4b698",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:35.336",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c5",
+          "kind": "vocabulary",
+          "canonicalKey": "leaf",
+          "senseKey": "garden-object",
+          "displayName": "QA garden leaf",
+          "explanation": "原创花园测试词义：leaf",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "3a382277-bcac-4628-a8f3-f8af6961dd8a",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:35.407",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c6",
+          "kind": "vocabulary",
+          "canonicalKey": "root",
+          "senseKey": "garden-object",
+          "displayName": "QA garden root",
+          "explanation": "原创花园测试词义：root",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "b5748b19-1f1b-41e6-9535-71ce9e56b9ad",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:35.477",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c7",
+          "kind": "vocabulary",
+          "canonicalKey": "rain",
+          "senseKey": "garden-object",
+          "displayName": "QA garden rain",
+          "explanation": "原创花园测试词义：rain",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "4296bf66-54f4-4944-8472-d8eaa1d4a11a",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:35.52",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c8",
+          "kind": "vocabulary",
+          "canonicalKey": "sun",
+          "senseKey": "garden-object",
+          "displayName": "QA garden sun",
+          "explanation": "原创花园测试词义：sun",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "1ee612dd-9dbd-4db9-b4a7-82690f33d27c",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:35.556",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c9",
+          "kind": "vocabulary",
+          "canonicalKey": "bird",
+          "senseKey": "garden-object",
+          "displayName": "QA garden bird",
+          "explanation": "原创花园测试词义：bird",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "200e70d0-9ff8-4cd4-8f9b-d6afcf2c1964",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:35.59",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c10",
+          "kind": "vocabulary",
+          "canonicalKey": "pond",
+          "senseKey": "garden-object",
+          "displayName": "QA garden pond",
+          "explanation": "原创花园测试词义：pond",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "98d85819-5db5-4461-af9c-5efc35ef7995",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:35.625",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c11",
+          "kind": "vocabulary",
+          "canonicalKey": "soil",
+          "senseKey": "garden-object",
+          "displayName": "QA garden soil",
+          "explanation": "原创花园测试词义：soil",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "ed88d013-1873-4021-bf94-edd812364f31",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:35.699",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c12",
+          "kind": "vocabulary",
+          "canonicalKey": "bench",
+          "senseKey": "garden-object",
+          "displayName": "QA garden bench",
+          "explanation": "原创花园测试词义：bench",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "7d81e8f8-4898-421b-8038-c3d0fbcc6fb4",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:35.738",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c13",
+          "kind": "vocabulary",
+          "canonicalKey": "flower",
+          "senseKey": "garden-object",
+          "displayName": "QA garden flower",
+          "explanation": "原创花园测试词义：flower",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "a2ae229b-4dc3-4beb-b818-0080355c8288",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:35.775",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c14",
+          "kind": "vocabulary",
+          "canonicalKey": "grass",
+          "senseKey": "garden-object",
+          "displayName": "QA garden grass",
+          "explanation": "原创花园测试词义：grass",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "bb14f888-a6af-40ae-a683-824c26504bfd",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:35.809",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c15",
+          "kind": "vocabulary",
+          "canonicalKey": "stone",
+          "senseKey": "garden-object",
+          "displayName": "QA garden stone",
+          "explanation": "原创花园测试词义：stone",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "ca9f6756-0422-4c48-b1d7-92751bf22765",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:35.845",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c16",
+          "kind": "vocabulary",
+          "canonicalKey": "fence",
+          "senseKey": "garden-object",
+          "displayName": "QA garden fence",
+          "explanation": "原创花园测试词义：fence",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "7b20bbc4-58ba-439b-a550-e8dff53afb21",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:35.884",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c17",
+          "kind": "vocabulary",
+          "canonicalKey": "water",
+          "senseKey": "garden-object",
+          "displayName": "QA garden water",
+          "explanation": "原创花园测试词义：water",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "17c06ff6-e069-4c77-ac8b-d78a9d88127c",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:35.935",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c18",
+          "kind": "vocabulary",
+          "canonicalKey": "basket",
+          "senseKey": "garden-object",
+          "displayName": "QA garden basket",
+          "explanation": "原创花园测试词义：basket",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "6f05129a-1b2b-4d41-b073-c8997d8249e8",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:35.979",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c19",
+          "kind": "vocabulary",
+          "canonicalKey": "bucket",
+          "senseKey": "garden-object",
+          "displayName": "QA garden bucket",
+          "explanation": "原创花园测试词义：bucket",
+          "visibleSourceCount": 1
+        }
+      ],
+      "nextCursor": "1793634395979:6f05129a-1b2b-4d41-b073-c8997d8249e8"
+    },
+    {
+      "items": [
+        {
+          "id": "8b42234a-775c-4c28-8b42-7180e6589322",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:36.023",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c20",
+          "kind": "vocabulary",
+          "canonicalKey": "apple",
+          "senseKey": "garden-object",
+          "displayName": "QA garden apple",
+          "explanation": "原创花园测试词义：apple",
+          "visibleSourceCount": 1
+        },
+        {
+          "id": "3b41d4f6-28a1-49c3-a4d7-a0e619f4e430",
+          "due": 1,
+          "dueAt": "2026-11-02T15:46:36.063",
+          "reps": 0,
+          "rowVersion": 1,
+          "promptKind": "meaning_recall",
+          "protocolVersion": "concept_review_v1",
+          "schedulerVersion": "simple_v1",
+          "conceptId": "qa-r5-c21",
+          "kind": "vocabulary",
+          "canonicalKey": "pear",
+          "senseKey": "garden-object",
+          "displayName": "QA garden pear",
+          "explanation": "原创花园测试词义：pear",
+          "visibleSourceCount": 1
+        }
+      ],
+      "nextCursor": null
+    }
+  ],
+  "direct-qa-r5-c20": {
+    "card": {
+      "id": "8b42234a-775c-4c28-8b42-7180e6589322",
+      "due": 1,
+      "dueAt": "2026-11-02T15:46:36.023",
+      "reps": 0,
+      "rowVersion": 1,
+      "promptKind": "meaning_recall",
+      "protocolVersion": "concept_review_v1",
+      "schedulerVersion": "simple_v1",
+      "createdAt": "2026-11-02T15:46:36.023",
+      "conceptId": "qa-r5-c20",
+      "kind": "vocabulary",
+      "canonicalKey": "apple",
+      "senseKey": "garden-object",
+      "displayName": "QA garden apple",
+      "explanation": "原创花园测试词义：apple",
+      "visibleSourceCount": 1
+    },
+    "sources": {
+      "items": [
+        {
+          "cursorKey": "b5c6e9de-a5d7-4e72-ae43-37c50e8fb210:qa-r5-o20",
+          "attemptId": "b5c6e9de-a5d7-4e72-ae43-37c50e8fb210",
+          "occurrenceId": "qa-r5-o20",
+          "lessonId": "qa-r5-queue",
+          "versionId": "qa-r5-queue-v1",
+          "exerciseKind": "dictation",
+          "correct": false,
+          "recordedAt": "2026-11-02T15:46:36.02",
+          "lessonTitle": "Concept Review Fixture QA-R5-QUEUE",
+          "scope": "sentence",
+          "sequence": 20,
+          "sentenceText": "I can see the apple.",
+          "visible": true,
+          "restricted": false
+        }
+      ],
+      "nextCursor": null
+    }
+  },
+  "direct-qa-r5-c21": {
+    "card": {
+      "id": "3b41d4f6-28a1-49c3-a4d7-a0e619f4e430",
+      "due": 1,
+      "dueAt": "2026-11-02T15:46:36.063",
+      "reps": 0,
+      "rowVersion": 1,
+      "promptKind": "meaning_recall",
+      "protocolVersion": "concept_review_v1",
+      "schedulerVersion": "simple_v1",
+      "createdAt": "2026-11-02T15:46:36.063",
+      "conceptId": "qa-r5-c21",
+      "kind": "vocabulary",
+      "canonicalKey": "pear",
+      "senseKey": "garden-object",
+      "displayName": "QA garden pear",
+      "explanation": "原创花园测试词义：pear",
+      "visibleSourceCount": 1
+    },
+    "sources": {
+      "items": [
+        {
+          "cursorKey": "d9b790a7-15c2-40d8-a490-7018fc4ff4ee:qa-r5-o21",
+          "attemptId": "d9b790a7-15c2-40d8-a490-7018fc4ff4ee",
+          "occurrenceId": "qa-r5-o21",
+          "lessonId": "qa-r5-queue",
+          "versionId": "qa-r5-queue-v1",
+          "exerciseKind": "dictation",
+          "correct": false,
+          "recordedAt": "2026-11-02T15:46:36.059",
+          "lessonTitle": "Concept Review Fixture QA-R5-QUEUE",
+          "scope": "sentence",
+          "sequence": 21,
+          "sentenceText": "I can see the pear.",
+          "visible": true,
+          "restricted": false
+        }
+      ],
+      "nextCursor": null
+    }
+  },
+  "result": "FAIL"
+}

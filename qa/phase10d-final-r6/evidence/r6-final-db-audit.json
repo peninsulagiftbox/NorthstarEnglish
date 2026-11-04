@@ -1,0 +1,15 @@
+{
+  "candidateManifestSha256": "1321596728510af57ff09b9a72b88fd78326597c9dc97f41741df12364e6ab95",
+  "databaseUuid": "085adf79-d796-11f1-aedc-1a5123ebe7f1",
+  "cardId": "fb8ad3d3-191f-4c48-9afc-31a6cf4a2a57",
+  "cardCount": 1,
+  "sourceCount": 8,
+  "distinctSourceCount": 8,
+  "resultCount": 5,
+  "missingReceiptCount": 0,
+  "objectiveAttemptCount": 8,
+  "oldSentenceResultCount": 1,
+  "schedule": "6\t5\t2026-11-20 06:29:32.257",
+  "flywayVersion": "012.11",
+  "status": "PASS"
+}

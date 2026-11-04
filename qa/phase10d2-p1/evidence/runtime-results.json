@@ -1,0 +1,10 @@
+{
+  "failure_db_read_check_exit_code": 0,
+  "browser_tool_isError": false,
+  "browser_stack_exit_code": 0,
+  "candidate_input_verifier_exit_code": 0,
+  "java_test_db": "3373/fa659971-d67f-11f1-b010-8aeb551daec2",
+  "previous_failure_db": "3364/e6d3595e-d67d-11f1-a92d-8696ac132eb0",
+  "jar_sha256": "771a72e8ea66304ebfb2e4b5e873d759c60a176fc2dd09fdfe31648da7ff92c6",
+  "candidate_inputs_sha256": "31131ea6b5a92b87ff12d32e61ad6fef9896e2028d16ecba5b7e9368f60b1a6c"
+}

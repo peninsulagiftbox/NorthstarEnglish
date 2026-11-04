@@ -1,0 +1,17 @@
+{
+  "runId": "qa-r6-9b450236ce5d48ed9c57368bc4ea0636",
+  "createdAt": "2026-11-03T14:49:05.710565+00:00",
+  "head": "8adac6d233d178010ba10660874098df802d5ea4",
+  "branch": "codex/d02-core-r5-fix",
+  "candidateManifestSha256": "54216a60bb44b1d2f315b70cd7b155bf3ca8f68d8d0b47cd82f4b3716c21faa8",
+  "candidateManifestEntries": 240,
+  "r5ManifestSha256": "31a9a13065af5113a56929a2ba1aa5856f32228124b34750079fef7087683eb7",
+  "r5ManifestDrift": [
+    {
+      "path": "docs/qa/phase10d/10D_FINAL_ACCEPTANCE.md",
+      "reason": "sha256 differs"
+    }
+  ],
+  "runtimeJarSha256": "771a72e8ea66304ebfb2e4b5e873d759c60a176fc2dd09fdfe31648da7ff92c6",
+  "node": "v22.23.2"
+}

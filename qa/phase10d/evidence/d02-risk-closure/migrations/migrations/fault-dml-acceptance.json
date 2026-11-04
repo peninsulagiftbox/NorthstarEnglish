@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "file": "V012_02__knowledge_occurrence.sql",
+  "committedDDLIdentified": true,
+  "historyUnchanged": true,
+  "oldCellsExact": true,
+  "failedTargetRetained": true
+}

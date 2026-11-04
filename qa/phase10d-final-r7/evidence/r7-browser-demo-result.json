@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "databaseUuid": "2b242be2-d824-11f1-baec-767a5e58531a",
+  "buildId": "mB0BX6ovaStArA61zmdDR",
+  "firstPlaybackStatus": "playing",
+  "firstAudio": {
+    "source": "http://127.0.0.1:3209/api/v1/audio/demo-01-v2-a01",
+    "readyState": 4,
+    "error": null
+  },
+  "selectedSentence": "demo-01-v2-s02",
+  "refreshRestoredSentence": true,
+  "mediaResponses": [
+    {
+      "url": "http://127.0.0.1:3209/api/v1/audio/demo-01-v2-a01",
+      "status": 206
+    },
+    {
+      "url": "http://127.0.0.1:3209/api/v1/audio/demo-01-v2-a02",
+      "status": 206
+    }
+  ]
+}

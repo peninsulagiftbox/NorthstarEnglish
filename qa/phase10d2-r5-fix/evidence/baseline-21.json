@@ -1,0 +1,13 @@
+{
+  "expected": 21,
+  "checks": [
+    {
+      "label": "R5 original reproduced",
+      "api": 21,
+      "ui": 20,
+      "noPagination": true
+    }
+  ],
+  "errors": [],
+  "result": "PASS"
+}

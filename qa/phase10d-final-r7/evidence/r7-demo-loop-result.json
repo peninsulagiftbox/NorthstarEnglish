@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "databaseUuid": "1535b7bf-d856-11f1-84a9-7acea4c389b4",
+  "web": "http://127.0.0.1:3219",
+  "script": "scripts/full-learning-loop.js",
+  "scriptUnchanged": true,
+  "runLog": "demo-loop-run-code.log",
+  "checks": "[\"Dashboard → catalog → Demo, unavailable books, real sentence6 playback, desktop geometry\",\"Blind wrong submission, actual token diff and audio replay; same event retry returns original attempt\",\"Wrong reading answer → source sentence6 in original context\",\"Explicit speaking skip (real/fake microphone covered separately), no fake completion\",\"Two writing revisions, exact unicode/quotes/HTML roundtrip and escaped DOM\",\"Real wrong quiz → due review, flip, self-rating and future schedule\",\"Keyboard tab focus, saved draft refresh, paused audio, no AI\"]"
+}

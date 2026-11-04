@@ -1,0 +1,50 @@
+{
+  "status": "PASS",
+  "targetSchema": "northstar_restore_20261103145918",
+  "cases": [
+    {
+      "case": "cross-concept",
+      "exitCode": 1,
+      "mysqlError": 1452,
+      "stderrLastLine": "ERROR 1452 (23000) at line 1: Cannot add or update a child row: a foreign key constraint fails (`northstar_restore_20261103145918`.`concept_review_source`, CONSTRAINT `concept_review_source_ibfk_2` FOREIGN KEY (`attempt_id`, `occurrence_id`, `exercise_id`, `version_id`, `concept_id`) R"
+    },
+    {
+      "case": "cross-version",
+      "exitCode": 1,
+      "mysqlError": 1062,
+      "stderrLastLine": "ERROR 1062 (23000) at line 1: Duplicate entry 'fb8ad3d3-191f-4c48-9afc-31a6cf4a2a57-00bcb380-6d39-4483-bc7d-712' for key 'concept_review_source.PRIMARY'"
+    },
+    {
+      "case": "append-only-result-update",
+      "exitCode": 1,
+      "mysqlError": 1644,
+      "stderrLastLine": "ERROR 1644 (45000) at line 1: Concept review results are immutable"
+    },
+    {
+      "case": "append-only-result-delete",
+      "exitCode": 1,
+      "mysqlError": 1644,
+      "stderrLastLine": "ERROR 1644 (45000) at line 1: Concept review results are immutable"
+    },
+    {
+      "case": "append-only-attempt-update",
+      "exitCode": 1,
+      "mysqlError": 1644,
+      "stderrLastLine": "ERROR 1644 (45000) at line 1: Attempt knowledge snapshots are immutable"
+    },
+    {
+      "case": "append-only-attempt-delete",
+      "exitCode": 1,
+      "mysqlError": 1644,
+      "stderrLastLine": "ERROR 1644 (45000) at line 1: Attempt knowledge snapshots are immutable"
+    }
+  ],
+  "prePostTableSha256Equal": true,
+  "tableSha256": {
+    "concept_review_source": "3a2c9304c74a8936fb8e0dcb809e89b1e771d9b2ba0e8ac92351194a8998cf8b",
+    "concept_review_result": "9378e427ccb4a28156c64282c6523d29fedaa3d045036612d35b923f25ea01f9",
+    "attempt_knowledge": "45d10dd9dadef82be2f616d918f6f1958462bdd69eadfcc3d24522585b24ea25",
+    "concept_review_card": "0334c73fbc616281209ca6ab663c106845a9ca5030a1ee2c35068517b072c100",
+    "flyway_schema_history": "d7aa0de032218e7d656e5ce2884f4b1497884a42d50be0f2b536ae197256b3c7"
+  }
+}

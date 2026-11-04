@@ -1,0 +1,12 @@
+{
+  "buildId": "mB0BX6ovaStArA61zmdDR",
+  "manifestSha256": "e64d76758b50dfa4f235d5c631e5bbba7e93bde00351beccb82e88124c615e6d",
+  "node": "v22.23.2",
+  "apiPort": 8202,
+  "testLogs": {
+    "test": "1790753c673e0f61c90d49f17087272e31928b834edc5c820845668d019d1d4e",
+    "typecheck": "ec05d9f78b511de28d5ff947b4f1b8d45a0e7cd29746c4265b2f22fe57b8c9e0",
+    "lint": "8c3fbcc800b6e087fd3813d01ee12cd695d512ebea1283384096e6f8448c8bf1",
+    "build": "2add6b31cddba7207295051656d1bd6681c1ebb146297a0cba006465a528fd23"
+  }
+}

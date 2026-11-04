@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "recordingId": "964ab488-dbbe-42b8-bc1b-90eaa4953d2b",
+  "eventId": "f7cdcafc-dc5d-46a8-a0be-deae9fb6dfc3",
+  "lessonId": "demo-01",
+  "versionId": "demo-01-v1",
+  "sentenceId": "demo-01-v1-s01",
+  "byteSize": 13820,
+  "sha256": "629c780a219ee8f034a6c514f7c89cd100f2efe5707b325d27c68ca8315ddd05",
+  "databaseUuid": "35965c3f-d823-11f1-be71-b6b8e525f6a4",
+  "apiReadMatches": true,
+  "mediaGenerator": "Chromium MediaRecorder, 440 Hz original test tone"
+}

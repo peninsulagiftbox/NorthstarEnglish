@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "cardId": "fb8ad3d3-191f-4c48-9afc-31a6cf4a2a57",
+  "eventId": "37b120d6-2bdf-4b85-8ad2-c644f1920467",
+  "beforeResultCount": 4,
+  "afterResultCount": 5,
+  "beforeRowVersion": 5,
+  "afterRowVersion": 6,
+  "proxyUpstreamStatus": 200,
+  "clientError": "RemoteDisconnected",
+  "retryStatus": 200,
+  "replayedExactReceipt": true
+}

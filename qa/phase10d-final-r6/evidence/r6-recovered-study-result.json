@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "targetSchema": "northstar_restore_20261103145918",
+  "newCardId": "f8e951c4-be6e-4bd5-affe-e55866d959c6",
+  "ratingEvent": "caea867a-8890-4d98-84e4-1d44585e4649",
+  "replayAddedResult": false,
+  "restartRowsEqual": true,
+  "oldSentenceRowsEqual": true,
+  "newSentenceRowsExpected": true,
+  "firstRunHarnessFailure": "whole review_item equality rejected a legitimate new sentence card",
+  "afterTableSha256": {
+    "concept_review_card": "0334c73fbc616281209ca6ab663c106845a9ca5030a1ee2c35068517b072c100",
+    "concept_review_source": "3a2c9304c74a8936fb8e0dcb809e89b1e771d9b2ba0e8ac92351194a8998cf8b",
+    "concept_review_result": "9378e427ccb4a28156c64282c6523d29fedaa3d045036612d35b923f25ea01f9",
+    "command_receipt": "35a5c1ec1760cbc536acde55203ffd6c3ae2c325efc7c163cb12ef9da4de6fad",
+    "attempt_knowledge": "45d10dd9dadef82be2f616d918f6f1958462bdd69eadfcc3d24522585b24ea25",
+    "review_item": "fdb6c41d77aff8272c6b6722290ceb0e0f23c43639fb67cb3d119a8193093ec5",
+    "review_source": "e785b00824734d6620d6f2f67853037c2832979b8f8a5ea2d1a4f55bbc6250eb",
+    "review_result": "0d30740b156fb6a7c59d8e91f09842b74b940b48f1e1af5f5fd753bf6ebcd9da"
+  },
+  "http": [
+    {
+      "case": "M-recovered-final-replay",
+      "path": "/concept-reviews/f8e951c4-be6e-4bd5-affe-e55866d959c6/results",
+      "request": {
+        "eventId": "caea867a-8890-4d98-84e4-1d44585e4649",
+        "rowVersion": 1,
+        "rating": "good",
+        "answerRevealed": true,
+        "clientOccurredAt": "2026-11-01T00:00:00Z"
+      },
+      "status": 200,
+      "response": {
+        "origin": "self_rating",
+        "eventId": "caea867a-8890-4d98-84e4-1d44585e4649",
+        "nextDueAt": "2026-11-04T15:00:29.817504Z",
+        "rowVersion": 2,
+        "schedulerVersion": "simple_v1"
+      },
+      "startNs": 1793718143662763000,
+      "endNs": 1793718143684996000
+    },
+    {
+      "case": "M-recovered-final-health",
+      "path": "/health",
+      "request": null,
+      "status": 200,
+      "response": {
+        "status": "UP",
+        "database": "UP",
+        "project": "northstar-english-local-v1",
+        "migrationVersion": "012.11",
+        "checkedAt": "2026-11-03T15:02:26.226671Z"
+      },
+      "startNs": 1793718146220393000,
+      "endNs": 1793718146232716000
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "initialManifestSha256": "54216a60bb44b1d2f315b70cd7b155bf3ca8f68d8d0b47cd82f4b3716c21faa8",
+  "initialCount": 240,
+  "supplementalInputs": [
+    "apps/web/postcss.config.mjs",
+    "apps/web/eslint.config.mjs",
+    "apps/web/next-env.d.ts",
+    "scripts/local.py"
+  ],
+  "supplementPretestCopyEqualsCurrent": true,
+  "completeManifestSha256": "1321596728510af57ff09b9a72b88fd78326597c9dc97f41741df12364e6ab95",
+  "completeCount": 244,
+  "scopeNote": "Additional config and local.py were verified against the source copy made before R6 tests; initial command logs retain their original manifest SHA."
+}

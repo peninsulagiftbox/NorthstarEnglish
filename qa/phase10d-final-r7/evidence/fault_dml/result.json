@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "targetUuid": "f23b349f-d853-11f1-92eb-1a3c25b26270",
+  "volume": "northstar-qa-final-r7-fault-dml-20261104-data",
+  "migration": "011.06",
+  "exitCode": 1,
+  "oldRowsUnchanged": true,
+  "backfillRowsRolledBack": true,
+  "historyTail": [
+    "011.06\t0",
+    "011.05\t1"
+  ],
+  "errorLog": "flyway-dml-backfill-failure.log"
+}

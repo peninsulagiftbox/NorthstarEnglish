@@ -1,0 +1,11 @@
+{
+  "concept_review_card": true,
+  "concept_review_source": true,
+  "concept_review_result": true,
+  "exercise_attempt": true,
+  "attempt_knowledge": true,
+  "command_receipt": true,
+  "review_item": true,
+  "review_result": true,
+  "learning_evidence": true
+}

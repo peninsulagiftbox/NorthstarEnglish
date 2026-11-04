@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "behavior": "retry rejected, no silent success",
+  "exitCode": 1,
+  "mysqlError": "1061 duplicate key name",
+  "retryLog": "retry-2.log",
+  "retryLogSha256": "91e4ff29a9c557ca8b080278369c0cd9e282d3a20612fce52fc4c5a9bea35307",
+  "historyRecorded": "012.02 success=0 (failed migration registered)",
+  "oldRowsUnchanged": true
+}

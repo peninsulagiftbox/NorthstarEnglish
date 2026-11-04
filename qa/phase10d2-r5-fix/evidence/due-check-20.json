@@ -1,0 +1,14 @@
+{
+  "expected": 20,
+  "pageErrors": [],
+  "networkErrors": [
+    {
+      "url": "http://127.0.0.1:3201/api/v1/study/resume",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    }
+  ],
+  "loadedLabel": "概念卡到期复习（已加载 20）",
+  "result": "PASS"
+}

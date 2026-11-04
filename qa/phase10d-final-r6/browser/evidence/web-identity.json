@@ -1,0 +1,19 @@
+{
+  "buildId": "oeTUs8w5kWCV4O22yCFZm",
+  "manifestSha256": "54216a60bb44b1d2f315b70cd7b155bf3ca8f68d8d0b47cd82f4b3716c21faa8",
+  "apiPort": 8200,
+  "database": {
+    "name": "northstar-qa-browser-r6-20261103",
+    "containerId": "3c5f99a330c3e7b7c1b6398db7401bb659af19866fb89e506561c48f7f2925ed",
+    "port": 3384,
+    "schema": "northstar_phase01_test",
+    "version": "8.4.9",
+    "uuid": "bf0b3967-d797-11f1-b54e-7a6234b27e10",
+    "volume": "northstar-qa-browser-r6-20261103-data",
+    "appAccount": "northstar_app",
+    "migratorAccount": "northstar_migrator",
+    "content": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-browser-r6/content",
+    "recordings": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-browser-r6/recordings"
+  },
+  "node": "v22.23.2"
+}

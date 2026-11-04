@@ -1,0 +1,1368 @@
+[
+  {
+    "url": "http://127.0.0.1:3199/api/v1/concept-reviews/77870150-2afa-4ee1-a9dd-87f4c021e333/sources",
+    "status": 200,
+    "body": {
+      "items": [
+        {
+          "attemptId": "066c388d-d287-48f5-8993-32a4861ce5c1",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.077",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "06a0f667-cb9a-46a0-816a-83f550ea2b10",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.871",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "07ca200d-10aa-42e6-ae31-e55c533b706c",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.411",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "0b4f06f8-c523-4b41-aa01-e6a745cfe58f",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.758",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "0b6538ca-d57a-4e7f-bad3-7cd164ecb4d5",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.66",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "0bc92092-2bdf-46de-b119-3a4fdcb5301b",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.822",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "118fd95d-7689-4805-b4e8-aa37c8d0404c",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.777",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "145dc9dd-acba-47fa-9eef-f781d748966a",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.721",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "158ca88f-5b85-4b58-949c-8d88335bf6d3",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:35.048",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "18408313-7988-4bac-9bb2-fcb7398dbdf6",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.206",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "19bb19f8-8742-43ee-84ac-cef87abf3421",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.472",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "1c46a801-3316-47c2-8260-4153c228572b",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.641",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "1f78e479-a8b3-4a2d-9556-15211e3ed01d",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.264",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "247f8d4a-abc2-4c15-b1c2-30f14cfb4d6a",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.786",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "2ab23251-12d7-4b28-b705-84384d9043a4",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.942",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "2d945a91-d85c-47e9-9094-f7d3a4e3776a",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.729",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "30683066-646f-4a8b-b3d1-ec88cb8cf970",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.156",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "3130f816-59c5-47cd-9ee0-f6fd5af9922a",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.991",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "3b030136-9d5d-4004-8621-2fd1f77af050",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.242",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "3c6ad593-92bf-42bd-a72a-e2586e835b93",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.551",
+          "visible": false,
+          "restricted": true
+        }
+      ],
+      "nextCursor": "3c6ad593-92bf-42bd-a72a-e2586e835b93:cr-oc-bank-a"
+    }
+  },
+  {
+    "url": "http://127.0.0.1:3199/api/v1/concept-reviews/77870150-2afa-4ee1-a9dd-87f4c021e333/sources",
+    "status": 200,
+    "body": {
+      "items": [
+        {
+          "attemptId": "066c388d-d287-48f5-8993-32a4861ce5c1",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.077",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "06a0f667-cb9a-46a0-816a-83f550ea2b10",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.871",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "07ca200d-10aa-42e6-ae31-e55c533b706c",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.411",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "0b4f06f8-c523-4b41-aa01-e6a745cfe58f",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.758",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "0b6538ca-d57a-4e7f-bad3-7cd164ecb4d5",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.66",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "0bc92092-2bdf-46de-b119-3a4fdcb5301b",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.822",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "118fd95d-7689-4805-b4e8-aa37c8d0404c",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.777",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "145dc9dd-acba-47fa-9eef-f781d748966a",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.721",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "158ca88f-5b85-4b58-949c-8d88335bf6d3",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:35.048",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "18408313-7988-4bac-9bb2-fcb7398dbdf6",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.206",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "19bb19f8-8742-43ee-84ac-cef87abf3421",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.472",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "1c46a801-3316-47c2-8260-4153c228572b",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.641",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "1f78e479-a8b3-4a2d-9556-15211e3ed01d",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.264",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "247f8d4a-abc2-4c15-b1c2-30f14cfb4d6a",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.786",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "2ab23251-12d7-4b28-b705-84384d9043a4",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.942",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "2d945a91-d85c-47e9-9094-f7d3a4e3776a",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.729",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "30683066-646f-4a8b-b3d1-ec88cb8cf970",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.156",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "3130f816-59c5-47cd-9ee0-f6fd5af9922a",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.991",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "3b030136-9d5d-4004-8621-2fd1f77af050",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.242",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "3c6ad593-92bf-42bd-a72a-e2586e835b93",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.551",
+          "visible": false,
+          "restricted": true
+        }
+      ],
+      "nextCursor": "3c6ad593-92bf-42bd-a72a-e2586e835b93:cr-oc-bank-a"
+    }
+  },
+  {
+    "url": "http://127.0.0.1:3199/api/v1/concept-reviews/77870150-2afa-4ee1-a9dd-87f4c021e333/sources?cursor=3c6ad593-92bf-42bd-a72a-e2586e835b93%3Acr-oc-bank-a",
+    "status": 200,
+    "body": {
+      "items": [
+        {
+          "attemptId": "4a34c41d-fe1e-4fb9-86f7-4a13882e28b1",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.851",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "4cfd2f05-c714-4cd7-9da7-e4a7e4b0f919",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.681",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "4f536171-5688-4e37-a4aa-266ef85b0d27",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.139",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "4fb90a01-3fde-49a4-920f-3d3207b7cd70",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.749",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "4fd108e7-2911-424e-9e05-888d7efcbaaf",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.96",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "50518bdb-a019-4b15-85be-ace4654d6e43",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.916",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "523c1cf4-998a-45cf-90f6-c9f596ee2186",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.691",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "547e931f-c4f6-47c8-9bbb-16962c676ded",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.71",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "56047bf9-8067-48a7-9531-8cbfbaa821e6",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.253",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "5ad779fa-10bb-4851-8314-2f8dd4e56889",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.482",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "604fc614-fade-4fe7-9010-7fa853de5384",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:35.002",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "64606161-7ed0-4376-81cb-d232b505ede5",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.542",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "66bb3198-4969-4256-9abc-2815738cd874",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.518",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "69406677-4cc8-4dbc-85fd-012007abcf25",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.632",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "69a87502-c294-44e5-ae3b-32eaef2230ab",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.573",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "6b2f6cd4-60e9-41ed-82b8-9a342b9b3521",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.445",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "7149c269-d0e6-4f29-b107-b7d0c0c3427a",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.739",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "729ccc04-cddc-4c4a-b7f9-980048125a73",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.65",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "734594a4-d321-4ff3-9a4b-addd96f62ce1",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.23",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "79f00af3-ba42-41d6-8249-676d1848e012",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.02",
+          "visible": false,
+          "restricted": true
+        }
+      ],
+      "nextCursor": "79f00af3-ba42-41d6-8249-676d1848e012:cr-oc-bank-a"
+    }
+  },
+  {
+    "url": "http://127.0.0.1:3199/api/v1/concept-reviews/77870150-2afa-4ee1-a9dd-87f4c021e333/sources?cursor=79f00af3-ba42-41d6-8249-676d1848e012%3Acr-oc-bank-a",
+    "status": 200,
+    "body": {
+      "items": [
+        {
+          "attemptId": "8037db76-f6b6-4235-89ba-81b9ef613bc7",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.951",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "80c4b479-d2ef-4d18-a6b9-ee0d4e1743e3",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.061",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "8d721251-1cfa-4784-923f-3d5cb99bb3f2",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.095",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "8d8d7d84-7569-4604-99b4-89e721185210",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.891",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "8fc36cf6-fa0a-4c9e-9409-cfeb911cfd4b",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.434",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "931c8f9f-4ee1-442d-a3b3-a9cb10e50166",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.842",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "9617569a-4e41-43b0-8f2b-6f13fbf9c807",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.181",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "97047c16-4588-4ab8-929e-2af6c859fc1d",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.906",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "9be1b9ab-8b26-4078-90d0-cf7284833260",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.495",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "b0a95f80-535b-41d3-8a0e-4f648f33e4de",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.039",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "b3e98052-9233-4897-a67d-b28923c618b5",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.881",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "b6249c7e-09b8-4792-9785-a4ba858ef833",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.971",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "bbce3cb2-cae9-43d3-a676-4d7828a5d81a",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.582",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "bc5ee1cb-7c0c-4130-8336-1d7df6212708",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.804",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "bd3f8dc4-6a6c-4da8-a686-b661c08b5c74",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.861",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "bdb60e2b-085a-43bb-b6e1-a416758e9861",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.347",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "c2fd153b-0f30-4921-adb2-6c3f981ebc99",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:33.98",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "c3657c13-84a8-4d26-a963-9f89940b79d3",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.832",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "c3ae80e6-febc-480e-b85b-7cf412e0320b",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.795",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "c49fe50e-ebe9-44a9-9db6-e52cab26986a",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.169",
+          "visible": false,
+          "restricted": true
+        }
+      ],
+      "nextCursor": "c49fe50e-ebe9-44a9-9db6-e52cab26986a:cr-oc-bank-a"
+    }
+  },
+  {
+    "url": "http://127.0.0.1:3199/api/v1/concept-reviews/77870150-2afa-4ee1-a9dd-87f4c021e333/sources?cursor=c49fe50e-ebe9-44a9-9db6-e52cab26986a%3Acr-oc-bank-a",
+    "status": 200,
+    "body": {
+      "items": [
+        {
+          "attemptId": "ceefbd5f-c9a9-4f94-bb9a-9467aa81c2a3",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:35.022",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "d3375a6a-100c-4180-8a2b-ca199b3ade92",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.119",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "d5abd042-aecd-481b-9464-89534f9e3c90",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.326",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "cursorKey": "d7ab9246-8fae-48a8-af44-2eb5214847a9:cr-oc-bank-b",
+          "attemptId": "d7ab9246-8fae-48a8-af44-2eb5214847a9",
+          "occurrenceId": "cr-oc-bank-b",
+          "lessonId": "cr-b",
+          "versionId": "cr-b-v1",
+          "exerciseKind": "reading_choice",
+          "correct": false,
+          "recordedAt": "2026-11-02T15:46:34.005",
+          "lessonTitle": "Concept Review Fixture CR-B",
+          "scope": "sentence",
+          "sequence": 2,
+          "sentenceText": "The bank keeps the town's money safe.",
+          "visible": true,
+          "restricted": false
+        },
+        {
+          "attemptId": "d859f38f-3509-4ede-b7ce-26385f8a3d37",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.562",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "db7c593c-3a90-4c03-94e9-667db748806b",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.592",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "db9fe36b-5f5b-4bda-b9f9-3d87643a8a04",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.506",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "dfb62c40-8303-4198-9b35-17aa1a98ea31",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.621",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "e02f279b-2112-4025-b9b3-265c1096e103",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.398",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "e1973fee-4cb1-4f33-a473-11204b9774f3",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.53",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "e5c4df2f-455c-4797-b884-ecea6ca91672",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.981",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "e5da49d2-82ad-47f7-9ddc-f0f6a8473d21",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.423",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "e615e455-2b7c-4fe5-9edf-b16721e56902",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.612",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "e74a661d-74f6-44a8-9658-fb2edf6e10a1",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.67",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "e829b51c-16a1-4a42-be23-db8385144542",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.194",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "e88dd02b-3548-4c13-a6c5-5a15b60db6c5",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.7",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "eb7fb7e1-c6a0-4e62-ba38-657db072a920",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.218",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "eef7d56c-c2dd-4cc2-9fc5-1c51d3083221",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:35.012",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "f4f6c848-a83d-451b-9223-05d5cec7912e",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.46",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "f61b9181-4f01-4325-84ff-3f90f9cb8bb0",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.928",
+          "visible": false,
+          "restricted": true
+        }
+      ],
+      "nextCursor": "f61b9181-4f01-4325-84ff-3f90f9cb8bb0:cr-oc-bank-a"
+    }
+  },
+  {
+    "url": "http://127.0.0.1:3199/api/v1/concept-reviews/77870150-2afa-4ee1-a9dd-87f4c021e333/sources?cursor=f61b9181-4f01-4325-84ff-3f90f9cb8bb0%3Acr-oc-bank-a",
+    "status": 200,
+    "body": {
+      "items": [
+        {
+          "attemptId": "fa8cd204-db9e-44d4-8d73-536c8e29d2d2",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.767",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "fb9805c6-d8f0-4a27-b63f-e0aadc584a8b",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.602",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "fe565b54-24f7-41a9-8c7a-4b589b931e3f",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.812",
+          "visible": false,
+          "restricted": true
+        }
+      ],
+      "nextCursor": null
+    }
+  },
+  {
+    "url": "http://127.0.0.1:3199/api/v1/concept-reviews/77870150-2afa-4ee1-a9dd-87f4c021e333/sources",
+    "status": 200,
+    "body": {
+      "items": [
+        {
+          "attemptId": "066c388d-d287-48f5-8993-32a4861ce5c1",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.077",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "06a0f667-cb9a-46a0-816a-83f550ea2b10",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.871",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "07ca200d-10aa-42e6-ae31-e55c533b706c",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.411",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "0b4f06f8-c523-4b41-aa01-e6a745cfe58f",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.758",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "0b6538ca-d57a-4e7f-bad3-7cd164ecb4d5",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.66",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "0bc92092-2bdf-46de-b119-3a4fdcb5301b",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.822",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "118fd95d-7689-4805-b4e8-aa37c8d0404c",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.777",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "145dc9dd-acba-47fa-9eef-f781d748966a",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.721",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "158ca88f-5b85-4b58-949c-8d88335bf6d3",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:35.048",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "18408313-7988-4bac-9bb2-fcb7398dbdf6",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.206",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "19bb19f8-8742-43ee-84ac-cef87abf3421",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.472",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "1c46a801-3316-47c2-8260-4153c228572b",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.641",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "1f78e479-a8b3-4a2d-9556-15211e3ed01d",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.264",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "247f8d4a-abc2-4c15-b1c2-30f14cfb4d6a",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.786",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "2ab23251-12d7-4b28-b705-84384d9043a4",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.942",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "2d945a91-d85c-47e9-9094-f7d3a4e3776a",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.729",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "30683066-646f-4a8b-b3d1-ec88cb8cf970",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.156",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "3130f816-59c5-47cd-9ee0-f6fd5af9922a",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.991",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "3b030136-9d5d-4004-8621-2fd1f77af050",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.242",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "3c6ad593-92bf-42bd-a72a-e2586e835b93",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.551",
+          "visible": false,
+          "restricted": true
+        }
+      ],
+      "nextCursor": "3c6ad593-92bf-42bd-a72a-e2586e835b93:cr-oc-bank-a"
+    }
+  },
+  {
+    "url": "http://127.0.0.1:3199/api/v1/concept-reviews/77870150-2afa-4ee1-a9dd-87f4c021e333/sources",
+    "status": 200,
+    "body": {
+      "items": [
+        {
+          "attemptId": "066c388d-d287-48f5-8993-32a4861ce5c1",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.077",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "06a0f667-cb9a-46a0-816a-83f550ea2b10",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.871",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "07ca200d-10aa-42e6-ae31-e55c533b706c",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.411",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "0b4f06f8-c523-4b41-aa01-e6a745cfe58f",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.758",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "0b6538ca-d57a-4e7f-bad3-7cd164ecb4d5",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.66",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "0bc92092-2bdf-46de-b119-3a4fdcb5301b",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.822",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "118fd95d-7689-4805-b4e8-aa37c8d0404c",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.777",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "145dc9dd-acba-47fa-9eef-f781d748966a",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.721",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "158ca88f-5b85-4b58-949c-8d88335bf6d3",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:35.048",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "18408313-7988-4bac-9bb2-fcb7398dbdf6",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.206",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "19bb19f8-8742-43ee-84ac-cef87abf3421",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.472",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "1c46a801-3316-47c2-8260-4153c228572b",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.641",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "1f78e479-a8b3-4a2d-9556-15211e3ed01d",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.264",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "247f8d4a-abc2-4c15-b1c2-30f14cfb4d6a",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.786",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "2ab23251-12d7-4b28-b705-84384d9043a4",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.942",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "2d945a91-d85c-47e9-9094-f7d3a4e3776a",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.729",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "30683066-646f-4a8b-b3d1-ec88cb8cf970",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.156",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "3130f816-59c5-47cd-9ee0-f6fd5af9922a",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.991",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "3b030136-9d5d-4004-8621-2fd1f77af050",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.242",
+          "visible": false,
+          "restricted": true
+        },
+        {
+          "attemptId": "3c6ad593-92bf-42bd-a72a-e2586e835b93",
+          "occurrenceId": "cr-oc-bank-a",
+          "lessonId": "cr-a",
+          "versionId": "cr-a-v1",
+          "recordedAt": "2026-11-02T15:46:34.551",
+          "visible": false,
+          "restricted": true
+        }
+      ],
+      "nextCursor": "3c6ad593-92bf-42bd-a72a-e2586e835b93:cr-oc-bank-a"
+    }
+  }
+]

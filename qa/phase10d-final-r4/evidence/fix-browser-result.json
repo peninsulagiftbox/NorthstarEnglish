@@ -1,0 +1,89 @@
+{
+  "result": "PASS",
+  "restricted": 82,
+  "visibleLinks": 1,
+  "uiCount": 83,
+  "loadMoreButtons": 0,
+  "clicks": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "summary": "学习来源（已显示 1/1 条可见)",
+  "pageErrors": [
+    {
+      "type": "networkerror",
+      "url": "http://127.0.0.1:3198/api/v1/study/resume",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "type": "networkerror",
+      "url": "http://127.0.0.1:3198/lesson/cr-a?version=cr-a-v1&tab=vocabulary&sentence=cr-a-v1-s3&_rsc=NM3RCj8WHosWiiB6",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "type": "networkerror",
+      "url": "http://127.0.0.1:3198/lesson/cr-a?_rsc=qBXTdSFKEB3agYBi",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "type": "networkerror",
+      "url": "http://127.0.0.1:3198/lesson/cr-b?version=cr-b-v1&tab=vocabulary&sentence=cr-b-v1-s2&_rsc=NM3RCj8WHosWiiB6",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "type": "networkerror",
+      "url": "http://127.0.0.1:3198/lesson/cr-b?version=cr-b-v1&tab=vocabulary&attempt=42dcc81a-12c4-4f63-a1d6-cda458eba7db&_rsc=NM3RCj8WHosWiiB6",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    }
+  ],
+  "responses": [
+    {
+      "url": "http://127.0.0.1:3198/api/v1/study/resume",
+      "status": 204
+    },
+    {
+      "url": "http://127.0.0.1:3198/api/v1/concept-reviews/due?all=true",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3198/api/v1/concept-reviews/due?all=true",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3198/api/v1/reviews/due?all=true",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3198/api/v1/concept-reviews/d3d3c982-4bd9-4780-a3ac-1c024a1f9a21/sources",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3198/api/v1/concept-reviews/d3d3c982-4bd9-4780-a3ac-1c024a1f9a21/sources?cursor=407781aa-72cb-4779-8aa0-065851d219e4%3Acr-oc-bank-a",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3198/api/v1/concept-reviews/d3d3c982-4bd9-4780-a3ac-1c024a1f9a21/sources?cursor=7b0945a5-8640-43a0-bf24-848c40aeebd6%3Acr-oc-bank-a",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3198/api/v1/concept-reviews/d3d3c982-4bd9-4780-a3ac-1c024a1f9a21/sources?cursor=b599a8b2-0d97-4605-ab60-16e0d76f4271%3Acr-oc-bank-a",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3198/api/v1/concept-reviews/d3d3c982-4bd9-4780-a3ac-1c024a1f9a21/sources?cursor=f8e3399b-83b2-4f66-8a59-5b79c18d3e7b%3Acr-oc-bank-a",
+      "status": 200
+    }
+  ]
+}

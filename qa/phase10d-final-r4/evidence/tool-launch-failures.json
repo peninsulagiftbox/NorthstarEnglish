@@ -1,0 +1,33 @@
+[
+  {
+    "action": "docker ps without escalation",
+    "exitCode": 1,
+    "reason": "initial missing daemon socket, then sandbox permission denied",
+    "resolution": "opened existing /Applications/Docker.app with escalation; no daemon reset or data removal"
+  },
+  {
+    "action": "open -a Docker",
+    "exitCode": 1,
+    "reason": "Unable to find application named Docker",
+    "resolution": "open /Applications/Docker.app exit 0"
+  },
+  {
+    "action": "Playwright script require(fs)",
+    "exitCode": null,
+    "result": "ReferenceError: require is not defined",
+    "scope": "tool harness; no browser context created"
+  },
+  {
+    "action": "Playwright script dynamic import",
+    "exitCode": null,
+    "result": "ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING",
+    "scope": "tool harness; no browser context created"
+  },
+  {
+    "action": "Playwright final script",
+    "exitCode": null,
+    "toolExecution": "returned normally",
+    "assertionResult": "FAIL",
+    "reason": "API 83, UI 20; do not report as process exit 0 because MCP supplies no process exit"
+  }
+]

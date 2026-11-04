@@ -1,0 +1,13 @@
+{
+  "name": "northstar-qa-final-r5fix-20261103",
+  "containerId": "6f6192256384f1d7b49ed5f505e155e26f96136cb366fcc336465000ba435752",
+  "port": 3380,
+  "schema": "northstar_phase01_test",
+  "version": "8.4.9",
+  "uuid": "160a0a24-d741-11f1-825b-2e0319a9d1eb",
+  "volume": "northstar-qa-final-r5fix-20261103-data",
+  "appAccount": "northstar_app",
+  "migratorAccount": "northstar_migrator",
+  "content": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r5fix/content",
+  "recordings": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r5fix/recordings"
+}

@@ -1,0 +1,20 @@
+{
+  "expected": 1,
+  "pageErrors": [],
+  "networkErrors": [
+    {
+      "url": "http://127.0.0.1:3201/api/v1/study/resume",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:3201/lesson/cr-b?version=cr-b-v1&tab=vocabulary&sentence=cr-b-v1-s2&_rsc=NM3RCj8WHosWiiB6",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    }
+  ],
+  "loadedLabel": "概念卡到期复习（已加载 1）",
+  "result": "PASS"
+}

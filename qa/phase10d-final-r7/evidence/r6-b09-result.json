@@ -1,0 +1,103 @@
+{
+  "status": "PASS",
+  "card": "aab5c34e-87bc-49cf-b96a-1e1a2a164d5f",
+  "oldSentenceItem": "cr-kp-3-reading",
+  "beforeFirstRestartEqualsAfter": true,
+  "replayMutatedHistory": false,
+  "beforeSecondRestartEqualsAfter": true,
+  "conceptRowVersion": 5,
+  "conceptResultCount": 4,
+  "oldReviewResultCount": 1,
+  "http": [
+    {
+      "case": "B09-old-sentence-rating",
+      "path": "/reviews/cr-kp-3-reading/results",
+      "request": {
+        "eventId": "cc6ef1a2-3a1a-4ef9-a181-aaf0cab68dee",
+        "lessonId": "cr-a",
+        "versionId": "cr-a-v1",
+        "sentenceId": "cr-a-v1-s3",
+        "rowVersion": 7,
+        "rating": "again",
+        "answerRevealed": true,
+        "clientOccurredAt": "2026-11-03T00:00:00Z"
+      },
+      "status": 200,
+      "response": {
+        "schedulerVersion": "simple_v1",
+        "nextDueAt": "2026-11-04T07:45:36.776363Z",
+        "eventId": "cc6ef1a2-3a1a-4ef9-a181-aaf0cab68dee",
+        "rowVersion": 8,
+        "origin": "self_rating"
+      },
+      "startNs": 1793778276751269000,
+      "endNs": 1793778276787467000
+    },
+    {
+      "case": "B09-old-rating-replay",
+      "path": "/reviews/cr-kp-3-reading/results",
+      "request": {
+        "eventId": "cc6ef1a2-3a1a-4ef9-a181-aaf0cab68dee",
+        "lessonId": "cr-a",
+        "versionId": "cr-a-v1",
+        "sentenceId": "cr-a-v1-s3",
+        "rowVersion": 7,
+        "rating": "again",
+        "answerRevealed": true,
+        "clientOccurredAt": "2026-11-03T00:00:00Z"
+      },
+      "status": 200,
+      "response": {
+        "origin": "self_rating",
+        "eventId": "cc6ef1a2-3a1a-4ef9-a181-aaf0cab68dee",
+        "nextDueAt": "2026-11-04T07:45:36.776363Z",
+        "rowVersion": 8,
+        "schedulerVersion": "simple_v1"
+      },
+      "startNs": 1793778278823625000,
+      "endNs": 1793778278843367000
+    },
+    {
+      "case": "B09-concept-rating-replay",
+      "path": "/concept-reviews/aab5c34e-87bc-49cf-b96a-1e1a2a164d5f/results",
+      "request": {
+        "eventId": "cae260f1-7db8-4ffa-9561-282ce15b6655",
+        "rowVersion": 3,
+        "rating": "good",
+        "answerRevealed": true,
+        "clientOccurredAt": "2026-11-01T00:00:00Z"
+      },
+      "status": 200,
+      "response": {
+        "origin": "self_rating",
+        "eventId": "cae260f1-7db8-4ffa-9561-282ce15b6655",
+        "nextDueAt": "2026-11-08T07:44:19.537885Z",
+        "rowVersion": 4,
+        "schedulerVersion": "simple_v1"
+      },
+      "startNs": 1793778278843600000,
+      "endNs": 1793778278850868000
+    },
+    {
+      "case": "B09-new-concept-rating",
+      "path": "/concept-reviews/aab5c34e-87bc-49cf-b96a-1e1a2a164d5f/results",
+      "request": {
+        "eventId": "0995c23f-477a-4dbf-b363-8d3815d9d6dc",
+        "rowVersion": 4,
+        "rating": "good",
+        "answerRevealed": true,
+        "clientOccurredAt": "2026-11-01T00:00:00Z"
+      },
+      "status": 200,
+      "response": {
+        "nextDueAt": "2026-11-12T07:44:39.062509Z",
+        "schedulerVersion": "simple_v1",
+        "origin": "self_rating",
+        "rowVersion": 5,
+        "eventId": "0995c23f-477a-4dbf-b363-8d3815d9d6dc"
+      },
+      "startNs": 1793778279055882000,
+      "endNs": 1793778279071116000
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "case": {
+    "case": "cross-version-distinct-key",
+    "exitCode": 1,
+    "mysqlError": 1452,
+    "stderrLastLine": "ERROR 1452 (23000) at line 1: Cannot add or update a child row: a foreign key constraint fails (`northstar_restore_20261103145918`.`attempt_knowledge`, CONSTRAINT `attempt_knowledge_ibfk_1` FOREIGN KEY (`attempt_id`, `exercise_id`, `version_id`, `sentence_id`) REFERENCES `exercise_atte"
+  },
+  "prePostTableSha256Equal": true,
+  "priorAttempt": "Cross-version source insert hit duplicate primary key 1062 before FK evaluation; retained as inconclusive."
+}

@@ -1,0 +1,4 @@
+[
+  "apps/api/src/main/java/local/northstar/exercise/ConceptReviewController.java",
+  "apps/api/src/test/java/local/northstar/knowledge/ConceptReviewIntegrationTest.java"
+]

@@ -1,0 +1,38 @@
+Grants for northstar_app@%
+GRANT USAGE ON *.* TO `northstar_app`@`%`
+GRANT SELECT ON `northstar_grant_verify_tmp`.* TO `northstar_app`@`%`
+GRANT SELECT, INSERT, UPDATE, DELETE ON `northstar_phase01_test`.* TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`attempt_knowledge` TO `northstar_app`@`%`
+GRANT INSERT, UPDATE ON `northstar_grant_verify_tmp`.`command_receipt` TO `northstar_app`@`%`
+GRANT INSERT, UPDATE ON `northstar_grant_verify_tmp`.`concept_review_card` TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`concept_review_result` TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`concept_review_source` TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`exercise_attempt` TO `northstar_app`@`%`
+GRANT INSERT, UPDATE ON `northstar_grant_verify_tmp`.`exercise_draft` TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`exercise_knowledge` TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`exercise_sentence` TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`knowledge_concept_revision` TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`knowledge_concept` TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`knowledge_occurrence` TO `northstar_app`@`%`
+GRANT INSERT, UPDATE ON `northstar_grant_verify_tmp`.`knowledge_projection` TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`learning_evidence` TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`legacy_knowledge_link` TO `northstar_app`@`%`
+GRANT INSERT, UPDATE ON `northstar_grant_verify_tmp`.`personal_recording` TO `northstar_app`@`%`
+GRANT INSERT, UPDATE ON `northstar_grant_verify_tmp`.`practice_progress` TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`quiz_answer` TO `northstar_app`@`%`
+GRANT INSERT, UPDATE ON `northstar_grant_verify_tmp`.`quiz_progress` TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`quiz_run_item` TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`quiz_run` TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`reading_answer` TO `northstar_app`@`%`
+GRANT INSERT, UPDATE ON `northstar_grant_verify_tmp`.`reading_progress` TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`recording_observation` TO `northstar_app`@`%`
+GRANT INSERT, UPDATE ON `northstar_grant_verify_tmp`.`review_item` TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`review_result` TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`review_source` TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`study_event` TO `northstar_app`@`%`
+GRANT INSERT, UPDATE ON `northstar_grant_verify_tmp`.`study_resume` TO `northstar_app`@`%`
+GRANT INSERT, UPDATE ON `northstar_grant_verify_tmp`.`study_stage` TO `northstar_app`@`%`
+GRANT INSERT, UPDATE ON `northstar_grant_verify_tmp`.`user_setting` TO `northstar_app`@`%`
+GRANT INSERT, UPDATE ON `northstar_grant_verify_tmp`.`vocabulary_favorite` TO `northstar_app`@`%`
+GRANT INSERT, UPDATE ON `northstar_grant_verify_tmp`.`writing_draft` TO `northstar_app`@`%`
+GRANT INSERT ON `northstar_grant_verify_tmp`.`writing_revision` TO `northstar_app`@`%`

@@ -1,0 +1,18 @@
+{
+  "head": "a5084cb4442a7b78afad5c920459c22f02f679ce",
+  "branch": "main",
+  "inputCount": 389,
+  "manifestSha256": "ac1e29849324b27325962fdd067b41935e3479afafa68753fd71a9f500d42f12",
+  "changedFromR4": {
+    "apps/web/src/components/review/ConceptReviewCard.tsx": {
+      "before": "9a88256ad8ae590172afd91c14bb7beb393d19baa3aaf8ef2f0b5e565a1bb673",
+      "after": "9ae3c603d225feb8d290a4ed55d38c7c0d35b5855434830e064f4e867480dcc1"
+    },
+    "qa/phase10d-final-r4/package_evidence.py": {
+      "before": "412000aa3155b29b77ce693efced515dbd909750f687ce935716d3a7c2c582f7",
+      "after": "08e0f217715523c71d596b40d0ac4f7bbfc50f672b2e9ea84a32a1adc66a251f"
+    }
+  },
+  "runtimeJarSha256": "771a72e8ea66304ebfb2e4b5e873d759c60a176fc2dd09fdfe31648da7ff92c6",
+  "sourceCopy": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r5/source"
+}

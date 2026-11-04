@@ -1,0 +1,8 @@
+{
+  "databaseUuid": "2b242be2-d824-11f1-baec-767a5e58531a",
+  "api": "http://127.0.0.1:8202/api/v1",
+  "web": "http://127.0.0.1:3209",
+  "buildId": "mB0BX6ovaStArA61zmdDR",
+  "apiPid": 7642,
+  "webPid": 7658
+}

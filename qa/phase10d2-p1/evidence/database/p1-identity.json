@@ -1,0 +1,9 @@
+{
+  "namespace": "northstar-d02-p1-20261102",
+  "role": "p1",
+  "container": "northstar-d02-p1-20261102-p1",
+  "containerId": "8a16527b63270008f4226db18ff34d98edd5276f97833863cfe21b8704540ae3",
+  "volume": "northstar_d02_p1_20261102_p1_data",
+  "port": 3373,
+  "uuid": "fa659971-d67f-11f1-b010-8aeb551daec2"
+}

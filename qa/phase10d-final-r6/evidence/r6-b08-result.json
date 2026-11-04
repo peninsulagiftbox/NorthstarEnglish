@@ -1,0 +1,465 @@
+{
+  "status": "PASS",
+  "card": "fb8ad3d3-191f-4c48-9afc-31a6cf4a2a57",
+  "sourceCount": 8,
+  "resultCount": 3,
+  "rowVersion": 4,
+  "attemptIdsMatchSources": true,
+  "firstRunHarnessFailure": "expected 7 sources; 8 real wrong attempts succeeded",
+  "http": [
+    {
+      "case": "B08-baseline-A",
+      "path": "/reading/cr-read-1/attempts",
+      "request": {
+        "eventId": "51c71b95-5b7a-44b6-bd7c-3e85ed5564e8",
+        "lessonId": "cr-a",
+        "versionId": "cr-a-v1",
+        "optionId": "cr1-a",
+        "clientOccurredAt": "2026-11-03T14:54:53.332458+00:00"
+      },
+      "status": 200,
+      "response": {
+        "state": "practiced",
+        "result": {
+          "correct": false,
+          "correctOptionId": "cr1-b",
+          "correctText": "cr1-b text",
+          "sentenceId": "cr-a-v1-s3",
+          "knowledgePointId": "cr-kp-3",
+          "standardText": "The bank opens beside the garden gate.",
+          "explanation": "bank 金融含义。",
+          "algorithmVersion": "reading_choice_v1"
+        },
+        "eventId": "51c71b95-5b7a-44b6-bd7c-3e85ed5564e8",
+        "attemptId": "6bfd16d3-5f86-43c5-9708-9bc646863d07",
+        "evidenceId": "9b0002a9-df99-47a4-8092-49b88441b0cd"
+      },
+      "startNs": 1793717693332632000,
+      "endNs": 1793717693373701000
+    },
+    {
+      "case": "B08-baseline-B",
+      "path": "/reading/cr-read-2/attempts",
+      "request": {
+        "eventId": "da009fae-662c-4936-afc8-fbe717c783bb",
+        "lessonId": "cr-b",
+        "versionId": "cr-b-v1",
+        "optionId": "cr2-a",
+        "clientOccurredAt": "2026-11-03T14:54:53.373732+00:00"
+      },
+      "status": 200,
+      "response": {
+        "state": "practiced",
+        "result": {
+          "correct": false,
+          "correctOptionId": "cr2-b",
+          "correctText": "cr2-b text",
+          "sentenceId": "cr-b-v1-s2",
+          "knowledgePointId": "cr-kp-2",
+          "standardText": "The bank keeps the town's money safe.",
+          "explanation": "bank 金融含义。",
+          "algorithmVersion": "reading_choice_v1"
+        },
+        "eventId": "da009fae-662c-4936-afc8-fbe717c783bb",
+        "attemptId": "ed299f34-4710-4ffb-baf0-0d87691375ad",
+        "evidenceId": "ffa53c59-3e74-4c80-9d9c-ccc86c0559f6"
+      },
+      "startNs": 1793717693373741000,
+      "endNs": 1793717693388116000
+    },
+    {
+      "case": "B08-01-source",
+      "path": "/reading/cr-read-1/attempts",
+      "request": {
+        "eventId": "3529d61a-d02b-45a0-9c6f-f7c7495bdc89",
+        "lessonId": "cr-a",
+        "versionId": "cr-a-v1",
+        "optionId": "cr1-a",
+        "clientOccurredAt": "2026-11-03T14:54:53.626016+00:00"
+      },
+      "status": 200,
+      "response": {
+        "state": "practiced",
+        "result": {
+          "correct": false,
+          "correctOptionId": "cr1-b",
+          "correctText": "cr1-b text",
+          "sentenceId": "cr-a-v1-s3",
+          "knowledgePointId": "cr-kp-3",
+          "standardText": "The bank opens beside the garden gate.",
+          "explanation": "bank 金融含义。",
+          "algorithmVersion": "reading_choice_v1"
+        },
+        "eventId": "3529d61a-d02b-45a0-9c6f-f7c7495bdc89",
+        "attemptId": "bf8a37ae-17c3-4fd5-a62b-47ee785f4bf6",
+        "evidenceId": "3845622d-f21e-47fe-8d0b-76746a88c3cc"
+      },
+      "startNs": 1793717693626021000,
+      "endNs": 1793717693645044000
+    },
+    {
+      "case": "B08-01-rating",
+      "path": "/concept-reviews/fb8ad3d3-191f-4c48-9afc-31a6cf4a2a57/results",
+      "request": {
+        "eventId": "c8250acf-d104-4b14-a1ed-bf76856eadb9",
+        "rowVersion": 1,
+        "rating": "good",
+        "answerRevealed": true,
+        "clientOccurredAt": "2026-11-01T00:00:00Z"
+      },
+      "status": 200,
+      "response": {
+        "eventId": "c8250acf-d104-4b14-a1ed-bf76856eadb9",
+        "nextDueAt": "2026-11-04T14:54:53.645725Z",
+        "schedulerVersion": "simple_v1",
+        "origin": "self_rating",
+        "rowVersion": 2
+      },
+      "startNs": 1793717693626117000,
+      "endNs": 1793717693649953000
+    },
+    {
+      "case": "B08-02-left",
+      "path": "/concept-reviews/fb8ad3d3-191f-4c48-9afc-31a6cf4a2a57/results",
+      "request": {
+        "eventId": "9d7a7dfb-be89-406b-a4cd-5674cc3d230d",
+        "rowVersion": 2,
+        "rating": "good",
+        "answerRevealed": true,
+        "clientOccurredAt": "2026-11-01T00:00:00Z"
+      },
+      "status": 200,
+      "response": {
+        "eventId": "9d7a7dfb-be89-406b-a4cd-5674cc3d230d",
+        "nextDueAt": "2026-11-05T14:54:53.711986Z",
+        "schedulerVersion": "simple_v1",
+        "origin": "self_rating",
+        "rowVersion": 3
+      },
+      "startNs": 1793717693706839000,
+      "endNs": 1793717693718101000
+    },
+    {
+      "case": "B08-02-right",
+      "path": "/concept-reviews/fb8ad3d3-191f-4c48-9afc-31a6cf4a2a57/results",
+      "request": {
+        "eventId": "293cc9fa-8524-46a6-805e-3a874b07d133",
+        "rowVersion": 2,
+        "rating": "good",
+        "answerRevealed": true,
+        "clientOccurredAt": "2026-11-01T00:00:00Z"
+      },
+      "status": 409,
+      "response": {
+        "detail": "此卡已被另一页面更新，请重新读取；原操作未计数。",
+        "instance": "/api/v1/concept-reviews/fb8ad3d3-191f-4c48-9afc-31a6cf4a2a57/results",
+        "status": 409,
+        "title": "Conflict",
+        "type": "urn:northstar:problem:practice_request",
+        "code": "PRACTICE_REQUEST",
+        "traceId": "330a991d-c1d7-475d-af1a-4c2f1e704ae8",
+        "retryable": false,
+        "fieldErrors": []
+      },
+      "startNs": 1793717693706609000,
+      "endNs": 1793717693724619000
+    },
+    {
+      "case": "B08-03-right",
+      "path": "/reading/cr-read-1/attempts",
+      "request": {
+        "eventId": "fdf2aeef-e9cf-4102-9ab1-24a4a1585d96",
+        "lessonId": "cr-a",
+        "versionId": "cr-a-v1",
+        "optionId": "cr1-a",
+        "clientOccurredAt": "2026-11-03T00:00:00Z"
+      },
+      "status": 200,
+      "response": {
+        "state": "practiced",
+        "result": {
+          "correct": false,
+          "correctOptionId": "cr1-b",
+          "correctText": "cr1-b text",
+          "sentenceId": "cr-a-v1-s3",
+          "knowledgePointId": "cr-kp-3",
+          "standardText": "The bank opens beside the garden gate.",
+          "explanation": "bank 金融含义。",
+          "algorithmVersion": "reading_choice_v1"
+        },
+        "eventId": "fdf2aeef-e9cf-4102-9ab1-24a4a1585d96",
+        "attemptId": "f918818f-b2b2-4aa3-bcaf-0ce1c0947b56",
+        "evidenceId": "292008ee-2126-483c-a314-f94b16e0fcfa"
+      },
+      "startNs": 1793717693748233000,
+      "endNs": 1793717693765453000
+    },
+    {
+      "case": "B08-03-left",
+      "path": "/reading/cr-read-1/attempts",
+      "request": {
+        "eventId": "fdf2aeef-e9cf-4102-9ab1-24a4a1585d96",
+        "lessonId": "cr-a",
+        "versionId": "cr-a-v1",
+        "optionId": "cr1-a",
+        "clientOccurredAt": "2026-11-03T00:00:00Z"
+      },
+      "status": 200,
+      "response": {
+        "state": "practiced",
+        "result": {
+          "correct": false,
+          "sentenceId": "cr-a-v1-s3",
+          "correctText": "cr1-b text",
+          "explanation": "bank 金融含义。",
+          "standardText": "The bank opens beside the garden gate.",
+          "correctOptionId": "cr1-b",
+          "algorithmVersion": "reading_choice_v1",
+          "knowledgePointId": "cr-kp-3"
+        },
+        "eventId": "fdf2aeef-e9cf-4102-9ab1-24a4a1585d96",
+        "attemptId": "f918818f-b2b2-4aa3-bcaf-0ce1c0947b56",
+        "evidenceId": "292008ee-2126-483c-a314-f94b16e0fcfa"
+      },
+      "startNs": 1793717693748556000,
+      "endNs": 1793717693768638000
+    },
+    {
+      "case": "B08-04-left",
+      "path": "/reading/cr-read-1/attempts",
+      "request": {
+        "eventId": "499ed3c8-0f09-41db-97a4-6db1aef4e82c",
+        "lessonId": "cr-a",
+        "versionId": "cr-a-v1",
+        "optionId": "cr1-a",
+        "clientOccurredAt": "2026-11-03T00:00:00Z"
+      },
+      "status": 200,
+      "response": {
+        "state": "practiced",
+        "result": {
+          "correct": false,
+          "correctOptionId": "cr1-b",
+          "correctText": "cr1-b text",
+          "sentenceId": "cr-a-v1-s3",
+          "knowledgePointId": "cr-kp-3",
+          "standardText": "The bank opens beside the garden gate.",
+          "explanation": "bank 金融含义。",
+          "algorithmVersion": "reading_choice_v1"
+        },
+        "eventId": "499ed3c8-0f09-41db-97a4-6db1aef4e82c",
+        "attemptId": "345a56bb-ca39-42d7-95a9-8bfecaf50bc3",
+        "evidenceId": "8b7898b3-5074-471a-afd3-42c306a22fc8"
+      },
+      "startNs": 1793717693787611000,
+      "endNs": 1793717693801560000
+    },
+    {
+      "case": "B08-04-right",
+      "path": "/reading/cr-read-1/attempts",
+      "request": {
+        "eventId": "499ed3c8-0f09-41db-97a4-6db1aef4e82c",
+        "lessonId": "cr-a",
+        "versionId": "cr-a-v1",
+        "optionId": "cr1-c",
+        "clientOccurredAt": "2026-11-03T00:00:00Z"
+      },
+      "status": 409,
+      "response": {
+        "detail": "相同事件标识不能提交不同内容。",
+        "instance": "/api/v1/reading/cr-read-1/attempts",
+        "status": 409,
+        "title": "Conflict",
+        "type": "urn:northstar:problem:idempotency_conflict",
+        "code": "IDEMPOTENCY_CONFLICT",
+        "traceId": "7358f7cc-7748-41cb-a2fa-0ce343eff7cd",
+        "retryable": false,
+        "fieldErrors": []
+      },
+      "startNs": 1793717693787415000,
+      "endNs": 1793717693802599000
+    },
+    {
+      "case": "B08-05-stale-rating",
+      "path": "/concept-reviews/fb8ad3d3-191f-4c48-9afc-31a6cf4a2a57/results",
+      "request": {
+        "eventId": "c46601b6-d3cb-4b9d-8ffe-6dac760c3124",
+        "rowVersion": 2,
+        "rating": "good",
+        "answerRevealed": true,
+        "clientOccurredAt": "2026-11-01T00:00:00Z"
+      },
+      "status": 409,
+      "response": {
+        "detail": "此卡已被另一页面更新，请重新读取；原操作未计数。",
+        "instance": "/api/v1/concept-reviews/fb8ad3d3-191f-4c48-9afc-31a6cf4a2a57/results",
+        "status": 409,
+        "title": "Conflict",
+        "type": "urn:northstar:problem:practice_request",
+        "code": "PRACTICE_REQUEST",
+        "traceId": "813d6260-9fff-4d2f-8ccf-efb7b5178dc3",
+        "retryable": false,
+        "fieldErrors": []
+      },
+      "startNs": 1793717693802794000,
+      "endNs": 1793717693808362000
+    },
+    {
+      "case": "B08-05-source",
+      "path": "/reading/cr-read-1/attempts",
+      "request": {
+        "eventId": "d08f6c29-e3ba-4f8e-82a8-bd5e3b52ac72",
+        "lessonId": "cr-a",
+        "versionId": "cr-a-v1",
+        "optionId": "cr1-a",
+        "clientOccurredAt": "2026-11-03T14:54:53.802857+00:00"
+      },
+      "status": 200,
+      "response": {
+        "state": "practiced",
+        "result": {
+          "correct": false,
+          "correctOptionId": "cr1-b",
+          "correctText": "cr1-b text",
+          "sentenceId": "cr-a-v1-s3",
+          "knowledgePointId": "cr-kp-3",
+          "standardText": "The bank opens beside the garden gate.",
+          "explanation": "bank 金融含义。",
+          "algorithmVersion": "reading_choice_v1"
+        },
+        "eventId": "d08f6c29-e3ba-4f8e-82a8-bd5e3b52ac72",
+        "attemptId": "a1bfd187-9185-4d97-bb05-9baa281f84d2",
+        "evidenceId": "8437a5b3-206b-4582-9999-ca7faf941968"
+      },
+      "startNs": 1793717693802866000,
+      "endNs": 1793717693816449000
+    },
+    {
+      "case": "B08-06-source-after-rating",
+      "path": "/reading/cr-read-1/attempts",
+      "request": {
+        "eventId": "5485a46c-c107-4403-a165-94bb642b7105",
+        "lessonId": "cr-a",
+        "versionId": "cr-a-v1",
+        "optionId": "cr1-a",
+        "clientOccurredAt": "2026-11-03T14:54:53.816566+00:00"
+      },
+      "status": 200,
+      "response": {
+        "state": "practiced",
+        "result": {
+          "correct": false,
+          "correctOptionId": "cr1-b",
+          "correctText": "cr1-b text",
+          "sentenceId": "cr-a-v1-s3",
+          "knowledgePointId": "cr-kp-3",
+          "standardText": "The bank opens beside the garden gate.",
+          "explanation": "bank 金融含义。",
+          "algorithmVersion": "reading_choice_v1"
+        },
+        "eventId": "5485a46c-c107-4403-a165-94bb642b7105",
+        "attemptId": "00bcb380-6d39-4483-bc7d-712ec2799f5e",
+        "evidenceId": "8c0687f4-027c-43d3-832d-93634d9b8193"
+      },
+      "startNs": 1793717693816576000,
+      "endNs": 1793717693827363000
+    },
+    {
+      "case": "B08-07-lost-response",
+      "path": "/concept-reviews/fb8ad3d3-191f-4c48-9afc-31a6cf4a2a57/results",
+      "request": {
+        "eventId": "5c1a4bdf-7646-4fbf-8776-e9f157eeb4a2",
+        "rowVersion": 3,
+        "rating": "good",
+        "answerRevealed": true,
+        "clientOccurredAt": "2026-11-01T00:00:00Z"
+      },
+      "status": 200,
+      "response": {
+        "eventId": "5c1a4bdf-7646-4fbf-8776-e9f157eeb4a2",
+        "nextDueAt": "2026-11-07T14:54:53.850108Z",
+        "schedulerVersion": "simple_v1",
+        "origin": "self_rating",
+        "rowVersion": 4
+      },
+      "startNs": 1793717693846352000,
+      "endNs": 1793717693852735000
+    },
+    {
+      "case": "B08-07-retry",
+      "path": "/concept-reviews/fb8ad3d3-191f-4c48-9afc-31a6cf4a2a57/results",
+      "request": {
+        "eventId": "5c1a4bdf-7646-4fbf-8776-e9f157eeb4a2",
+        "rowVersion": 3,
+        "rating": "good",
+        "answerRevealed": true,
+        "clientOccurredAt": "2026-11-01T00:00:00Z"
+      },
+      "status": 200,
+      "response": {
+        "origin": "self_rating",
+        "eventId": "5c1a4bdf-7646-4fbf-8776-e9f157eeb4a2",
+        "nextDueAt": "2026-11-07T14:54:53.850108Z",
+        "rowVersion": 4,
+        "schedulerVersion": "simple_v1"
+      },
+      "startNs": 1793717693852739000,
+      "endNs": 1793717693854824000
+    },
+    {
+      "case": "B08-08-injected-failure",
+      "path": "/reading/cr-read-1/attempts",
+      "request": {
+        "eventId": "5888fe44-f1b4-460d-913a-82d3f2ec4fca",
+        "lessonId": "cr-a",
+        "versionId": "cr-a-v1",
+        "optionId": "cr1-a",
+        "clientOccurredAt": "2026-11-03T14:54:53.892257+00:00"
+      },
+      "status": 500,
+      "response": {
+        "detail": "本地服务发生错误，请检查日志后重试。",
+        "instance": "/api/v1/reading/cr-read-1/attempts",
+        "status": 500,
+        "title": "Internal Server Error",
+        "type": "urn:northstar:problem:internal_error",
+        "code": "INTERNAL_ERROR",
+        "traceId": "f24cef7d-eb17-48c8-8814-284555f369db",
+        "retryable": false,
+        "fieldErrors": []
+      },
+      "startNs": 1793717693892262000,
+      "endNs": 1793717693905176000
+    },
+    {
+      "case": "B08-08-retry",
+      "path": "/reading/cr-read-1/attempts",
+      "request": {
+        "eventId": "5888fe44-f1b4-460d-913a-82d3f2ec4fca",
+        "lessonId": "cr-a",
+        "versionId": "cr-a-v1",
+        "optionId": "cr1-a",
+        "clientOccurredAt": "2026-11-03T14:54:53.963260+00:00"
+      },
+      "status": 200,
+      "response": {
+        "state": "practiced",
+        "result": {
+          "correct": false,
+          "correctOptionId": "cr1-b",
+          "correctText": "cr1-b text",
+          "sentenceId": "cr-a-v1-s3",
+          "knowledgePointId": "cr-kp-3",
+          "standardText": "The bank opens beside the garden gate.",
+          "explanation": "bank 金融含义。",
+          "algorithmVersion": "reading_choice_v1"
+        },
+        "eventId": "5888fe44-f1b4-460d-913a-82d3f2ec4fca",
+        "attemptId": "bc2fa22b-f56c-48ae-b794-3206ee1e68a1",
+        "evidenceId": "826b5c0b-7ee6-457b-a9f6-c51e8851f1ec"
+      },
+      "startNs": 1793717693963267000,
+      "endNs": 1793717693977846000
+    }
+  ]
+}

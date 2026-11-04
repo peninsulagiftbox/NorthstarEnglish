@@ -1,0 +1,20 @@
+{
+  "buildId": "oeTUs8w5kWCV4O22yCFZm",
+  "databaseUuid": "bf0b3967-d797-11f1-b54e-7a6234b27e10",
+  "checks": [
+    "same-version A 200, B 409 and explicit conflict UI",
+    "offline command kept pending",
+    "online retry accepted and refreshed due queue omits two scheduled cards"
+  ],
+  "first": {
+    "id": "002612f5-571a-400c-ad06-014963016ce7",
+    "name": "QA garden w49",
+    "initialVersion": 1
+  },
+  "second": {
+    "id": "019a534d-6832-45a5-9061-fbca97876644",
+    "name": "QA garden w58",
+    "initialVersion": 1
+  },
+  "status": "PASS"
+}

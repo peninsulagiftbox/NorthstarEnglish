@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "file": "V012_01__knowledge_concept.sql",
+  "committedDDLIdentified": true,
+  "historyUnchanged": true,
+  "oldCellsExact": true,
+  "failedTargetRetained": true
+}

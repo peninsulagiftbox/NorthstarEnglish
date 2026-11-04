@@ -1,0 +1,7 @@
+{
+  "status": "INVALID_PRECONDITION",
+  "priorResult": "result.json",
+  "reason": "V011.06 failed on the first INSERT with MySQL 1062 because the fixture already had an exercise_set row; the intended second-INSERT permission injection was not reached.",
+  "priorResultCountsAsM03DmlPass": false,
+  "originalFailureLogRetained": "flyway-dml-backfill-failure.log"
+}

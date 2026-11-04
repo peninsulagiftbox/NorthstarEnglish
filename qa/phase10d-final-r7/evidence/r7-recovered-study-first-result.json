@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "databaseUuid": "2b242be2-d824-11f1-baec-767a5e58531a",
+  "oldSources": 8,
+  "oldRecordingSha256": "629c780a219ee8f034a6c514f7c89cd100f2efe5707b325d27c68ca8315ddd05",
+  "newEventId": "8d79af7c-712d-4a04-979f-3b278893d96e",
+  "newAttemptId": "9e3fc649-450f-4b9f-98d4-bf851c7f1f2c",
+  "replaySameReceipt": true,
+  "restartRowsEqual": true,
+  "oldQuizUnchanged": true,
+  "before": {
+    "attempt_knowledge": "c5ad2873b73564116e369a31b8fac9d2361ced55921e3243ee2c474e186d70e7",
+    "concept_review_card": "bb7e087cacf9cd39db4db266d2e2106710adc2f3aa361d9a15b7b576351b5e73",
+    "concept_review_source": "e3d03e1b3d176987c509b7ac874743366ab1272bc8c9d35583d7cb413e60048f",
+    "concept_review_result": "91e238ff2572da2a527b8dcce2550d31ce9e1a49ec6ce2d6ab6f7b740161895b",
+    "command_receipt": "102584036d2e6c8df5c28bcb050e07a106c745a9aeebc04dd2c4d3fc32d19388",
+    "review_item": "d1190a359347d88adc93b83f09d928fd0681c51dca696590c582717e33b57d38",
+    "review_source": "a935aecf87c7bf6c2b128b3c55a50ee1199bfbadd844cf9c815060c813ec7199",
+    "review_result": "d460e5c69f7d30210b8f162b1d9f6af2cf4be6a7c40403bc88d8613c6f682c58",
+    "quiz_run": "092963e44820a3e3a308eb98700e60316d502fda3e6596a00da71701ae3d4eea",
+    "quiz_run_item": "098bcd72804ec02b1285d0de704145d01c2caeb9d378e4d63485a0f34a3417aa",
+    "writing_draft": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "writing_revision": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "personal_recording": "f795e17315b43a6b78700e12f61e12bfeab41285757ef9dea3e591159f4f7ec5"
+  },
+  "after": {
+    "attempt_knowledge": "5aeb9a81c045996ec91fffd2debe3a18032530486833ccb01b9c8efe1d56b4da",
+    "concept_review_card": "4cf520a21a22a3df90fbc6bbc1b26f09126fbca2c600a0ac220decf88b681ba5",
+    "concept_review_source": "95374a79831f42454b753533ea2d621a9824b3362d252acda5e18d971cd5b6a2",
+    "concept_review_result": "91e238ff2572da2a527b8dcce2550d31ce9e1a49ec6ce2d6ab6f7b740161895b",
+    "command_receipt": "8d56673c41c5933db2156a1182522f46cf25f0344fdc28d07754e6fdb4c531b5",
+    "review_item": "d5d16d07dc5ccc77b95a53d20cfd0a2e969a42da80e14688ef2444c534021e7e",
+    "review_source": "3879caee8275a4d42d4925ab6037f3409d8febee1fa1c03f8b1389c26b22d43f",
+    "review_result": "d460e5c69f7d30210b8f162b1d9f6af2cf4be6a7c40403bc88d8613c6f682c58",
+    "quiz_run": "092963e44820a3e3a308eb98700e60316d502fda3e6596a00da71701ae3d4eea",
+    "quiz_run_item": "098bcd72804ec02b1285d0de704145d01c2caeb9d378e4d63485a0f34a3417aa",
+    "writing_draft": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "writing_revision": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "personal_recording": "f795e17315b43a6b78700e12f61e12bfeab41285757ef9dea3e591159f4f7ec5"
+  },
+  "lessonsRead": 4,
+  "conceptsRead": 2
+}

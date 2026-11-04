@@ -1,0 +1,21 @@
+{
+  "pages": 5,
+  "sizes": [
+    20,
+    20,
+    20,
+    20,
+    3
+  ],
+  "statuses": [
+    200,
+    200,
+    200,
+    200,
+    200
+  ],
+  "items": 83,
+  "uniqueSources": 83,
+  "restricted": 82,
+  "restrictedWhitelist": true
+}

@@ -1,0 +1,5 @@
+{"name": "red", "argv": ["/Users/wangshiqi/Project/NorthstarEnglish/apps/api/mvnw", "-f", "/Users/wangshiqi/Project/NorthstarEnglish/apps/api/pom.xml", "test", "-Dtest=ConceptReviewIntegrationTest"], "exit_code": 1}
+{"name": "red-restricted", "argv": ["/Users/wangshiqi/Project/NorthstarEnglish/apps/api/mvnw", "-f", "/Users/wangshiqi/Project/NorthstarEnglish/apps/api/pom.xml", "test", "-Dtest=ConceptReviewIntegrationTest"], "exit_code": 1}
+{"name": "green", "argv": ["/Users/wangshiqi/Project/NorthstarEnglish/apps/api/mvnw", "-f", "/Users/wangshiqi/Project/NorthstarEnglish/apps/api/pom.xml", "test", "-Dtest=ConceptReviewIntegrationTest"], "exit_code": 0}
+{"name": "final-regression", "argv": ["/Users/wangshiqi/Project/NorthstarEnglish/apps/api/mvnw", "-f", "/Users/wangshiqi/Project/NorthstarEnglish/apps/api/pom.xml", "test", "-Dtest=ConceptReviewIntegrationTest,KnowledgeSourcesIntegrationTest,QuizScaleIntegrationTest,QuizReportR1IntegrationTest"], "exit_code": 0}
+{"name": "package", "argv": ["/Users/wangshiqi/Project/NorthstarEnglish/apps/api/mvnw", "-f", "/Users/wangshiqi/Project/NorthstarEnglish/apps/api/pom.xml", "package", "-DskipTests"], "exit_code": 0}

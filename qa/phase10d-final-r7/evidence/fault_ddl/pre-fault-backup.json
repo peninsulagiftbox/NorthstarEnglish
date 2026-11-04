@@ -1,0 +1,12 @@
+{
+  "sha256": "6c212e1474180e58ace2abc5999317fc4b174f3b1d3fd7beb4c95a7838d7181e",
+  "databaseUuid": "d1a773bb-d86d-11f1-9225-f2bb572dd54e",
+  "rowsSha256": {
+    "lesson": "db5c6aa433506cf2fd0aac929a0c54a2d54a78520f98e3c5753ad623f33b4080",
+    "lesson_version": "8cfcc09be4cae883f2ed9c2390c7dfcdee64fb867364c898f116ab7bf3b97577",
+    "sentence": "e7526ed25354bed76b2afc1338973f9e4e4238e39987ca7fb3781d0c10ab016a",
+    "exercise_attempt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "personal_recording": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "flyway_schema_history": "4a057db44010fd9c271be39fd923585d7360a2a130f18cf0dff2b4d8433791f0"
+  }
+}

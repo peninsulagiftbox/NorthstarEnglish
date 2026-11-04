@@ -1,0 +1,13 @@
+{
+  "name": "northstar-qa-final-r7-suite-full2-20261104",
+  "containerId": "bf64d62d93789b0fb562dab70a57e1cbc91615f1c5d41cc755999ed7e3390a4e",
+  "port": 3392,
+  "schema": "northstar_phase01_test",
+  "version": "8.4.9",
+  "uuid": "183a8e54-d870-11f1-b7f8-5e32387db07d",
+  "volume": "northstar-qa-final-r7-suite-full2-20261104-data",
+  "appAccount": "northstar_app",
+  "migratorAccount": "northstar_migrator",
+  "content": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r7/suite_full2/content",
+  "recordings": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r7/suite_full2/recordings"
+}

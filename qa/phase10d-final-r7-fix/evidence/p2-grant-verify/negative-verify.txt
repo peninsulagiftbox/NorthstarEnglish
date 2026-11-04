@@ -1,0 +1,6 @@
+northstar_app	%
+northstar_app_verify	%
+northstar_migrator	%
+ERROR 1142 (42000) at line 1: UPDATE command denied to user 'northstar_app_verify'@'localhost' for table 'knowledge_concept'
+ROW_COUNT()
+0

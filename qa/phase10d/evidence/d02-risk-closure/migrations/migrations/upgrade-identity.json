@@ -1,0 +1,9 @@
+{
+  "namespace": "northstar-d02-risk-20261102",
+  "role": "upgrade",
+  "container": "northstar-d02-risk-20261102-upgrade",
+  "containerId": "966edd023caa227b7bf6756d2151190b7ff32e72d86777e014b7966bcd9a8de8",
+  "volume": "northstar_d02_risk_20261102_upgrade_data",
+  "port": 3363,
+  "uuid": "a95f3774-d67d-11f1-a0b6-bad2bfdd18ff"
+}

@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "databaseUuid": "35965c3f-d823-11f1-be71-b6b8e525f6a4",
+  "taskId": "demo-01-v2-writing-01",
+  "draftVersion": 2,
+  "revisionIds": [
+    "2e10811b-c4eb-400d-bc19-7a63460bfebb",
+    "9685ee00-8de7-4177-b0a7-ee103e577452"
+  ],
+  "parentChainValid": true
+}

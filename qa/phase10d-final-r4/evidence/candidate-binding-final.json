@@ -1,0 +1,9 @@
+{
+  "finalManifestSha256": "ae4fb16befec1dcb25699f084d7582f49ab118cacdd7bf70bf0c65af34fd3784",
+  "verifiedInputs": 385,
+  "allCurrentAndBuildCopyMatch": true,
+  "p1OriginalInputs": 336,
+  "p1Binding": "p1-336-input-binding.json",
+  "productInputsUnchangedThroughout": true,
+  "note": "Intermediate full-manifest identities differ only in added/refined QA harness and expanded runtime fixture inventory. All 336 P1 inputs match the runtime/build copy and final manifest. No business code or migration changed."
+}

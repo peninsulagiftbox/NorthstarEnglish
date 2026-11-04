@@ -1,0 +1,10 @@
+{
+  "migrationFilesUnchanged": 49,
+  "r5BundleSha256": "8705e518524c1eac3db6c58bdae2c213ea161a90911cce3f83a7ff244d00e954",
+  "r5EvidenceFilesMatchingArchive": 77,
+  "archiveSelfVerificationLogsDiffer": [
+    "evidence/bundle-independent-verification.log",
+    "evidence/commands.jsonl"
+  ],
+  "note": "Original R5 archive hash matches its existing sidecar; live packaging journals can contain post-packaging entries."
+}

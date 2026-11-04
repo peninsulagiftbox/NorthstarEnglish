@@ -1,0 +1,12 @@
+### Result
+{"text":"RECALL & REVIEW\n\n智能复习\n\n从真实练习中的错误出发，再给自己一次回忆的机会。\n\n课程句子卡\n\n简化调度 simple_v1：还不会 1 分钟；记住后按连续自评成功次数安排 1、2、4、8、16、32 天（上限）。人工自评不代表客观掌握，跳过不增加成功次数。\n\n到期复习\n全部复习计划\n刷新队列\n\n阅读证据\n\nConcept Review Fixture CR-A · 第 3 句\n\n先根据中文回想英文，再翻卡核对。\n\n原创测试句\n\n已到期 · 下次到期：2026-11-01 20:05:01（北京时间）\n\n翻开答案\n\n回到第 3 句重练 →\n\n错误来源（82 次）与复习历史（0 次）\n\n阅读证据\n\nConcept Review Fixture CR-B · 第 2 句\n\n先根据中文回想英文，再翻卡核对。\n\n原创测试句\n\n已到期 · 下次到期：2026-11-01 20:05:01（北京时间）\n\n翻开答案\n\n回到第 2 句重练 →\n\n错误来源（1 次）与复习历史（0 次）\n\n跨课程概念卡\n\n概念卡按概念与义项合并多课程错误来源；调度同为 simple_v1：还不会 1 分钟；记住后按连续自评成功次数安排 1、2、4、8、16、32 天（上限）。人工自评不代表客观掌握。\n\n概念卡到期复习（0）\n全部概念卡\n刷新概念卡\n\n概念复习 · 词汇 · 义项 cr-money\n\nbank — financial institution\n\n先根据义项解释回忆这个词的用法，再翻卡核对。\n\n存款与银行机构含义（D02夹具）\n\n尚未到期 · 下次到期：2026-12-04 13:28:18（北京时间）\n\n翻开答案\n学习来源（… 条可见）\n\n本地服务发生错误，请检查日志后重试。\n\n本次是复习自评，不代表客观测验成绩。","details":[{"open":false,"text":"错误来源（82 次）与复习历史（0 次）"},{"open":false,"text":"错误来源（1 次）与复习历史（0 次）"},{"open":true,"text":"学习来源（… 条可见）\n\n本地服务发生错误，请检查日志后重试。"}]}
+### Ran Playwright code
+```js
+await (async (page)=>({text:await page.locator('main').innerText(),details:await page.locator('.review-card details').evaluateAll(xs=>xs.map(x=>({open:x.open,text:x.innerText})))}))(page);
+```
+### Page
+- Page URL: http://127.0.0.1:3197/review
+- Page Title: Northstar English · 本地工作台
+- Console: 1 errors, 0 warnings
+### Events
+- New console entries: .playwright-mcp/console-2026-11-02T05-29-26-041Z.log#L1-L2

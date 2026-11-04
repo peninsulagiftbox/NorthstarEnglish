@@ -1,0 +1,50 @@
+{
+  "backupInterrupt": {
+    "scenario": "backup-interrupt",
+    "interruptedAt": "backup folder created, before COMPLETE",
+    "folderContentsAtKill": [],
+    "processSignal": "SIGKILL",
+    "exitCode": -9,
+    "completeWritten": false,
+    "rejection": "FAIL: FileNotFoundError",
+    "restoreRejectedBeforeTarget": true,
+    "rejectedExitCode": 1,
+    "retryBackup": "r7-backup-retry-20261104165804",
+    "retryPassed": true
+  },
+  "restoreInterrupt": {
+    "scenario": "restore-interrupt",
+    "target": "northstar_restore_20261104165805",
+    "tablesPresentAtKill": 1,
+    "processSignal": "SIGKILL",
+    "exitCode": -9,
+    "partialRowCounts": {
+      "lesson": null,
+      "exercise_attempt": null,
+      "personal_recording": null
+    },
+    "sourceRowCounts": {
+      "lesson": 4,
+      "exercise_attempt": 12,
+      "personal_recording": 1
+    },
+    "noMediaDirectory": true,
+    "retryTarget": "northstar_restore_20261104165808",
+    "retryPassed": true,
+    "retryCountsMatchSource": true
+  },
+  "mediaInterrupt": {
+    "scenario": "media-copy-interrupt",
+    "target": "northstar_restore_20261104165816",
+    "processSignal": "SIGKILL",
+    "exitCode": -9,
+    "mediaFilesCopied": 1,
+    "mediaExpected": 1,
+    "interruptedBeforePass": true,
+    "retryTarget": "northstar_restore_20261104165824",
+    "retryMediaFiles": 1,
+    "retryPassed": true
+  },
+  "sourceUnchanged": true,
+  "status": "PASS"
+}

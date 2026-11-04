@@ -1,0 +1,18 @@
+20:09:1 attempt e7eac280 -> 200 (140 ms)
+20:09:1 BEFORE {"attempts": 2, "linked": 2, "orphans": 0, "quiz": 0, "receipts": 2, "results": 0, "sources": 2} card=f87999e5-8838-4981-b2a2-c616c5d3eb96 rv=1
+20:09:1 attempt 37468976 -> 200 (18 ms)
+20:09:1 rating 709a5d41 rv=1 -> 200 (29 ms)
+20:09:1 attempt 37468976 -> 200 (3 ms)
+20:09:1 rating 7c4ac32c rv=1 -> 409 (24 ms)
+20:09:1 AFTER {"attempts": 3, "linked": 3, "orphans": 0, "quiz": 0, "receipts": 4, "results": 1, "sources": 3} rv=2 reps=1 due=1793621353
+20:09:1 PASS card-unique 
+20:09:1 PASS sources-kept {'sources': 3, 'results': 1, 'receipts': 4, 'attempts': 3, 'linked': 3, 'quiz': 0, 'orphans': 0}
+20:09:1 PASS no-dup-source 
+20:09:1 PASS row-version rv 1 -> 2
+20:09:1 PASS reps reps 0 -> 1
+20:09:1 PASS single-result {'sources': 3, 'results': 1, 'receipts': 4, 'attempts': 3, 'linked': 3, 'quiz': 0, 'orphans': 0}
+20:09:1 PASS no-orphan-result 
+20:09:1 PASS receipts +2 receipts for 2 new commands
+20:09:1 PASS attempts rating must not create attempts
+20:09:1 PASS objective-quiz-unchanged 
+20:09:1 PASS sources-linked every source links a real attempt

@@ -1,0 +1,24 @@
+{
+  "verdict": "FAIL",
+  "defect": "QA-D02-R4-FINAL-001",
+  "priority": "P1",
+  "stoppedAfterReproduction": true,
+  "productCodeModified": false,
+  "apiWebStopped": true,
+  "qaDatabasesRetained": [
+    3380,
+    3381
+  ],
+  "personalDatabaseConnected": false,
+  "personalServicesRestarted": false,
+  "historicalTargetsTouched": false,
+  "notExecutedAfterStop": [
+    "B08 A-H independent concurrency timeline",
+    "B09 two-restart value reconciliation",
+    "M03-M08 restore and failure matrix",
+    "restored-target resume learning",
+    "browser ratings/two tabs/offline/lost response/full Demo/audio matrix"
+  ],
+  "gitCommitMergePushDeploy": false,
+  "phase10EStarted": false
+}

@@ -1,0 +1,38 @@
+{
+  "due-0": {
+    "pages": 1,
+    "items": 0
+  },
+  "due-1": {
+    "pages": 1,
+    "items": 1
+  },
+  "due-20": {
+    "pages": 2,
+    "items": 20
+  },
+  "due-21": {
+    "pages": 2,
+    "items": 21
+  },
+  "due-22": {
+    "pages": 2,
+    "items": 22
+  },
+  "due-100": {
+    "pages": 6,
+    "items": 100
+  },
+  "all-limit100": {
+    "pages": 2
+  },
+  "all-limit20": {
+    "pages": 6
+  },
+  "all-limit1": {
+    "pages": 102
+  },
+  "limit-101-invalid": {
+    "status": 422
+  }
+}

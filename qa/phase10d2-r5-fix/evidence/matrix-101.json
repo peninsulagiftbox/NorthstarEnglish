@@ -1,0 +1,33 @@
+{
+  "expected": 101,
+  "checks": [
+    {
+      "label": "initial-due",
+      "count": 100
+    },
+    {
+      "label": "all",
+      "count": 101
+    },
+    {
+      "label": "refresh",
+      "count": 101
+    },
+    {
+      "label": "switch-due",
+      "count": 100
+    },
+    {
+      "label": "reopen",
+      "count": 100
+    }
+  ],
+  "errors": [],
+  "sources": {
+    "api": 83,
+    "restricted": 82,
+    "visible": 1,
+    "fieldsChecked": true
+  },
+  "result": "PASS"
+}

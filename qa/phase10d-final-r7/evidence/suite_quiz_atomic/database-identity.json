@@ -1,0 +1,13 @@
+{
+  "name": "northstar-qa-final-r7-suite-quiz-atomic-20261104",
+  "containerId": "45779fd892b458cb26872a8c6ae51d0bf30883526f962399c9ca0fb31b4a42d0",
+  "port": 3396,
+  "schema": "northstar_phase01_test",
+  "version": "8.4.9",
+  "uuid": "0fbfa68e-d855-11f1-a268-9ecfb650e760",
+  "volume": "northstar-qa-final-r7-suite-quiz-atomic-20261104-data",
+  "appAccount": "northstar_app",
+  "migratorAccount": "northstar_migrator",
+  "content": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r7/suite_quiz_atomic/content",
+  "recordings": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r7/suite_quiz_atomic/recordings"
+}

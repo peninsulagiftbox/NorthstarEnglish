@@ -1,0 +1,14 @@
+{
+  "uuid": "31ccaf4d-d854-11f1-8578-5ee8d14a3441",
+  "sha256": "e45a49b9143ae3c4db192fdc96a3ec7b48d7f4b81712e925add310901089ef07",
+  "size": 126369,
+  "argv": [
+    "/Applications/Docker.app/Contents/Resources/bin/docker",
+    "exec",
+    "103cf2b14950550ebf2139c28b64c81e28e6859a3b290a31e685610c73ccb16a",
+    "sh",
+    "-c",
+    "MYSQL_PWD=\"$MYSQL_ROOT_PASSWORD\" exec mysqldump -uroot --single-transaction --routines --triggers --events --no-tablespaces --set-gtid-purged=OFF northstar_phase01_test"
+  ],
+  "exitCode": 0
+}

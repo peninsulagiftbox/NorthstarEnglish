@@ -1,0 +1,13 @@
+{
+  "name": "northstar-qa-final-r7-regression-20261104",
+  "containerId": "80786a11bb8ab7a91946bc95b622eacf0291ea7352ffc1fb7452a6012d9e6802",
+  "port": 3392,
+  "schema": "northstar_phase01_test",
+  "version": "8.4.9",
+  "uuid": "8b8162e6-d854-11f1-80a6-fa148a426cb0",
+  "volume": "northstar-qa-final-r7-regression-20261104-data",
+  "appAccount": "northstar_app",
+  "migratorAccount": "northstar_migrator",
+  "content": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r7/regressions/content",
+  "recordings": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r7/regressions/recordings"
+}

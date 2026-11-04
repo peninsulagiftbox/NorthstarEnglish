@@ -1,0 +1,13 @@
+{
+  "name": "northstar-qa-final-r7-suite-quiz-review-20261104",
+  "containerId": "1715642ea22f05137ec7ef0047510b7a5954ff9019c0eb95da1b40f2e735ee04",
+  "port": 3394,
+  "schema": "northstar_phase01_test",
+  "version": "8.4.9",
+  "uuid": "d73e2f7a-d854-11f1-abce-fe6807d1764f",
+  "volume": "northstar-qa-final-r7-suite-quiz-review-20261104-data",
+  "appAccount": "northstar_app",
+  "migratorAccount": "northstar_migrator",
+  "content": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r7/suite_quiz_review/content",
+  "recordings": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r7/suite_quiz_review/recordings"
+}

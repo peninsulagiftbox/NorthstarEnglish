@@ -1,0 +1,8 @@
+[
+  {
+    "command": "python3 qa/phase10d-final-r5/run.py create",
+    "exitCode": 1,
+    "reason": "Sandbox denied loopback binding; port search exhausted at assert port<=3399.",
+    "resolution": "Approved rerun outside sandbox created a new QA container on 3382; no prior database was adopted."
+  }
+]

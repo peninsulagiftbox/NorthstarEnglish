@@ -1,0 +1,27 @@
+{
+  "expected": 21,
+  "checks": [
+    {
+      "label": "initial-due",
+      "count": 21
+    },
+    {
+      "label": "all",
+      "count": 21
+    },
+    {
+      "label": "refresh",
+      "count": 21
+    },
+    {
+      "label": "switch-due",
+      "count": 21
+    },
+    {
+      "label": "reopen",
+      "count": 21
+    }
+  ],
+  "errors": [],
+  "result": "PASS"
+}

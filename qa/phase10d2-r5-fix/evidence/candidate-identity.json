@@ -1,0 +1,12 @@
+{
+  "head": "a5084cb4442a7b78afad5c920459c22f02f679ce",
+  "branch": "main",
+  "manifestScope": "all uncommitted and untracked files from git status",
+  "inputCount": 219,
+  "trackedSourceCount": 655,
+  "manifestSha256": "31a9a13065af5113a56929a2ba1aa5856f32228124b34750079fef7087683eb7",
+  "runtimeJar": "output/review/northstar-phase10d2-r5-fix-candidate.jar",
+  "runtimeJarSha256": "771a72e8ea66304ebfb2e4b5e873d759c60a176fc2dd09fdfe31648da7ff92c6",
+  "jarNote": "API candidate bytes identical to the R5 runtime jar; this round changes web code only.",
+  "sourceCopy": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r5fix/source"
+}

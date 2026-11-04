@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "file": "V012_03__legacy_knowledge_link.sql",
+  "committedDDLIdentified": true,
+  "historyUnchanged": true,
+  "oldCellsExact": true,
+  "failedTargetRetained": true
+}

@@ -1,0 +1,11 @@
+{
+  "runId": "qa-r7-6603e1b1053b4f5fa5b66263c4b97149",
+  "createdAt": "2026-11-04T07:41:42.852095+00:00",
+  "head": "8adac6d233d178010ba10660874098df802d5ea4",
+  "manifestSha256": "e64d76758b50dfa4f235d5c631e5bbba7e93bde00351beccb82e88124c615e6d",
+  "count": 399,
+  "r6InputDrift": [],
+  "runtimeJarSha256": "771a72e8ea66304ebfb2e4b5e873d759c60a176fc2dd09fdfe31648da7ff92c6",
+  "java": "openjdk version \"21.0.12.1\" 2026-08-18 LTS",
+  "node": "v22.23.2"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "northstar-qa-final-r7-suite-audio-20261104",
+  "containerId": "1c4b3fe6dc4774a9d8995816a920fd948ca9a8e53226bb8206e21ef958f2478a",
+  "port": 3395,
+  "schema": "northstar_phase01_test",
+  "version": "8.4.9",
+  "uuid": "f9c67d8d-d854-11f1-9895-9ea9282f13d0",
+  "volume": "northstar-qa-final-r7-suite-audio-20261104-data",
+  "appAccount": "northstar_app",
+  "migratorAccount": "northstar_migrator",
+  "content": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r7/suite_audio/content",
+  "recordings": "/Users/wangshiqi/Project/NorthstarEnglish/.local/qa-final-r7/suite_audio/recordings"
+}

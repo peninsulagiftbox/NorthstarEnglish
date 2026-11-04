@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "scenario": "api startup on fault target",
+  "exitCode": 1,
+  "healthServed": false,
+  "diagnosableError": "Flyway V012.02 rerun rejected with MySQL 1061; history success=0",
+  "log": "api-failure.log",
+  "logSha256": "08c82f94c1b87bec33e92c143bf3bdf23e7751b165442d57329b4eda5152408f",
+  "oldRowsUnchanged": true
+}

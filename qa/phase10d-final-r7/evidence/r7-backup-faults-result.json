@@ -1,0 +1,21 @@
+{
+  "truncated": {
+    "rejected": true,
+    "target": "northstar_restore_20261104133429",
+    "targetCreated": false
+  },
+  "checksum": {
+    "rejected": true,
+    "target": "northstar_restore_20261104133430",
+    "targetCreated": false
+  },
+  "missing_media": {
+    "rejected": true,
+    "target": "northstar_restore_20261104133431",
+    "targetCreated": false
+  },
+  "no_complete": {
+    "rejected": false,
+    "target": "northstar_restore_20261104133432"
+  }
+}

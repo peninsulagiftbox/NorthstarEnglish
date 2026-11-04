@@ -1,0 +1,9 @@
+{
+  "namespace": "northstar-d02-risk-20261102",
+  "role": "fault-history",
+  "container": "northstar-d02-risk-20261102-fault-history",
+  "containerId": "85734341a5422b8bbcfd6d41a22241f453aae2b751332179a3a59e79d6578bd4",
+  "volume": "northstar_d02_risk_20261102_fault_history_data",
+  "port": 3367,
+  "uuid": "3a06501f-d67e-11f1-8a02-66424f67daec"
+}

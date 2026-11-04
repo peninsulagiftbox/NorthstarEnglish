@@ -1,0 +1,15 @@
+{
+  "databaseUuid": "723297ee-d824-11f1-acb4-d211006696ae",
+  "volume": "northstar-qa-final-r7-fault-history-20261104-data",
+  "size": 178009,
+  "sha256": "b4145270c1edbcff655beb1bdbf1a3fa6a5556ddd9ad530f37c598bde1c01e58",
+  "argv": [
+    "/Applications/Docker.app/Contents/Resources/bin/docker",
+    "exec",
+    "61c58317c75866997a94d53e03493b5caed012ad22a164c447d493a045728fb4",
+    "sh",
+    "-c",
+    "MYSQL_PWD=\"$MYSQL_ROOT_PASSWORD\" exec mysqldump -uroot --single-transaction --routines --triggers --events --no-tablespaces --set-gtid-purged=OFF northstar_phase01_test"
+  ],
+  "exitCode": 0
+}
