@@ -26,7 +26,7 @@ def load_snapshot(path):
     if digest(envelope['payloadJson'].encode()) != envelope['sha256']:
         raise ValueError('校验和不匹配')
     payload = json.loads(envelope['payloadJson'])
-    if payload['project'] != local.IDENTITY or payload['owner'] != 'local' or payload['schemaVersion'] not in {'008', '009.04', '009.05', '009.14', '009.15', '010.06', '011.09', '012.01', '012.02', '012.03', '012.04', '012.05', '012.06', '012.07', '012.08', '012.09', '012.10', '012.11'}:
+    if payload['project'] != local.IDENTITY or payload['owner'] != 'local' or payload['schemaVersion'] not in {'008', '009.04', '009.05', '009.14', '009.15', '010.06', '011.09', '012.01', '012.02', '012.03', '012.04', '012.05', '012.06', '012.07', '012.08', '012.09', '012.10', '012.11', '012.12'}:
         raise ValueError('版本或归属不匹配')
     return envelope, payload
 
@@ -37,6 +37,12 @@ def literal(value):
     if not isinstance(value, str):
         raise ValueError('只接受快照字符串或空值')
     return "CONVERT(X'" + value.encode().hex() + "' USING utf8mb4)"
+
+
+def verify_complete(path, envelope):
+    complete = path.parent / 'COMPLETE'
+    if not complete.is_file() or complete.read_bytes() != envelope['sha256'].encode():
+        raise ValueError('备份缺少 COMPLETE 标记或标记与 JSON 不匹配；未创建目标。')
 
 
 def main():
@@ -142,6 +148,7 @@ def main():
         print('PASS: JSON + 媒体清单 + 可用录音已校验；不含浏览器未同步缓冲。目录：' + str(args.path))
         return
     envelope, payload = load_snapshot(args.path)
+    verify_complete(args.path, envelope)
     destination = source_container if (args.phase10b3 or args.phase10c1 or args.phase10c2 or args.phase10d) else 'northstar-english-mysql-01'
     if args.phase09r:
         phase09r.verify('restore')
@@ -261,6 +268,9 @@ def main():
         grants.append(f"GRANT INSERT,UPDATE ON `{target}`.`{table}` TO 'northstar_app'@'%';")
     for table in ('exercise_attempt','learning_evidence','study_event','review_source','reading_answer','writing_revision','recording_observation','quiz_run','quiz_answer','quiz_run_item','review_result','attempt_knowledge','concept_review_source','concept_review_result'):
         grants.append(f"GRANT INSERT ON `{target}`.`{table}` TO 'northstar_app'@'%';")
+    for table in ('knowledge_concept','knowledge_concept_revision','knowledge_occurrence','exercise_sentence','exercise_knowledge','legacy_knowledge_link'):
+        grants.append(f"GRANT INSERT ON `{target}`.`{table}` TO 'northstar_app'@'%';")
+    grants.append(f"GRANT INSERT,UPDATE ON `{target}`.`knowledge_projection` TO 'northstar_app'@'%';")
     target_sql('\n'.join(grants))
     print('PASS: 逐表行数与媒体哈希通过，恢复到全新隔离库 ' + target + '；没有修改当前库。')
     print('启动此恢复副本需项目级 DB_NAME=' + target + ' NORTHSTAR_ALLOW_RESTORE_DB=true，并选择空闲 API/Web 端口；不要改主 .env。')

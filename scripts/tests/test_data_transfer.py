@@ -32,3 +32,15 @@ class DataTransferTests(unittest.TestCase):
         self.assertEqual(text,bytes.fromhex(literal.split("'")[1]).decode())
         self.assertEqual('NULL',transfer.literal(None))
         with self.assertRaises(ValueError):transfer.literal({'sql':'unsafe'})
+    def test_restore_rejects_missing_or_mismatched_complete_marker(self):
+        with tempfile.TemporaryDirectory() as root:
+            path=Path(root)/'learning.json'
+            payload={'project':transfer.local.IDENTITY,'owner':'local','schemaVersion':'012.12'}
+            raw=json.dumps(payload)
+            envelope={'format':'northstar.snapshot.v1','sha256':hashlib.sha256(raw.encode()).hexdigest(),'payloadJson':raw}
+            path.write_text(json.dumps(envelope))
+            with self.assertRaises(ValueError):transfer.verify_complete(path,envelope)
+            (path.parent/'COMPLETE').write_text('0'*64)
+            with self.assertRaises(ValueError):transfer.verify_complete(path,envelope)
+            (path.parent/'COMPLETE').write_text(envelope['sha256'])
+            transfer.verify_complete(path,envelope)
