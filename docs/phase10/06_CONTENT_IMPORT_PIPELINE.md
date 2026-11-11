@@ -77,7 +77,7 @@
       "properties": {
         "id": {"$ref": "#/$defs/id"}, "medium": {"enum": ["text", "audio", "annotation"]}, "sourceType": {"enum": ["original", "licensed"]},
         "sourceRef": {"$ref": "#/$defs/text"}, "sha256": {"$ref": "#/$defs/hash"}, "rightsScope": {"$ref": "#/$defs/text"},
-        "reviewStatus": {"enum": ["pending_review", "confirmed", "rejected", "expired"]}, "proofRef": {"type": ["string", "null"]}, "reviewer": {"type": ["string", "null"]}
+        "reviewStatus": {"enum": ["pending_review", "confirmed", "rejected", "expired"]}, "proofRef": {"type": ["string", "null"]}, "reviewer": {"type": ["string", "null"]}, "reviewedAt": {"type": ["string", "null"], "format": "date-time"}
       }
     },
     "paragraph": {

@@ -42,7 +42,7 @@ public class ContentSeeder implements ApplicationRunner {
             jdbc.queryForObject("SELECT project_key FROM project_identity" + (initialize ? " FOR UPDATE" : ""), String.class);
             if (initialize) {
                 // Refuse partial or previously initialized databases, including learning-only remnants.
-                for (String table : jdbc.queryForList("SELECT table_name FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name NOT IN ('project_identity','flyway_schema_history','user_setting')", String.class)) {
+                for (String table : jdbc.queryForList("SELECT table_name FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name NOT IN ('project_identity','flyway_schema_history','user_setting','import_mutex')", String.class)) {
                     if (!table.matches("[a-z_]+") || jdbc.queryForObject("SELECT COUNT(*) FROM `" + table + "`", Long.class) != 0)
                         throw new IllegalStateException("Initialization requires empty content and learning tables");
                 }

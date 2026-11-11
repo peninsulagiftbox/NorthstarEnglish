@@ -71,7 +71,7 @@ public class ExportController {
         for(String table:baseline.propertyNames()){
             JsonNode data=incoming.path(table);if(data.size()!=2 || !data.path("columns").equals(baseline.path(table).path("columns")) || !data.path("rows").isArray() || data.path("rows").size()>100000)throw invalid();
             int width=data.path("columns").size();for(var row:data.path("rows")){if(!row.isArray() || row.size()!=width)throw invalid();for(var cell:row)if(!cell.isNull() && !cell.isString())throw invalid();}
-            if(CONTENT.contains(table) && !data.equals(baseline.path(table)))throw invalid();
+            if((CONTENT.contains(table) || Set.of("import_batch","import_entry","import_mutex").contains(table)) && !data.equals(baseline.path(table)))throw invalid();
             if(table.equals("flyway_schema_history") && !migrationSignature(data).equals(migrationSignature(baseline.path(table))))throw invalid();
             if(table.equals("project_identity") && (data.path("rows").size()!=1 || !data.path("rows").path(0).path(0).asText().equals(DatabaseGuard.PROJECT)))throw invalid();
             if(table.equals("user_setting") && (data.path("rows").size()!=1 || !data.path("rows").path(0).path(0).asText().equals("local")))throw invalid();

@@ -70,6 +70,18 @@ public final class ContentPublication {
         boolean audioProfile="northstar.local.audio.v1".equals(v.get("schema_version"));
         check("basic_content".equals(v.get("content_readiness")) && (audioProfile || "northstar.local.basic.v1".equals(v.get("schema_version"))),"PROFILE_NOT_SUPPORTED");
         JsonNode payload=raw(version,"lesson.json",v.get("content_sha256").toString());
+        if(payload.has("importPackageId")) {
+            try {
+                String packageId=payload.path("importPackageId").asText();
+                check(packageId.matches("[A-Za-z0-9][A-Za-z0-9_-]{0,63}"),"IMPORT_ID_INVALID");
+                var bundle=CoreContent.load(root.resolve("imports").resolve(packageId));
+                var audit=db.queryForList("SELECT package_sha256,raw_sha256,manifest_sha256 FROM import_batch WHERE package_id=?",packageId);
+                check(audit.size()==1 && bundle.contentHash().equals(audit.getFirst().get("package_sha256"))
+                    && bundle.rawHash().equals(audit.getFirst().get("raw_sha256"))
+                    && bundle.manifestHash().equals(audit.getFirst().get("manifest_sha256")),"IMPORT_PACKAGE_CHANGED");
+                check(new CoreContent().validate(bundle).isEmpty(),"IMPORT_VALIDATION_FAILED");
+            } catch(java.io.IOException error) {throw new Rejected("IMPORT_PACKAGE_MISSING");}
+        }
         JsonNode manifest=raw(version,"manifest.json",v.get("manifest_sha256").toString());
         check(payload.equals(json.readTree(v.get("payload_json").toString())) && lesson.equals(payload.path("id").asText()) && version.equals(payload.path("versionId").asText()),"CONTENT_PROJECTION_MISMATCH");
         check(!payload.has("learningPlan") && (audioProfile || !payload.has("fullAudioAssetId")) && !payload.path("title").asText().isBlank(),"PROFILE_NOT_SUPPORTED");

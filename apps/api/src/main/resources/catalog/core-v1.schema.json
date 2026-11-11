@@ -1,0 +1,618 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Northstar content package core-v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "packageId",
+    "book",
+    "lesson",
+    "version",
+    "sources",
+    "paragraphs",
+    "sentences",
+    "audioAssets",
+    "knowledge",
+    "exercises",
+    "exerciseSets"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "northstar.content.core.v1"
+    },
+    "packageId": {
+      "$ref": "#/$defs/id"
+    },
+    "book": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/book"
+        }
+      ]
+    },
+    "lesson": {
+      "$ref": "#/$defs/lesson"
+    },
+    "version": {
+      "$ref": "#/$defs/version"
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "paragraphs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/paragraph"
+      }
+    },
+    "sentences": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1000,
+      "items": {
+        "$ref": "#/$defs/sentence"
+      }
+    },
+    "audioAssets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/audio"
+      }
+    },
+    "fullAudioAssetId": {
+      "$ref": "#/$defs/id"
+    },
+    "knowledge": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/knowledge"
+      }
+    },
+    "exercises": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/exercise"
+      }
+    },
+    "exerciseSets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/set"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 20000
+    },
+    "ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "book": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "catalogKey",
+        "editionLabel",
+        "title"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "catalogKey": {
+          "$ref": "#/$defs/id"
+        },
+        "editionLabel": {
+          "$ref": "#/$defs/text"
+        },
+        "title": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "lesson": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "slug",
+        "sequence",
+        "kind"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "$ref": "#/$defs/text"
+        },
+        "slug": {
+          "$ref": "#/$defs/id"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "kind": {
+          "enum": [
+            "original_demo",
+            "original",
+            "licensed"
+          ]
+        }
+      }
+    },
+    "version": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "number",
+        "licenseId",
+        "transcriptSha256",
+        "transcriptNormalization",
+        "contentReadiness"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "licenseId": {
+          "$ref": "#/$defs/id"
+        },
+        "transcriptSha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "transcriptNormalization": {
+          "const": "transcript-v1"
+        },
+        "contentReadiness": {
+          "const": "basic_content"
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "medium",
+        "sourceType",
+        "sourceRef",
+        "sha256",
+        "rightsScope",
+        "reviewStatus",
+        "proofRef",
+        "reviewer"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "medium": {
+          "enum": [
+            "text",
+            "audio",
+            "annotation"
+          ]
+        },
+        "sourceType": {
+          "enum": [
+            "original",
+            "licensed"
+          ]
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/text"
+        },
+        "sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "rightsScope": {
+          "$ref": "#/$defs/text"
+        },
+        "reviewStatus": {
+          "enum": [
+            "pending_review",
+            "confirmed",
+            "rejected",
+            "expired"
+          ]
+        },
+        "proofRef": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reviewer": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reviewedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "paragraph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "stableKey",
+        "sequence",
+        "sourceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "stableKey": {
+          "$ref": "#/$defs/id"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "sentence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "stableKey",
+        "paragraphId",
+        "sequence",
+        "speaker",
+        "text",
+        "translation",
+        "explanation",
+        "focus",
+        "audioAssetId",
+        "startMs",
+        "endMs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "stableKey": {
+          "$ref": "#/$defs/id"
+        },
+        "paragraphId": {
+          "$ref": "#/$defs/id"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "speaker": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "text": {
+          "$ref": "#/$defs/text"
+        },
+        "translation": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "explanation": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "focus": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "audioAssetId": {
+          "$ref": "#/$defs/id"
+        },
+        "startMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "endMs": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "audio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "licenseId",
+        "sourceKind",
+        "storageKey",
+        "mimeType",
+        "byteSize",
+        "durationMs",
+        "sha256",
+        "alignment"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "licenseId": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceKind": {
+          "enum": [
+            "original_tts",
+            "original_recording",
+            "licensed_audio"
+          ]
+        },
+        "storageKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "mimeType": {
+          "const": "audio/mpeg"
+        },
+        "byteSize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "durationMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "alignment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "method",
+            "audioSha256",
+            "transcriptSha256",
+            "transcriptNormalization",
+            "sentenceIds",
+            "reviewer",
+            "reviewedAt"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "auto_draft",
+                "needs_review",
+                "verified",
+                "rejected"
+              ]
+            },
+            "method": {
+              "$ref": "#/$defs/text"
+            },
+            "audioSha256": {
+              "$ref": "#/$defs/hash"
+            },
+            "transcriptSha256": {
+              "$ref": "#/$defs/hash"
+            },
+            "transcriptNormalization": {
+              "const": "transcript-v1"
+            },
+            "sentenceIds": {
+              "$ref": "#/$defs/ids",
+              "minItems": 1
+            },
+            "reviewer": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "reviewedAt": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            }
+          }
+        }
+      }
+    },
+    "knowledge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "conceptId",
+        "occurrenceId",
+        "kind",
+        "canonicalKey",
+        "senseKey",
+        "term",
+        "meaning",
+        "sentenceId"
+      ],
+      "properties": {
+        "conceptId": {
+          "$ref": "#/$defs/id"
+        },
+        "occurrenceId": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "vocabulary",
+            "grammar",
+            "collocation",
+            "pattern"
+          ]
+        },
+        "canonicalKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "senseKey": {
+          "$ref": "#/$defs/id"
+        },
+        "term": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "meaning": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "sentenceId": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "exercise": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "sentenceIds",
+        "occurrenceIds",
+        "prompt",
+        "options",
+        "answerKey",
+        "explanation"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "dictation",
+            "reading_choice",
+            "quiz_choice"
+          ]
+        },
+        "sentenceIds": {
+          "$ref": "#/$defs/ids",
+          "minItems": 1
+        },
+        "occurrenceIds": {
+          "$ref": "#/$defs/ids"
+        },
+        "prompt": {
+          "$ref": "#/$defs/text"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "text"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/id"
+              },
+              "text": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          }
+        },
+        "answerKey": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "explanation": {
+          "type": "string",
+          "maxLength": 20000
+        }
+      }
+    },
+    "set": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "purpose",
+        "protocolVersion",
+        "contextGroupId",
+        "exerciseIds"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "purpose": {
+          "enum": [
+            "practice",
+            "diagnostic",
+            "immediate",
+            "delayed",
+            "transfer"
+          ]
+        },
+        "protocolVersion": {
+          "$ref": "#/$defs/id"
+        },
+        "contextGroupId": {
+          "$ref": "#/$defs/id"
+        },
+        "exerciseIds": {
+          "$ref": "#/$defs/ids",
+          "minItems": 1,
+          "maxItems": 100
+        }
+      }
+    }
+  }
+}

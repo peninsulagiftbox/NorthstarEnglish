@@ -26,7 +26,7 @@ def load_snapshot(path):
     if digest(envelope['payloadJson'].encode()) != envelope['sha256']:
         raise ValueError('校验和不匹配')
     payload = json.loads(envelope['payloadJson'])
-    if payload['project'] != local.IDENTITY or payload['owner'] != 'local' or payload['schemaVersion'] not in {'008', '009.04', '009.05', '009.14', '009.15', '010.06', '011.09', '012.01', '012.02', '012.03', '012.04', '012.05', '012.06', '012.07', '012.08', '012.09', '012.10', '012.11', '012.12'}:
+    if payload['project'] != local.IDENTITY or payload['owner'] != 'local' or payload['schemaVersion'] not in {'008', '009.04', '009.05', '009.14', '009.15', '010.06', '011.09', '012.01', '012.02', '012.03', '012.04', '012.05', '012.06', '012.07', '012.08', '012.09', '012.10', '012.11', '012.12', '013.02', '013.04'}:
         raise ValueError('版本或归属不匹配')
     return envelope, payload
 
@@ -45,6 +45,49 @@ def verify_complete(path, envelope):
         raise ValueError('备份缺少 COMPLETE 标记或标记与 JSON 不匹配；未创建目标。')
 
 
+def content_files(folder, payload, snapshot_hash):
+    manifest_path = folder / 'content-manifest.json'
+    imported = bool(payload['tables'].get('import_batch', {}).get('rows', []))
+    if not manifest_path.exists():
+        if imported:
+            raise ValueError('已导入课程的备份缺少内容媒体清单；未创建目标。')
+        return []
+    raw = manifest_path.read_bytes()
+    marker = folder / 'CONTENT_COMPLETE'
+    if not marker.is_file() or marker.read_text() != digest(raw):
+        raise ValueError('内容媒体完成标记缺失或不一致；未创建目标。')
+    manifest = json.loads(raw)
+    if manifest['snapshotSha256'] != snapshot_hash:
+        raise ValueError('内容媒体清单与数据快照不匹配；未创建目标。')
+    files = []
+    seen = {}
+    root = (folder / 'content').resolve()
+    for item in manifest['files']:
+        relative = Path(item['path'])
+        target = folder / 'content' / relative
+        if relative.is_absolute() or '..' in relative.parts or '\\' in item['path'] or item['path'] in seen:
+            raise ValueError('内容媒体路径非法或重复；未创建目标。')
+        if target.is_symlink() or not target.is_file() or not target.resolve().is_relative_to(root):
+            raise ValueError('内容媒体缺失或越界；未创建目标。')
+        if target.stat().st_size != item['bytes'] or digest(target.read_bytes()) != item['sha256']:
+            raise ValueError('内容媒体校验失败；未创建目标。')
+        seen[item['path']] = item['sha256']
+        files.append((relative, target))
+    assets = payload['tables']['audio_asset']
+    for values in assets['rows']:
+        asset = dict(zip(assets['columns'], values))
+        if asset['status'] == 'ready' and seen.get(asset['storage_key']) != asset['sha256']:
+            raise ValueError('备份缺少数据库引用的可用音频；未创建目标。')
+    imports = payload['tables'].get('import_batch', {'columns': [], 'rows': []})
+    for values in imports['rows']:
+        batch = dict(zip(imports['columns'], values))
+        if batch['state'] in {'applied', 'published'}:
+            prefix = 'imports/' + batch['package_id'] + '/'
+            if seen.get(prefix + 'package.json') != batch['raw_sha256'] or seen.get(prefix + 'manifest.json') != batch['manifest_sha256']:
+                raise ValueError('导入课程原包或来源清单缺失；未创建目标。')
+    return files
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action', choices=['backup', 'restore'])
@@ -60,7 +103,15 @@ def main():
     parser.add_argument('--phase10c1', action='store_true', help='use ONLY the UUID-checked Phase10C1 isolated source and new restore schema')
     parser.add_argument('--phase10c2', action='store_true', help='use ONLY the UUID-checked Phase10C2 isolated source and new restore schema')
     parser.add_argument('--phase10d', action='store_true', help='use ONLY the UUID-checked Phase10D isolated source and new restore schema')
+    parser.add_argument('--phase10e-role', help='UUID-checked Phase10E isolated source role')
+    parser.add_argument('--phase10e-target-role', help='separate UUID-checked Phase10E restore container')
+    parser.add_argument('--content-root', type=Path, help='backup: immutable content and import source files')
+    parser.add_argument('--restore-content-root', type=Path, help='restore: new content directory; never overwrite')
     args = parser.parse_args()
+    if args.phase10e_role and (args.phase10d or args.phase10c2 or args.phase10c1 or args.phase10b3 or args.phase09r or args.separate_mysql):
+        raise ValueError('Phase10E隔离模式不能和其他模式组合')
+    if args.phase10e_target_role and not args.phase10e_role:
+        raise ValueError('Phase10E恢复目标需要明确隔离来源')
     if args.phase10d and (args.phase10c2 or args.phase10c1 or args.phase10b3 or args.phase09r or args.separate_mysql):
         raise ValueError('Phase10D隔离模式不能和其他目标模式组合')
     if args.phase10c2 and (args.phase10c1 or args.phase10b3 or args.phase09r or args.separate_mysql):
@@ -76,7 +127,14 @@ def main():
         raise ValueError('仅支持本地回环 API')
     env = local.environment()
     source_container = 'northstar-english-mysql-01'
-    if args.phase10b3 or args.phase10c1 or args.phase10c2 or args.phase10d:
+    if args.phase10e_role:
+        import phase10e_environment as isolated_e
+        state = isolated_e.verify(args.phase10e_role)
+        env = isolated_e.environment(args.phase10e_role)
+        if args.api != 'http://127.0.0.1:' + env['API_PORT'] or args.recording_root.resolve() != Path(env['NORTHSTAR_RECORDING_ROOT']).resolve():
+            raise ValueError('Phase10E API和录音目录必须属于专属隔离环境')
+        source_container = state['container']
+    elif args.phase10b3 or args.phase10c1 or args.phase10c2 or args.phase10d:
         if args.phase10c1:
             import phase10c1_isolated as isolated
         elif args.phase10c2:
@@ -144,12 +202,36 @@ def main():
                 item['included'] = True
             manifest.append(item)
         write(args.path / 'media-manifest.json', json.dumps({'snapshotSha256': envelope['sha256'], 'recordings': manifest}, ensure_ascii=False).encode())
+        if payload['tables'].get('import_batch', {}).get('rows') and not args.content_root:
+            raise ValueError('课程导入备份必须同时指定 --content-root；未写 COMPLETE。')
+        if args.content_root:
+            entries = []
+            args.content_root.resolve(strict=True)
+            for path in sorted(args.content_root.rglob('*')):
+                if path.is_symlink() or path.name.startswith('.env'):
+                    raise ValueError('内容目录包含软链接或配置秘密文件；未写 COMPLETE。')
+                if path.is_file():
+                    relative = path.relative_to(args.content_root)
+                    target = args.path / 'content' / relative
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    data = path.read_bytes()
+                    write(target, data)
+                    entries.append({'path': relative.as_posix(), 'bytes': len(data), 'sha256': digest(data)})
+            raw = json.dumps({'snapshotSha256': envelope['sha256'], 'files': entries}, ensure_ascii=False).encode()
+            write(args.path / 'content-manifest.json', raw)
+            write(args.path / 'CONTENT_COMPLETE', digest(raw).encode())
+            content_files(args.path, payload, envelope['sha256'])
         write(args.path / 'COMPLETE', envelope['sha256'].encode())
         print('PASS: JSON + 媒体清单 + 可用录音已校验；不含浏览器未同步缓冲。目录：' + str(args.path))
         return
     envelope, payload = load_snapshot(args.path)
     verify_complete(args.path, envelope)
+    content_copies = content_files(args.path.parent, payload, envelope['sha256'])
+    if content_copies and (not args.restore_content_root or args.restore_content_root.exists() or args.restore_content_root.is_symlink()):
+        raise ValueError('含内容媒体的恢复必须指定不存在的 --restore-content-root；未创建目标。')
     destination = source_container if (args.phase10b3 or args.phase10c1 or args.phase10c2 or args.phase10d) else 'northstar-english-mysql-01'
+    if args.phase10e_role:
+        destination = isolated_e.verify(args.phase10e_target_role or args.phase10e_role)['container']
     if args.phase09r:
         phase09r.verify('restore')
         destination = phase09r.CONTAINERS['restore']
@@ -197,7 +279,7 @@ def main():
         if table != parent and not (table == 'lesson' and parent == 'lesson_version'):
             dependencies.setdefault(table, set()).add(parent)
     generated_columns = {}
-    for line in sql("SELECT table_name,column_name FROM information_schema.columns WHERE table_schema='" + source + "' AND extra LIKE '%GENERATED%'").splitlines():
+    for line in sql("SELECT table_name,column_name FROM information_schema.columns WHERE table_schema='" + source + "' AND generation_expression<>''").splitlines():
         table, column = line.split('\t')
         generated_columns.setdefault(table, set()).add(column)
     pending = set(payload['tables'])
@@ -262,6 +344,12 @@ def main():
     root.mkdir(mode=0o700, parents=True, exist_ok=False)
     for path in copies:
         write(root / path.name, path.read_bytes())
+    if content_copies:
+        args.restore_content_root.mkdir(mode=0o700, parents=True, exist_ok=False)
+        for relative, source_file in content_copies:
+            target_file = args.restore_content_root / relative
+            target_file.parent.mkdir(parents=True, exist_ok=True)
+            write(target_file, source_file.read_bytes())
     grants = [f"GRANT SELECT ON `{target}`.* TO 'northstar_app'@'%'; GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER,INDEX,REFERENCES ON `{target}`.* TO 'northstar_migrator'@'%';"]
     # Keep immutable history read-only. Runtime writes use the same table policy as the main instance.
     for table in ('study_resume','user_setting','command_receipt','study_stage','exercise_draft','review_item','vocabulary_favorite','reading_progress','writing_draft','personal_recording','practice_progress','quiz_progress','concept_review_card'):
