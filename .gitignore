@@ -98,3 +98,6 @@ backup*.sql
 # Phase10D raw regression evidence stays local.
 /docs/handoff/evidence/phase10d/**
 /docs/handoff/evidence/phase10d-deployment/**
+
+# Phase10E raw regression evidence includes machine paths, test identities and fixtures.
+/docs/handoff/evidence/phase10e/**
