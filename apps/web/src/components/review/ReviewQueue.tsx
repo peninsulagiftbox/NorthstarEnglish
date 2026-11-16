@@ -55,9 +55,10 @@ export function ReviewQueue() {
     request<ReviewItem[]>('/reviews/due?all=true').then(async rows => { const pending = await Promise.all(rows.map(item => pendingCommand(`northstar:review:${item.id}`))); if (active) { setItems(rows.filter((item, i) => all || item.due || !!pending[i])); setError(''); } }).catch(e => { if (active) setError(e.message); });
     return () => { active = false; };
   }, [all, retry]);
-  return <><p className="boundary">简化调度 simple_v1：还不会 1 分钟；记住后按连续自评成功次数安排 1、2、4、8、16、32 天（上限）。人工自评不代表客观掌握，跳过不增加成功次数。</p><div className="toolbar review-queue-actions"><Button aria-pressed={!all} onClick={() => { setItems(null); setAll(false); void reload(); }}>到期复习</Button><Button aria-pressed={all} onClick={() => { setItems(null); setAll(true); void reload(); }}>全部复习计划</Button><Button onClick={() => void reload()}>刷新队列</Button></div>
+  return <section className="review-section" aria-label="课程句子卡"><header className="review-section-header"><h2>课程句子卡</h2><p className="review-description">简化调度 simple_v1：还不会 1 分钟；记住后按连续自评成功次数安排 1、2、4、8、16、32 天（上限）。人工自评不代表客观掌握，跳过不增加成功次数。</p></header><div className="toolbar review-queue-actions"><Button aria-pressed={!all} onClick={() => { setItems(null); setAll(false); void reload(); }}>到期复习</Button><Button aria-pressed={all} onClick={() => { setItems(null); setAll(true); void reload(); }}>全部复习计划</Button><Button onClick={() => void reload()}>刷新队列</Button></div>
+    <div className="review-results">
     {error && <Message error>{error}<Button onClick={() => void reload()}>重新加载</Button></Message>}
     {!items && !error && <Message>正在读取真实复习计划…</Message>}
     {items && !items.length && !error && <Card><EmptyState title={all ? '还没有复习任务' : '当前没有到期卡片'}><p>测验、听写或阅读中的真实错误会进入复习。可查看全部计划或到期后刷新。</p><Link className="button" href="/lesson/demo-01?tab=quiz">返回课时测验 →</Link></EmptyState></Card>}
-    {!error && items?.map(item => <ReviewCard key={`${item.id}:${item.rowVersion}`} item={item} reload={reload} />)}</>;
+    {!error && items?.map(item => <ReviewCard key={`${item.id}:${item.rowVersion}`} item={item} reload={reload} />)}</div></section>;
 }

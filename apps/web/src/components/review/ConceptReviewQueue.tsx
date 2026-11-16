@@ -14,14 +14,15 @@ export function ConceptReviewQueue() {
   function switchMode(nextAll: boolean) { setAll(nextAll); void pager.reset(nextAll); }
   const { items, nextCursor, loading, error } = state;
   const dueCount = items?.filter(item => item.due).length ?? 0;
-  return <section>
-    <p className="eyebrow">跨课程概念卡</p>
-    <p className="boundary">概念卡按概念与义项合并多课程错误来源；调度同为 simple_v1：还不会 1 分钟；记住后按连续自评成功次数安排 1、2、4、8、16、32 天（上限）。人工自评不代表客观掌握。</p>
+  return <section className="review-section" aria-label="跨课程概念卡">
+    <header className="review-section-header"><h2>跨课程概念卡</h2>
+    <p className="review-description">概念卡按概念与义项合并多课程错误来源；调度同为 simple_v1：还不会 1 分钟；记住后按连续自评成功次数安排 1、2、4、8、16、32 天（上限）。人工自评不代表客观掌握。</p></header>
     <div className="toolbar review-queue-actions">
       <Button aria-pressed={!all} onClick={() => switchMode(false)}>概念卡到期复习（已加载 {dueCount}）</Button>
       <Button aria-pressed={all} onClick={() => switchMode(true)}>全部概念卡</Button>
       <Button onClick={() => void reload()}>刷新概念卡</Button>
     </div>
+    <div className="review-results">
     {error && <Message error>{error}<Button onClick={() => void pager.retry()}>重新加载</Button></Message>}
     {loading && <Message>{items ? '正在加载更多…' : '正在读取概念复习计划…'}</Message>}
     {items && !items.length && !nextCursor && !loading && !error && <Card><EmptyState title={all ? '还没有概念复习任务' : '当前没有到期的概念卡'}>
@@ -33,5 +34,6 @@ export function ConceptReviewQueue() {
       <span className="muted">已加载 {items.length} 张{all ? '' : '到期或待确认'}概念卡，尚有分页未读取。</span>
     </div>}
     {items && !nextCursor && !loading && <p className="muted">{all ? '已加载全部' : '已读取全部分页，显示'} {items.length} 张概念卡，其中到期 {dueCount} 张。</p>}
+    </div>
   </section>;
 }
